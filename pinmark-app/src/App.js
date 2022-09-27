@@ -1,23 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import Locations from './components/Locations';
+import Categories from './components/Categories';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App"> 
+    <div style={{padding: 50}}>
+      <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
+          <h1 style={{width: '100%', textAlign: 'left'}}>Your Locations</h1>    
+          <Locations />
+        </div>
+        <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
+          <h1 style={{width: '100%', textAlign: 'left'}}>Your Categories</h1>    
+          <Categories />
+        </div>
+    </div>
+     
     </div>
   );
 }
