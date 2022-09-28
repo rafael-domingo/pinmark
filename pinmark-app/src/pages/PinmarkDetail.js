@@ -1,0 +1,1 @@
+// view when user selects a pinmark to pull up more info/details

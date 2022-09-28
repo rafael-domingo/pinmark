@@ -1,14 +1,16 @@
+import { locationArray } from "../assets/fakeData";
+
 function Locations() {
 
     // styles
-    const containerDiv = {
+    const containerDivStyle = {
         display: 'flex',
         height: '300px',
         overflowX: 'scroll',
         overflowY: 'hidden'
     }
 
-    const locationDiv = { 
+    const locationDivStyle = { 
         display: 'flex',
         flexWrap: 'wrap', 
         justifyContent: 'center', 
@@ -19,36 +21,13 @@ function Locations() {
         flex: '0 0 auto' // keeps size of box constant 
     }
 
-    // data
-    const locationArray = [
-        {
-            city: 'Los Angeles',
-            state: 'California'
-        },
-        {
-            city: 'New Orleans',
-            state: 'Louisiana'            
-        },
-        {
-            city: 'San Francisco',
-            state: 'California'
-        },
-        {
-            city: 'New York City',
-            state: 'New York'
-        },
-        {
-            city: 'Salt Lake City',
-            state: 'Utah'
-        }
-    ];
 
     return (
-        <div style={containerDiv}>
+        <div style={containerDivStyle}>
             {
                 locationArray.map((location) => {
                     return (
-                        <div style={locationDiv}>
+                        <div style={locationDivStyle}>
                             <h1 style={{width: '100%'}}>{location.city}</h1>
                             <h3>{location.state}</h3>
                         </div>

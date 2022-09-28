@@ -1,7 +1,9 @@
+import { categoryArray } from "../assets/fakeData";
+
 function Categories() {
 
     // styles
-    const containerDiv = {
+    const containerDivStyle = {
         display: 'flex',
         height: '300px',
         overflowX: 'scroll',
@@ -9,7 +11,7 @@ function Categories() {
         height: 200
     }
 
-    const categoryDiv = {
+    const categoryDivStyle = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -20,23 +22,12 @@ function Categories() {
         flex: '0 0 auto' // keesp size of box constant
     }
 
-    // data
-     const categoryArray = [
-        'Coffee',
-        'Restaurants',
-        'Museums',
-        'Shopping',
-        'Brunch',
-        'Cocktails',
-        'Landmarks'
-     ]
-
     return (
-        <div style={containerDiv}>
+        <div style={containerDivStyle}>
             {
                 categoryArray.map((category) => {
                     return (
-                        <div style={categoryDiv}>
+                        <div style={categoryDivStyle}>
                             <p>{category}</p>
                         </div>
                     )
