@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom';
 import PinmarkList from './pages/PinmarkList';
 import UserHome from './pages/UserHome';
 import PinmarkDetail from './pages/PinmarkDetail';
