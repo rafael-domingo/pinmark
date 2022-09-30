@@ -25,14 +25,14 @@ function Hero() {
         position: 'absolute', 
         bottom: 10, 
         left: 40,
-        color: 'white'
+        // color: 'white'
     }
     return (
-        <div style={containerDivStyle}>
-            <div style={imageContainerStyle}>
+        <div style={containerDivStyle} className="p-5 mb-4 bg-light rounded-3">
+            <div style={imageContainerStyle} className="card-img-overlay">
                 <img src={Image} style={imageStyle}/>                
             </div>
-            <h1 style={labelStyle}>Los Angeles, California</h1>
+            <h1 style={labelStyle} className="display-5 fw-bold">Los Angeles, California</h1>
         </div>
     )
 }

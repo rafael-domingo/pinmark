@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 // generic list component -- used for list of pinmarks
 import { listArray } from "../assets/fakeData";
 
@@ -5,13 +6,13 @@ function List () {
     
     //styles
     const containerDivStyle = {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-        height: 500
+        // display: 'flex',
+        // flexWrap: 'wrap',
+        // justifyContent: 'center',
+        // alignItems: 'flex-start',
+        // overflowX: 'hidden',
+        // overflowY: 'scroll',
+        // height: 500
     }
 
     const itemDivStyle = {
@@ -30,13 +31,18 @@ function List () {
     }
 
     return (
-        <div style={containerDivStyle}>
+        <div style={containerDivStyle} className="row align-items-md-stretch">
             {
                 listArray.map((item) => {
                     return (
-                        <div style={itemDivStyle}>
-                            <h1 style={labelStyle}>{item.name}</h1>
-                        </div>
+                        <Link 
+                            className="col-md-6 p-3"
+                            to="/PinmarkDetail"
+                        >
+                            <div className="h-100 p-5 text-bg-dark rounded-3">                                                  
+                                <h1 style={labelStyle}>{item.name}</h1>                          
+                            </div>
+                        </Link>
                     )
                 })
             }
