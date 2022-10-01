@@ -1,8 +1,17 @@
 // landing page for when user logs into their account -- 'Your locations' and 'Your categories'
+import React from 'react';
 import Locations from "../components/Locations";
 import Categories from "../components/Categories";
+import { Google } from '../util/Google';
+import { v4 as uuidv4 } from 'uuid';
 
 function UserHome() {
+    const sessionToken = uuidv4();
+
+    React.useEffect(() => {
+        Google.placeSearch('french truck', null).then(data => console.log(data)).catch(e => console.log(e))
+    })
+    
 
     return (
         <div>
