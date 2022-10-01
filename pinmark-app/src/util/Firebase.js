@@ -1,3 +1,4 @@
+require('dotenv').config();
 import {
     initializeApp
 } from 'firebase/app';
@@ -17,7 +18,7 @@ import {
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDnnqxI5KBRsJIeBDbkzOenxsO-8oowxhc",
+    apiKey: //api-key,
     authDomain: "heroic-glyph-345202.firebaseapp.com",
     projectId: "heroic-glyph-345202",
     storageBucket: "heroic-glyph-345202.appspot.com",

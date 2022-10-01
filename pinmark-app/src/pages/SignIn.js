@@ -1,11 +1,14 @@
 import React from 'react';
 import { checkUser, signInWithGoogle, signUserOut } from '../util/Firebase';
+import { useNavigate } from 'react-router-dom';
 import { Google, XCircle } from 'react-bootstrap-icons';
 function SignIn() {
+    const navigate = useNavigate();
 
     const handleSignInWithGoogle = () => {
-        signInWithGoogle().then(result => {
+        signInWithGoogle().then(result => {            
             console.log(result);
+            navigate("/UserHome"); // navigate to user home once sign in is successful
         }).catch(error => console.log(error))
     }        
 
