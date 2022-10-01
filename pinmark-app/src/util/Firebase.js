@@ -40,7 +40,7 @@ export const signInWithGoogle = async () => {
         console.log(user);
         const q = query(collection(db, "users"), where("uid", "==", user.uid)); // check to see whether user already exists
         const docs = await getDocs(q);
-        // check docs.docs.length to see if nothign is returned -- means that the user doesn't exist, so need to add a new account
+        // check docs.docs.length to see if nothing is returned -- means that the user doesn't exist, so need to add a new account
         if (docs.docs.length === 0) {
             await addDoc(collection(db, "users"), {
                 uid: user.uid,
@@ -54,6 +54,18 @@ export const signInWithGoogle = async () => {
     }
 }
 
+// Check user is sign in 
+export const checkUser = async () => {
+    const user = auth.currentUser;
+    if (user) {
+        console.log('user is signed in')
+    } else {
+        console.log('user is not signed in')
+    }
+}
+
+
+// Sign user out 
 export const signUserOut = async() => {
-    signOut(auth);
+    signOut(auth).then(response => console.log(response));
 }
