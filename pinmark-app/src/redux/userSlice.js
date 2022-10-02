@@ -7,7 +7,8 @@ export const userSlice = createSlice({
         email: '',
         phone: '',
         profilePicture: '',
-        uid: ''
+        uid: '',
+        authType: ''
     },
     reducers: {
         setUserName: (state, action) => {
@@ -24,6 +25,9 @@ export const userSlice = createSlice({
         },
         setUid: (state, action) => {
             state.uid = action.payload
+        },
+        setAuthType: (state, action) => {
+            state.authType = action.payload
         }
     }
 })
@@ -33,6 +37,7 @@ export const {
     setEmail,
     setPhone,
     setProfilePicture,
-    setUid
+    setUid,
+    setAuthType
 } = userSlice.actions;
 export default userSlice.reducer

@@ -1,4 +1,3 @@
-require('dotenv').config();
 import {
     initializeApp
 } from 'firebase/app';
@@ -18,7 +17,7 @@ import {
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: //api-key,
+    apiKey: "API_KEY",
     authDomain: "heroic-glyph-345202.firebaseapp.com",
     projectId: "heroic-glyph-345202",
     storageBucket: "heroic-glyph-345202.appspot.com",
@@ -37,28 +36,18 @@ const provider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
     try {
         const res = await signInWithPopup(auth, provider);
-        const user = res.user;
-        console.log(user);
-        const q = query(collection(db, "users"), where("uid", "==", user.uid)); // check to see whether user already exists
-        const docs = await getDocs(q);
-        // check docs.docs.length to see if nothing is returned -- means that the user doesn't exist, so need to add a new account
-        if (docs.docs.length === 0) {
-            await addDoc(collection(db, "users"), {
-                uid: user.uid,
-                name: user.displayName,
-                authProvider: 'google',
-                email: user.email,                
-            });
-        }
+        const user = res.user;       
+        return user;
     } catch(error) {
         console.log(`Google Auth Error: ${error}`);
-    }
+    }    
 }
 
 // Check user is sign in 
 export const checkUser = async () => {
     const user = auth.currentUser;
     if (user) {
+        return user;
         console.log('user is signed in')
     } else {
         console.log('user is not signed in')

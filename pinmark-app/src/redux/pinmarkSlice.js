@@ -3,8 +3,34 @@ import { createSlice } from '@reduxjs/toolkit';
 export const pinmarkSlice = createSlice({
     name: 'pinmarks',
     initialState: {
-        locations: [],
-        pinmarks: [],
+        locations: [            
+            {
+                placeId: '',
+                locationName: {
+                    mainText: '',
+                    secondaryText: ''
+                },
+                geometry: {
+                    lat: '',
+                    lng: ''
+                },
+                latitude: '',
+                longitude: '',
+                photoURL: '',
+            }
+        ],
+        pinmarks: [
+            {
+                placeId: '',
+                locationName: '',
+                geometry: {
+                    lat: '',
+                    lng: ''
+                },
+                address: '',
+                photoURL: '',
+            }
+        ],
         categories: []
     },
     reducers: {
