@@ -3,7 +3,7 @@ import { checkUser, signInWithGoogle, signUserOut } from '../util/Firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { Google, XCircle } from 'react-bootstrap-icons';
-import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType } from '../redux/userSlice';
+import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType, resetUserState } from '../redux/userSlice';
 
 function SignIn() {
     // instantiate variables from supporting functions
@@ -43,6 +43,7 @@ function SignIn() {
     const handleSignUserOut = () => {
         signUserOut().then(result => {
             console.log(result);
+            dispatch(resetUserState());
         }).catch(error => console.log(error))
     }
 
