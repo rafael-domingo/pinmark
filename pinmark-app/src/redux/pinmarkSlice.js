@@ -16,7 +16,7 @@ export const pinmarkSlice = createSlice({
                 },
                 latitude: '',
                 longitude: '',
-                photoURL: '',
+                photoURL: '',                
             }
         ],
         pinmarks: [
@@ -29,9 +29,19 @@ export const pinmarkSlice = createSlice({
                 },
                 address: '',
                 photoURL: '',
+                rating: '',
+                categories: [], 
+                tripList: [], // array of tripIds that this pinmark is in
             }
         ],
-        categories: []
+        categories: [],
+        tripLists: [
+            {
+                tripId: '',
+                tripName: '',
+                sharedWith: [] // array of uids that user has shared this trip with
+            }
+        ]
     },
     reducers: {
         setLocations: (state,action) => {

@@ -13,7 +13,8 @@ import {
     getDocs,
     collection,
     where,
-    addDoc
+    setDoc,
+    doc
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -34,10 +35,19 @@ export const db = getFirestore(app);
 // Sign in with  Google
 const provider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
-    try {
-        const res = await signInWithPopup(auth, provider);
-        const user = res.user;       
-        return user;
+    try {        
+        signInWithPopup(auth, provider).then((res) => {
+            // TODO: Need to add functionality to check whether user already exists
+            // add user to firestore 
+            setDoc(doc(db, "users", res.user.uid), {
+                userName: res.user.displayName,
+                email: res.user.email,
+                phone: res.user.phoneNumber,
+                profilePicture: res.user.photoURL,
+                uid: res.user.uid,
+                authType: 'google'
+            })                                  
+        })
     } catch(error) {
         console.log(`Google Auth Error: ${error}`);
     }    
@@ -47,15 +57,16 @@ export const signInWithGoogle = async () => {
 export const checkUser = async () => {
     const user = auth.currentUser;
     if (user) {
-        return user;
         console.log('user is signed in')
+        return user;        
     } else {
         console.log('user is not signed in')
     }
 }
 
-
 // Sign user out 
 export const signUserOut = async() => {
     signOut(auth).then(response => console.log(response));
 }
+
+// Add 

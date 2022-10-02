@@ -13,14 +13,8 @@ function SignIn() {
 
     // internal supporting functions
     const handleSignInWithGoogle = () => {
-        signInWithGoogle().then(result => {            
-            // set redux user state based on result
-            dispatch(setUserName(result.displayName));
-            dispatch(setEmail(result.email));
-            dispatch(setPhone(result.phoneNumber));
-            dispatch(setProfilePicture(result.photoURL));
-            dispatch(setUid(result.uid));    
-            dispatch(setAuthType('google'));
+        signInWithGoogle().then(result => {    
+            handleCheckUser(); // run check user function to assign user data to redux state       
 
             // navigate to user home once sign in is successful
             navigate("/UserHome"); 
