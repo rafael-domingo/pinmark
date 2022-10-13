@@ -5,6 +5,7 @@ import Categories from "../components/Categories";
 import { Google } from '../util/Google';
 import { v4 as uuidv4 } from 'uuid';
 import { signInWithGoogle, signUserOut } from '../util/Firebase';
+import Search from '../components/Search';
 
 function UserHome() {
     const sessionToken = uuidv4();    
@@ -30,6 +31,7 @@ function UserHome() {
                 <Locations />                
             </div>
             <div onClick={handleSignInWithGoogle}>Sign In</div>
+            <Search />
             <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
                 <h1 style={{width: '100%', textAlign: 'left'}}>Your Categories</h1>    
                 <Categories />
