@@ -9,6 +9,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
+// MDB React UI Kit import
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

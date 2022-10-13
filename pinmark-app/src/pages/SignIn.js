@@ -1,4 +1,5 @@
 import React from 'react';
+import { MDBInput, MDBBtn, MDBIcon, MDBModal, MDBModalContent, MDBModalDialog, MDBModalHeader, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 import { checkUser, signInWithGoogle, signUserOut } from '../util/Firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
@@ -42,26 +43,29 @@ function SignIn() {
     }
 
     return (
-        <div style={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'flex-start'}}>
-            <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center'}}>
-                <Google style={{height: 50}} onClick={handleSignInWithGoogle}/>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    Sign In With Google
-                </div>
-            </div>
-            <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center'}}>
-                <Google style={{height: 50}} onClick={handleCheckUser}/>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    Check User
-                </div>
-            </div>
-            <div style={{width: '100%', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center'}}>
-                <XCircle style={{height: 50}} onClick={handleSignUserOut}/>
-                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    Sign Out
-                </div>    
-            </div>
-            
+        <div 
+            className='bg-image min-vh-100'
+            style={{backgroundImage: "url('https://mdbootstrap.com/img/new/slides/041.webp')"}}
+            >                       
+            <MDBModal staticBackdrop show={true}>
+                <MDBModalDialog size='lg' centered>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            Welcome to Pinmark
+                        </MDBModalHeader>
+                        <MDBModalBody className='d-grid gap-3'>
+                            <MDBInput label='Email' id='typeEmail' type='email' size='lg'/>
+                            <MDBInput label='Password' id='typePassword' type='password' size='lg'/>
+                        </MDBModalBody>                
+                        <MDBModalFooter>
+                            <MDBBtn style={{margin: 5}} floating size='lg' tag='a' onClick={handleSignInWithGoogle}><MDBIcon fab icon ='google'/></MDBBtn>  
+                            <MDBBtn style={{margin: 5}} floating size='lg' tag='a' onClick={handleSignInWithGoogle}><MDBIcon fab icon ='facebook-f'/></MDBBtn>                             
+                            <MDBBtn outline>Register</MDBBtn>
+                            <MDBBtn>Sign In</MDBBtn>                                                                                
+                        </MDBModalFooter>                                                            
+                    </MDBModalContent>
+                </MDBModalDialog>        
+            </MDBModal>                                                       
         </div>
     )
 }
