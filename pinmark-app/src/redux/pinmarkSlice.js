@@ -73,9 +73,9 @@ export const pinmarkSlice = createSlice({
             state.pinmarks.push(action.payload)
         },
         deletePinmark: (state, action) => {
-            const updatedPinmarksArray = [];
+            const updatedPinmarksArray = [];            
             state.pinmarks.forEach((item) => {
-                if(item.id !== action.payload) {
+                if(item.pinmarkId !== action.payload) {
                     updatedPinmarksArray.push(item)
                 }
             })

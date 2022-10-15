@@ -28,27 +28,58 @@ import {
     MDBCol,
     MDBCardHeader
 } from 'mdb-react-ui-kit';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPinmark, deletePinmark } from '../redux/pinmarkSlice';
 
 function UserHome() {
+    const pinmarkState = useSelector((state) => state.pinmark);
+    const dispatch = useDispatch();
     const sessionToken = uuidv4();    
     const [showSearch, setShowSearch] = React.useState(false);
     const [searchInput, setSearchInput] = React.useState('');
     const [searchResults, setSearchResults] = React.useState([]);
     const [secondModal, setSecondModal] = React.useState(false);
-    const [detailInfo, setDetailInfo] = React.useState([]);
+    const [detailInfo, setDetailInfo] = React.useState([]);  
+    const [pinmarkIdArray, setPinmarkIdArray] = React.useState([]);
+
+    // side effect to keep track of pinmark IDs to help with search results UI (add/remove pinmarks)
+    React.useEffect(() => {
+        console.log(pinmarkState);
+        var pinmarkArray = [];
+        pinmarkState.pinmarks.map((pinmark) => {
+            pinmarkArray.push(pinmark.pinmarkId);
+        })
+        setPinmarkIdArray(pinmarkArray);
+    }, [pinmarkState])
+
     React.useEffect(() => {
         Google.placeSearch('french truck', null).then(data => console.log(data)).catch(e => console.log(e))
         Google.placeDetails('ChIJD7fiBh9u5kcRYJSMaMOCCwQ', sessionToken).then(data => console.log(data)).then(e => console.log(e))
-        Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))
-        
-    }, [0])
+        Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))            
+    }, [0])    
+   
 
-    const handleSignInWithGoogle = () => {
-        signInWithGoogle().then(result => {
-            console.log(result);
-        })
-    }        
+    const handleAddPinmark = (pinmark) => {
+        const pinmarkObject = {
+            pinmarkId: pinmark.place_id,
+            locationId: '',
+            geometry: {
+                lat: pinmark.geometry.location.lat,
+                lng: pinmark.geometry.location.lng
+            },
+            address: pinmark.formatted_address,
+            photoURL: '',
+            rating: pinmark.rating,
+            categories: pinmark.types,
+            tripIds: []
+        }
+        dispatch(addPinmark(pinmarkObject));        
+    }
 
+    const handleDeletePinmark = (pinmark) => {
+        dispatch(deletePinmark(pinmark.place_id));
+    }
+    
     const handleShowSearch = () => {
         setShowSearch(!showSearch);
         setSearchInput('');
@@ -104,6 +135,7 @@ function UserHome() {
                             <MDBRow>
                             {/* put list of search results here */}
                             {searchResults.map((result) => {
+                                                                
                                 return (
                                     <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
                                         <MDBCard>
@@ -115,9 +147,21 @@ function UserHome() {
                                                 <MDBBtn onClick={() => handleShowDetails(result)} color='link' rippleColor='primary' className='text-reset m-0'>
                                                 View <MDBIcon fas icon='eye' />
                                                 </MDBBtn>
-                                                <MDBBtn color='link' rippleColor='primary' className='text-reset m-0'>
-                                                Add Pinmark <MDBIcon fas icon='plus' />
-                                                </MDBBtn>
+                                                {
+                                                    !pinmarkIdArray.includes(result.place_id) && (
+                                                        <MDBBtn onClick={() => handleAddPinmark(result)} color='primary'>
+                                                            Add Pinmark <MDBIcon fas icon='plus' />
+                                                        </MDBBtn>
+                                                    )
+                                                }
+                                                 {
+                                                    pinmarkIdArray.includes(result.place_id) && (
+                                                        <MDBBtn onClick={() => handleDeletePinmark(result)} color='link' rippleColor='primary' className='text-reset m-0'>
+                                                            Remove Pinmark <MDBIcon fas icon='minus' />
+                                                        </MDBBtn>
+                                                    )
+                                                }
+                                                
                                             </MDBCardFooter>
                                         </MDBCard>                      
                                     </MDBCol>                                                  
@@ -144,7 +188,7 @@ function UserHome() {
                         
                         <MDBModalBody>
                             {detailInfo.formatted_address}
-                            
+
                         </MDBModalBody>
                         <MDBModalFooter>
                         <MDBBtn color='link' onClick={() => {
