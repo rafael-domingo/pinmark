@@ -60,7 +60,11 @@ export const signInWithGoogle = async () => {
 // Sign in with email/password
 export const signInWithEmail = async (registering, email, password) => {       
     // check with sign-in methods have been performed -- useful for people who have signed in with google/facebook and try to sign in with email 
-   fetchSignInMethodsForEmail(auth, email).then(result => console.log(result));
+   var signInMethods = [];
+    return fetchSignInMethodsForEmail(auth, email).then(result => {
+    console.log(result)
+    signInMethods = result;
+    // placed firebase call inside fetchSignInMethodsForEmail to wait for that method to finish
     // // check if 'registering' or 'signing in'
     if (registering) {           
         return createUserWithEmailAndPassword(auth, email, password)
@@ -72,7 +76,10 @@ export const signInWithEmail = async (registering, email, password) => {
         })
         .catch((error) => {
             console.log(error.code)
+            console.log(signInMethods)
             return error.code;
+            
+            
         })
     } else {
         return signInWithEmailAndPassword(auth, email, password)
@@ -83,10 +90,16 @@ export const signInWithEmail = async (registering, email, password) => {
             return user;
         })
         .catch((error) => {            
-            console.log(error.code)
-            return error.code;            
+            console.log(error.code)            
+            if (signInMethods.includes('google.com',0) && error.code == 'auth/wrong-password') {
+                return 'auth/sign-in-with-google';
+            } else {
+                return error.code;
+            }                     
         })
     }
+});
+    
     
 }
 

@@ -17,7 +17,9 @@ function SignIn() {
     const [register, setRegister] = React.useState(false);
     const [passwordInputModal, setPasswordInputModal] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
-    const [createNewAccount, setCreateNewAccount] = React.useState(false);
+    const [confirm, setConfirm] = React.useState(false);
+    const [googleAuth, setGoogleAuth] = React.useState(false);
+
     // Firebase supporting functions
     const handleSignInWithGoogle = () => {
         setSecondModal(true);
@@ -63,11 +65,18 @@ function SignIn() {
         }).catch(error => console.log(error))     
     }
 
-    const handleCreate = () => {
-        setMessage('');
-        setSecondModal(false);
-        setRegister(true);
-        setCreateNewAccount(false);
+    const handleConfirm = () => {
+        if (!googleAuth) {
+            setMessage('');
+            setSecondModal(false);
+            setRegister(true);
+            setConfirm(false);
+        } else {
+            handleSignInWithGoogle();
+            setLoading(false);
+            setConfirm(false);
+        }
+    
     }
     const handleCheckUser = async (authType) => {
         setLoading(true);
@@ -101,7 +110,8 @@ function SignIn() {
     const handleConfirmPassword = (e) => {
         setConfirmPassword(e.target.value);
     }
-   
+
+    // error handling for API calls   
     const errorHandling = (response) => {
         setLoading(false);
         switch (response) {
@@ -129,7 +139,13 @@ function SignIn() {
             case 'auth/user-not-found':
                 console.log('user not found, create an account?');
                 setMessage(`Looks like you're new here, do you want to create an account?`)
-                setCreateNewAccount(true);
+                setConfirm(true);
+                break;
+            case 'auth/sign-in-with-google':
+                console.log('Looks like you signed in with google before, would you like to sign in using that method?');
+                setMessage('Looks like you signed in with google before, would you like to sign in using that method?');
+                setConfirm(true);
+                setGoogleAuth(true);
                 break;
             default:
                 console.log('something went wrong');
@@ -191,7 +207,7 @@ function SignIn() {
                             {passwordInputModal && (<MDBInput required label='Password' id='typePassword' type='password' size='lg' onChange={handlePassword}/>)}  
                             {passwordInputModal && (<MDBBtn onClick={handleEmailSignIn}>Sign In</MDBBtn>)}
                             {passwordInputModal && (<MDBBtn color='link'>Forgot your password?</MDBBtn>)}
-                            {createNewAccount && (<MDBBtn onClick={handleCreate}>Yes</MDBBtn>)}
+                            {confirm && (<MDBBtn onClick={handleConfirm}>Yes</MDBBtn>)}
                             {loading && (<MDBSpinner role='status'></MDBSpinner>)}                            
                                            
                         </MDBModalBody>
