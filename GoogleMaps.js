@@ -44,12 +44,13 @@ router.post('/placeDetails', async (req, res) => {
 router.post('/placeSearch', async (req, res) => {
     const searchTerm = req.body.searchTerm;
     // const location = req.body.location;
-    client.findPlaceFromText({
+    // swapped to 'textSearch' API since it returns a list of places
+    // 'findPlaces' API only returns the best match based on input -- 1 result versus 20
+    client.textSearch({
         params: {
-            input: searchTerm,
-            inputtype: 'textquery',
-            key: api_key,
-            fields: 'name,icon,photo,place_id,formatted_address,business_status,icon',
+            query: searchTerm,
+            // inputtype: 'textquery',
+            key: api_key,            
             // locationbias: `circle:1000@${location.lat},${location.lng}`
         }
     }).then(response => {
