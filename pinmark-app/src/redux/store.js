@@ -6,5 +6,5 @@ export default configureStore({
     reducer: {
         pinmark: pinmarkReducer,
         user: userReducer
-    },
+    }    
 })

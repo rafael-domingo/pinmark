@@ -5,7 +5,10 @@ import {
     GoogleAuthProvider, 
     getAuth, 
     signInWithPopup,
-    signOut
+    signOut,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    fetchSignInMethodsForEmail
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -53,6 +56,40 @@ export const signInWithGoogle = async () => {
     }    
 }
 
+
+// Sign in with email/password
+export const signInWithEmail = async (registering, email, password) => {       
+    // check with sign-in methods have been performed -- useful for people who have signed in with google/facebook and try to sign in with email 
+   fetchSignInMethodsForEmail(auth, email).then(result => console.log(result));
+    // // check if 'registering' or 'signing in'
+    if (registering) {           
+        return createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // signed in
+            const user = userCredential.user;
+            console.log(user);
+            return user;
+        })
+        .catch((error) => {
+            console.log(error.code)
+            return error.code;
+        })
+    } else {
+        return signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // signed in
+            const user = userCredential.user;
+            console.log(user);
+            return user;
+        })
+        .catch((error) => {            
+            console.log(error.code)
+            return error.code;            
+        })
+    }
+    
+}
+
 // Check user is sign in 
 export const checkUser = async () => {
     const user = auth.currentUser;
@@ -61,6 +98,7 @@ export const checkUser = async () => {
         return user;        
     } else {
         console.log('user is not signed in')
+        return;
     }
 }
 
