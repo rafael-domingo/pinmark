@@ -1,7 +1,19 @@
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useSearchParams } from 'react-router-dom'
 import { locationArray } from "../assets/fakeData";
 import Image from '../assets/los-angeles.jpeg';
+import {
+    MDBCard,
+    MDBCardBody,
+    MDBCardTitle,
+    MDBCardText,    
+    MDBCardImage,
+    MDBCardOverlay   
+} from 'mdb-react-ui-kit';
 function Locations() {
+    const locationState = useSelector((state) => state.pinmark.locations);
+    const dispatch = useDispatch();
 
     // styles
     const containerDivStyle = {
@@ -26,22 +38,22 @@ function Locations() {
     return (
         <div style={containerDivStyle}>
             {
-                locationArray.map((location) => {
+                locationState.map((location) => {
                     return (
-                        <Link 
-                        to="/PinmarkList"
-                        style={locationDivStyle} className="card text-bg-dark">
-                            <img src={Image} 
-                            className="card-img" style={{objectFit: 'cover', height: '100%'}}/>
-                            <div className="card-img-overlay">
-                                <h3 className="card-title">{location.city}</h3>
-                                <p className="card-subtitle mb-2">{location.state}</p>
-                            </div>                        
-                        </Link>
+                        <MDBCard style={locationDivStyle}>
+                            <MDBCardOverlay>
+                                <MDBCardTitle>
+                                    {location.city}
+                                </MDBCardTitle>
+                                <MDBCardText>
+                                    {location.state}, {location.country}                                    
+                                </MDBCardText>
+                            </MDBCardOverlay>
 
+                        </MDBCard>
                     )
                 })
-            }           
+            }            
         </div>
     )
 

@@ -1,7 +1,6 @@
 // landing page for when user logs into their account -- 'Your locations' and 'Your categories'
 import React from 'react';
 import Locations from "../components/Locations";
-import Categories from "../components/Categories";
 import { Google } from '../util/Google';
 import { v4 as uuidv4 } from 'uuid';
 import { signInWithGoogle, signUserOut } from '../util/Firebase';
@@ -30,6 +29,7 @@ import {
 } from 'mdb-react-ui-kit';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
+import Pinmarks from '../components/Pinmarks';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);
@@ -186,17 +186,10 @@ function UserHome() {
     
     return (
         <div>
-{/*             
-            <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
-                <h1 style={{width: '100%', textAlign: 'left'}}>Your Locations</h1>    
-                <Locations />                
-            </div>
-            <div onClick={handleSearch}>Search</div>
-            {showSearch && (<Search showSearch={showSearch} setShowSearch={setShowSearch}/>)}
-            <div style={{display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap'}}>
-                <h1 style={{width: '100%', textAlign: 'left'}}>Your Categories</h1>    
-                <Categories />
-            </div> */}
+            <h3>Your Locations</h3>  
+                <Locations />    
+            <h3>Most Recent Pinmarks</h3>
+                <Pinmarks />    
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
