@@ -41,6 +41,12 @@ function UserHome() {
     const [secondModal, setSecondModal] = React.useState(false);
     const [detailInfo, setDetailInfo] = React.useState([]);  
     const [pinmarkIdArray, setPinmarkIdArray] = React.useState([]);
+    const [currentLocationObject, setCurrentLocationObject] = React.useState({
+        city: '',
+        state: '',
+        country: '',
+        locationId: ''
+    }); // state to keep track of newly create locationId -- to fix bug that would add duplicate cities if state didn't update fast enough
 
     // side effect to keep track of pinmark IDs to help with search results UI (add/remove pinmarks)
     React.useEffect(() => {
@@ -53,11 +59,24 @@ function UserHome() {
     }, [pinmarkState])
 
     React.useEffect(() => {
-        // Google.placeSearch('french truck', null).then(data => console.log(data)).catch(e => console.log(e))
+        Google.placeSearch('houston, tx', null).then(data => console.log(data)).catch(e => console.log(e))
         // Google.placeDetails('ChIJD7fiBh9u5kcRYJSMaMOCCwQ', sessionToken).then(data => console.log(data)).then(e => console.log(e))
         // Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))            
     }, [0])    
    
+    const handleCheckLocationExists = (locationObject) => {
+        Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
+            const photo_reference = data.results[0].photos[0].photo_reference;
+            const newLocationObject = {
+                city: locationObject.city,
+                state: locationObject.state,
+                country: locationObject.country,
+                locationId: locationObject.locationId,
+                photo_reference: photo_reference
+            }
+            dispatch(addLocations(newLocationObject));
+        })
+    }
 
     const handleAddPinmark = (pinmark) => {
         // get address components to parse city, state, country, zip code
@@ -67,6 +86,8 @@ function UserHome() {
             var state = '';
             var postalCode = '';
             var country = '';
+            
+                    
             data.result.address_components.map((address_component) => {
                 if(address_component.types.includes('locality') || address_component.types.includes('postal_town')) {
                     city = address_component.short_name;
@@ -81,32 +102,40 @@ function UserHome() {
                     country = address_component.short_name;
                 }
             })         
-            // check if location exists in state, otherwise add to state   
+            // check if location exists in state, otherwise add to global state   
             var exists = false;
-            var locationId = '';
+            var locationId = uuidv4();
+            // check if newly added pinmark matches current location in component state -- usually used when adding multiple pinmarks from the same city at once
+            if (currentLocationObject.city === city && currentLocationObject.state === state && currentLocationObject.country === country) {
+                exists = true;
+                locationId = currentLocationObject.locationId
+            }
+            
+            // check if newly added pinmark matches existing location in global state -- usually used when first opening up search
             pinmarkState.locations.map((location) => {
                 if (location.city === city && location.state === state && location.country === country) {
                     exists = true;
                     locationId = location.locationId;
-                }
-                
-            })
-            if (!exists) {
+                }                
+            })            
+            if (!exists) {        
                 var locationObject = {
                     city: city,
                     state: state,
-                    country: country,                
-                    locationId: uuidv4()
-                }
-                dispatch(addLocations(locationObject));
+                    country: country,                      
+                    locationId: locationId                                                                   
+                }            
+                // created a separate function to speed up so that checking location isn't holding up the adding pinmark action
+                handleCheckLocationExists(locationObject);                    
             } else {
                 var locationObject = {
                     city: city,
                     state: state,
                     country: country,
                     locationId: locationId
-                }
+                }                 
             }
+            setCurrentLocationObject(locationObject); // update local state with new location object
                 
             // create pinmark object to store in state
             const pinmarkObject = {
@@ -118,13 +147,16 @@ function UserHome() {
                     lng: pinmark.geometry.location.lng
                 },
                 address: pinmark.formatted_address,
-                photoURL: '',
+                photoURL: pinmark.photos[0].photo_reference,
                 rating: pinmark.rating,
                 categories: pinmark.types,
                 tripIds: []
             }
-            dispatch(addPinmark(pinmarkObject));            
-        })              
+            dispatch(addPinmark(pinmarkObject));                
+        
+                    
+        });        
+                   
     }
 
     const handleDeletePinmark = (pinmark) => {

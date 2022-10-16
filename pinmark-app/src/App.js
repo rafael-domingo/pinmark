@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SignIn />}/>
         <Route path="/UserHome" element={<UserHome />}/>
-        <Route path="/PinmarkList" element={<PinmarkList />}/>
+        <Route path="/PinmarkList/:locationId" element={<PinmarkList />}/>
         <Route path="/PinmarkDetail" element={<PinmarkDetail/>}/>
       </Routes>
     {/* </div> */}

@@ -21,7 +21,7 @@ import {
 } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "API_KEY",
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: "heroic-glyph-345202.firebaseapp.com",
     projectId: "heroic-glyph-345202",
     storageBucket: "heroic-glyph-345202.appspot.com",

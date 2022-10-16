@@ -61,7 +61,20 @@ export const pinmarkSlice = createSlice({
             state.categories = action.payload
         },
         addLocations: (state, action) => {
-            state.locations.push(action.payload)
+            var newLocationsArray = state.locations
+            newLocationsArray.push(action.payload)
+
+            // alphabetize the locations array before updating redux state
+            newLocationsArray.sort(function(a,b) {
+                if(a.city < b.city) {
+                    return -1
+                }
+                if(a.city > b.city) {
+                    return 1
+                }
+                return 0
+            })
+            state.locations = newLocationsArray
         },
         deleteLocations: (state, action) => {
             const updatedLocationsArray = [];

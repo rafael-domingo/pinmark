@@ -31,21 +31,27 @@ function Pinmarks() {
         margin: 20,
         width: 150,
         height: 150,
+        overflow: 'hidden',
         flex: '0 0 auto' // keeps size of box constant
     }
 
     return (
         <div style={containerDivStyle}>
             {
-                pinmarkState.map((pinmark) => {
+                // reverse the pinmarkState array to get reverse chronological order of pinmarks
+                pinmarkState.slice(0).reverse().map((pinmark) => {
                     return (
                         <MDBCard style={cardDivStyle}>
-                            <MDBCardTitle>
-                                {pinmark.locationName}
-                            </MDBCardTitle>
-                            <MDBCardText>
-                                {pinmark.locationId.city}, {pinmark.locationId.state}
-                            </MDBCardText>
+                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}  alt='location-image'/>
+                            <MDBCardOverlay>
+                                <MDBCardTitle>
+                                    {pinmark.locationName}
+                                </MDBCardTitle>
+                                <MDBCardText>
+                                    {pinmark.locationId.city}, {pinmark.locationId.state}
+                                </MDBCardText>
+                            </MDBCardOverlay>
+                           
                         </MDBCard>
                     )
                 })

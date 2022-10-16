@@ -31,26 +31,29 @@ function Locations() {
         // border: 'solid 1px black', 
         margin: 20,
         width: 200,
-        flex: '0 0 auto' // keeps size of box constant 
-    }
-
+        flex: '0 0 auto', // keeps size of box constant 
+        overflow: 'hidden'
+    }    
 
     return (
         <div style={containerDivStyle}>
             {
                 locationState.map((location) => {
                     return (
-                        <MDBCard style={locationDivStyle}>
-                            <MDBCardOverlay>
-                                <MDBCardTitle>
-                                    {location.city}
-                                </MDBCardTitle>
-                                <MDBCardText>
-                                    {location.state}, {location.country}                                    
-                                </MDBCardText>
-                            </MDBCardOverlay>
-
-                        </MDBCard>
+                        <Link to={`/PinmarkList/${location.locationId}`}>
+                            <MDBCard style={locationDivStyle}>
+                                <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                                <MDBCardOverlay>
+                                    <MDBCardTitle>
+                                        {location.city}
+                                    </MDBCardTitle>
+                                    <MDBCardText>
+                                        {location.state}, {location.country}                                    
+                                    </MDBCardText>
+                                </MDBCardOverlay>
+                            </MDBCard>  
+                        </Link>
+                        
                     )
                 })
             }            
