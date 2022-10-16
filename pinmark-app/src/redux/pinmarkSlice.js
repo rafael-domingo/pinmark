@@ -5,19 +5,25 @@ export const pinmarkSlice = createSlice({
     initialState: {
         locations: [            
             {
-                locationId: '',
-                locationName: {
-                    mainText: '',
-                    secondaryText: ''
-                },
-                geometry: {
-                    lat: '',
-                    lng: ''
-                },
-                latitude: '',
-                longitude: '',
-                photoURL: '',                
+                city: '',
+                state: '',
+                country: '',                
+                locationId: ''
             }
+            // {
+            //     locationId: '',
+            //     locationName: {
+            //         mainText: '',
+            //         secondaryText: ''
+            //     },
+            //     geometry: {
+            //         lat: '',
+            //         lng: ''
+            //     },
+            //     latitude: '',
+            //     longitude: '',
+            //     photoURL: '',                
+            // }
         ],
         pinmarks: [
             {
@@ -60,7 +66,7 @@ export const pinmarkSlice = createSlice({
         deleteLocations: (state, action) => {
             const updatedLocationsArray = [];
             state.locations.forEach((item) => {
-                if(item.id !== action.payload) {
+                if(item.locationId !== action.payload) {
                     updatedLocationsArray.push(item)
                 } 
             })

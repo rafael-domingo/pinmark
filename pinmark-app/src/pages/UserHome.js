@@ -29,12 +29,12 @@ import {
     MDBCardHeader
 } from 'mdb-react-ui-kit';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPinmark, deletePinmark } from '../redux/pinmarkSlice';
+import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);
     const dispatch = useDispatch();
-    const sessionToken = uuidv4();    
+    const sessionToken = uuidv4();        
     const [showSearch, setShowSearch] = React.useState(false);
     const [searchInput, setSearchInput] = React.useState('');
     const [searchResults, setSearchResults] = React.useState([]);
@@ -53,31 +53,107 @@ function UserHome() {
     }, [pinmarkState])
 
     React.useEffect(() => {
-        Google.placeSearch('french truck', null).then(data => console.log(data)).catch(e => console.log(e))
-        Google.placeDetails('ChIJD7fiBh9u5kcRYJSMaMOCCwQ', sessionToken).then(data => console.log(data)).then(e => console.log(e))
-        Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))            
+        // Google.placeSearch('french truck', null).then(data => console.log(data)).catch(e => console.log(e))
+        // Google.placeDetails('ChIJD7fiBh9u5kcRYJSMaMOCCwQ', sessionToken).then(data => console.log(data)).then(e => console.log(e))
+        // Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))            
     }, [0])    
    
 
     const handleAddPinmark = (pinmark) => {
-        const pinmarkObject = {
-            pinmarkId: pinmark.place_id,
-            locationId: '',
-            geometry: {
-                lat: pinmark.geometry.location.lat,
-                lng: pinmark.geometry.location.lng
-            },
-            address: pinmark.formatted_address,
-            photoURL: '',
-            rating: pinmark.rating,
-            categories: pinmark.types,
-            tripIds: []
-        }
-        dispatch(addPinmark(pinmarkObject));        
+        // get address components to parse city, state, country, zip code
+        Google.placeDetails(pinmark.place_id, sessionToken).then(data => {
+            console.log(data)
+            var city = '';
+            var state = '';
+            var postalCode = '';
+            var country = '';
+            data.result.address_components.map((address_component) => {
+                if(address_component.types.includes('locality') || address_component.types.includes('postal_town')) {
+                    city = address_component.short_name;
+                }
+                if(address_component.types.includes('postal_code')) {
+                    postalCode = address_component.short_name;
+                }
+                if(address_component.types.includes('administrative_area_level_1')) {
+                    state = address_component.short_name;
+                }
+                if(address_component.types.includes('country')) {
+                    country = address_component.short_name;
+                }
+            })         
+            // check if location exists in state, otherwise add to state   
+            var exists = false;
+            var locationId = '';
+            pinmarkState.locations.map((location) => {
+                if (location.city === city && location.state === state && location.country === country) {
+                    exists = true;
+                    locationId = location.locationId;
+                }
+                
+            })
+            if (!exists) {
+                var locationObject = {
+                    city: city,
+                    state: state,
+                    country: country,                
+                    locationId: uuidv4()
+                }
+                dispatch(addLocations(locationObject));
+            } else {
+                var locationObject = {
+                    city: city,
+                    state: state,
+                    country: country,
+                    locationId: locationId
+                }
+            }
+                
+            // create pinmark object to store in state
+            const pinmarkObject = {
+                pinmarkId: pinmark.place_id,
+                locationId: locationObject,
+                locationName: pinmark.name,
+                geometry: {
+                    lat: pinmark.geometry.location.lat,
+                    lng: pinmark.geometry.location.lng
+                },
+                address: pinmark.formatted_address,
+                photoURL: '',
+                rating: pinmark.rating,
+                categories: pinmark.types,
+                tripIds: []
+            }
+            dispatch(addPinmark(pinmarkObject));            
+        })              
     }
 
     const handleDeletePinmark = (pinmark) => {
+        var locationIdReference = '';
+        
+        // need to check if need to delete location in state if no more pinmarks in that city
+        var locationIdCount = 0;        
+        pinmarkState.pinmarks.map((pin) => {       
+            console.log(pinmark.place_id)
+            console.log(pin.pinmarkId)     
+            // need to figure out what the locationId is
+            if(pinmark.place_id === pin.pinmarkId) {
+                locationIdReference = pin.locationId.locationId;
+            }
+        })
+        // count how many of that locationId is in the pinmark array
+        pinmarkState.pinmarks.map((pin) => {            
+            if(pin.locationId.locationId === locationIdReference) {
+                locationIdCount++;
+            }
+        })
+        console.log(locationIdReference);
+        console.log(locationIdCount);
+        // if there's only one left, that means we need to remove the location -- the one pinmark remaining is the one we're about to remove through dispatch
+        if (locationIdCount <=1 ) {
+            dispatch(deleteLocations(locationIdReference));
+        }
         dispatch(deletePinmark(pinmark.place_id));
+
     }
     
     const handleShowSearch = () => {
@@ -104,6 +180,7 @@ function UserHome() {
         }
     }    
     const handleSearchResults = (results) => {
+        console.log(results);
         setSearchResults(results.results);               
     }
     
