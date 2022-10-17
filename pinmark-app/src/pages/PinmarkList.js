@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Hero from "../components/Hero";
@@ -9,6 +9,13 @@ function PinmarkList() {
     const { locationId } = useParams();
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkListState = useSelector((state) => state.pinmark.pinmarks);
+    const [coffeeState, setCoffeeState] = useState();
+    const [nightLifeState, setNightLifeState] = React.useState();
+    const [foodState, setFoodState] = React.useState();
+    const [lodgingState, setLodgingState] = React.useState();
+    const [shoppingState, setShoppingState] = React.useState();
+    const [touristAttractionState, setTouristAttractionState] = React.useState();
+
     console.log(pinmarkListState);
     console.log(`locationId: ${locationId}`);
     var pinmarkList = [];
@@ -27,19 +34,7 @@ function PinmarkList() {
                 photo_reference: location.photo_reference                
             }
         }
-    })
-    // React.useEffect(() => {
-              
-    // }, [pinmarkListState])
-    console.log(pinmarkList);
-    // styles
-    const containerDivStyle = {
-
-    }
-
-    const listDivStyle = {
-
-    }
+    })   
 
     return (
         <div>

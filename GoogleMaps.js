@@ -49,6 +49,7 @@ router.post('/placeSearch', async (req, res) => {
     client.textSearch({
         params: {
             query: searchTerm,
+            fields: 'basic',
             // inputtype: 'textquery',
             key: api_key,            
             // locationbias: `circle:1000@${location.lat},${location.lng}`

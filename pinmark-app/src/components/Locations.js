@@ -39,10 +39,21 @@ function Locations() {
         <div style={containerDivStyle}>
             {
                 locationState.map((location) => {
+                    // put placeholder image in case image doesn't exist
+                    if (location.photo_reference === undefined) {
+                        var photo_reference = (
+                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={Image}/>
+                        )
+                    } else {
+                        var photo_reference = (
+                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                        )
+                    }
                     return (
                         <Link to={`/PinmarkList/${location.locationId}`}>
                             <MDBCard style={locationDivStyle}>
-                                <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                                {photo_reference}
+                                {/* <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={location.photo_reference !== undefined && (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)}/> */}
                                 <MDBCardOverlay>
                                     <MDBCardTitle>
                                         {location.city}
