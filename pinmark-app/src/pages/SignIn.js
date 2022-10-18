@@ -1,9 +1,10 @@
 import React from 'react';
 import { MDBInput, MDBBtn, MDBIcon, MDBModal, MDBModalContent, MDBModalDialog, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBSpinner } from 'mdb-react-ui-kit';
-import { checkUser, signInWithGoogle, signUserOut, signInWithEmail } from '../util/Firebase';
+import { checkUser, signInWithGoogle, signUserOut, signInWithEmail, getUser } from '../util/Firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType, resetUserState } from '../redux/userSlice';
+import { setLocations, setPinmarks, setTripLists } from '../redux/pinmarkSlice';
 
 function SignIn() {
     // instantiate variables from supporting functions    
@@ -90,6 +91,7 @@ function SignIn() {
             dispatch(setProfilePicture(result.photoURL));
             dispatch(setUid(result.uid));    
             dispatch(setAuthType(authType));
+            getUserData(result.uid);
             setTimeout(() => {
                 navigate("/UserHome");    
             }, 2000);
@@ -97,6 +99,18 @@ function SignIn() {
     
         }).catch(error => errorHandling(error));
     }    
+
+    const getUserData = async (userId) => {
+        getUser(userId).then((result) => {
+            if (result === 'new user') {
+                return;
+            } else {
+                dispatch(setLocations(result.pinmark.locations));
+                dispatch(setPinmarks(result.pinmark.pinmarks));
+                dispatch(setTripLists(result.pinmark.tripLists));
+            }
+        });
+    }
 
     // form input functions
     const handleEmail = (e)  => {                        

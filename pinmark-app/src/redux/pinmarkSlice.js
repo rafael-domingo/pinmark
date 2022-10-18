@@ -60,6 +60,9 @@ export const pinmarkSlice = createSlice({
         setCategories: (state, action) => {
             state.categories = action.payload
         },
+        setTripLists: (state, action) => {
+            state.tripLists = action.payload
+        },
         addLocations: (state, action) => {
             var newLocationsArray = state.locations
             newLocationsArray.push(action.payload)
@@ -125,6 +128,7 @@ export const {
     setLocations,
     setPinmarks,
     setCategories,
+    setTripLists,
     addLocations,
     deleteLocations,
     addPinmark,

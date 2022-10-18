@@ -3,7 +3,7 @@ import React from 'react';
 import Locations from "../components/Locations";
 import { Google } from '../util/Google';
 import { v4 as uuidv4 } from 'uuid';
-import { signInWithGoogle, signUserOut } from '../util/Firebase';
+import { signInWithGoogle, signUserOut, updateUser } from '../util/Firebase';
 import Search from '../components/Search';
 import { 
     MDBBtn, 
@@ -33,6 +33,7 @@ import Pinmarks from '../components/Pinmarks';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);
+    const userState = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const sessionToken = uuidv4();        
     const [showSearch, setShowSearch] = React.useState(false);
@@ -56,6 +57,7 @@ function UserHome() {
             pinmarkArray.push(pinmark.pinmarkId);
         })
         setPinmarkIdArray(pinmarkArray);
+        updateUser(userState.uid, pinmarkState);
     }, [pinmarkState])
 
     React.useEffect(() => {
@@ -139,16 +141,17 @@ function UserHome() {
             setCurrentLocationObject(locationObject); // update local state with new location object
             console.log(pinmark);
             console.log(data);
+
+            // add pinmark category to pinmark
             const coffeeKeyWords = ['cafe'];
             const nightLifeKeywords = ['casino', 'night_club', 'movie_theater'];
-            const foodKeywords = ['restaurant', 'bakery', 'bar'];    
+            const foodKeywords = ['restaurant', 'bakery', 'bar', 'food'];    
             const lodgingKeywords = ['lodging', 'campground', 'rv_park', '']
             const shoppingKeywords = ['clothing_store', 'department_store', 'electronics_store', 'furniture_store', 'home_goods_store', 'jewelry_store', 'shoe_store', 'book_store', 'shopping_mall'];
             const touristAttractionKeywords = ['tourist_attraction', 'amusement_park', 'aquarium', 'art_gallery', 'museum', 'casino', 'zoo', 'city_hall'];
             var pinmarkCategory = '';
             if (pinmark.types.some(r => coffeeKeyWords.includes(r))) {
-                pinmarkCategory = 'coffee';
-                console.log(pinmarkCategory);
+                pinmarkCategory = 'coffee';                
             } else if (pinmark.types.some(r => nightLifeKeywords.includes(r))) {
                 pinmarkCategory = 'night-life';
             } else if (pinmark.types.some(r => foodKeywords.includes(r))) {

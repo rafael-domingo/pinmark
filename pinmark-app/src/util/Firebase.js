@@ -17,7 +17,9 @@ import {
     collection,
     where,
     setDoc,
-    doc
+    doc,
+    updateDoc,
+    getDoc
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -120,4 +122,41 @@ export const signUserOut = async() => {
     signOut(auth).then(response => console.log(response));
 }
 
-// Add 
+// Add user if new 
+export const addUser = async(userId) => {
+    await setDoc(doc(db, "pinmarks", userId), {
+        pinmark: {}
+    })
+}
+
+export const getUser = async(userId) => {
+    const docExists = await getDoc(doc(db, "pinmarks", userId));
+    if (docExists.exists()) {
+        console.log(docExists.data());
+        return docExists.data();
+    } else {
+        // if no userId found, then create a user in pinmarks firestore
+        await setDoc(doc(db, "pinmarks", userId), {
+            pinmark: {
+                locations: [],
+                pinmarks: [],
+                tripLists: []
+            }
+        })
+        return 'new user';
+    }
+}
+
+// Update user
+export const updateUser = async(userId, userObject) => {
+    const docExists = await getDoc(doc(db, "pinmarks", userId));
+    if (docExists.exists()) {
+        await updateDoc(doc(db, "pinmarks", userId), {
+            pinmark: userObject
+        })
+    } else {
+        await setDoc(doc(db, "pinmarks", userId), {
+            pinmark: {}
+        })
+    }    
+}
