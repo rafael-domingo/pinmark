@@ -140,22 +140,20 @@ function PinmarkList() {
                     <MDBRow>
                     {
                     pinmarkList.map((pinmark) => {
-                    return (
-                        <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                            <div className='d-flex align-items-center'>
-                                {/* <img
-                                src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                alt=''
-                                style={{ width: '45px', height: '45px' }}
-                                className='rounded-circle'
-                                /> */}
-                                <div className='ms-3'>
-                                <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                </div>
-                            </div>
-                        </MDBListGroupItem>
-                    )
+                   return (                                            
+                                <MDBCol xl={4} md={4} s={2} xs={2}>
+                                    <MDBCard>
+                                        <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                        <MDBCardBody>
+                                            <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                            <MDBCardText>
+                                                {pinmark.address}
+                                            </MDBCardText>
+                                            <MDBBtn href='#'>Button</MDBBtn>
+                                        </MDBCardBody>
+                                    </MDBCard>  
+                                </MDBCol>                                                                              
+                            )
                    
                     })
                     }
@@ -189,21 +187,19 @@ function PinmarkList() {
                     <MDBRow>
                     {
                     nightLifePinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            </MDBListGroupItem>
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
                         )
                     
                     })
@@ -214,22 +210,20 @@ function PinmarkList() {
                     <MDBRow>                 
                     {
                     foodPinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            </MDBListGroupItem>
-                        )                   
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
+                        )                 
                         })
                     }             
                     </MDBRow>
@@ -238,21 +232,19 @@ function PinmarkList() {
                     <MDBRow>                    
                     {
                     lodgingPinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            </MDBListGroupItem>
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
                         )
                     
                     })
@@ -265,21 +257,19 @@ function PinmarkList() {
                     
                     {
                     otherPinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            </MDBListGroupItem>
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
                         )
                     
                     })
@@ -290,22 +280,19 @@ function PinmarkList() {
                     <MDBRow>                    
                     {
                     shoppingPinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            
-                            </MDBListGroupItem>
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
                         )
                     
                     })
@@ -316,22 +303,20 @@ function PinmarkList() {
                     <MDBRow>                    
                     {
                     touristAttractionPinmarks.map((pinmark) => {
-                        return (
-                            <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
-                                <div className='d-flex align-items-center'>
-                                    {/* <img
-                                    src='https://mdbootstrap.com/img/new/avatars/8.jpg'
-                                    alt=''
-                                    style={{ width: '45px', height: '45px' }}
-                                    className='rounded-circle'
-                                    /> */}
-                                    <div className='ms-3'>
-                                    <p className='fw-bold mb-1'>{pinmark.locationName}</p>
-                                    {/* <p className='text-muted mb-0'>john.doe@gmail.com</p> */}
-                                    </div>
-                                </div>
-                            </MDBListGroupItem>
-                        )                   
+                        return (                                            
+                            <MDBCol xl={4} md={4} s={2} xs={2}>
+                                <MDBCard>
+                                    <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                    <MDBCardBody>
+                                        <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                        <MDBCardText>
+                                            {pinmark.address}
+                                        </MDBCardText>
+                                        <MDBBtn href='#'>Button</MDBBtn>
+                                    </MDBCardBody>
+                                </MDBCard>  
+                            </MDBCol>                                                                              
+                        )                  
                     })
                     }
                     </MDBRow>

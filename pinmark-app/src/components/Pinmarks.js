@@ -9,32 +9,43 @@ import {
     MDBCardTitle,
     MDBCardText,    
     MDBCardImage,
-    MDBCardOverlay   
+    MDBCardOverlay,   
+    MDBModal,
+    MDBModalDialog,
+    MDBModalContent,
+    MDBCardHeader,
+    MDBModalTitle
 } from 'mdb-react-ui-kit';
 
 function Pinmarks() {
     const pinmarkState = useSelector((state) => state.pinmark.pinmarks);
     const dispatch = useDispatch();
-
+    const [showModal, setShowModal] = React.useState(false);
+    const [detailInfo, setDetailInfo] = React.useState({});
     // styles
     const containerDivStyle = {
         display: 'flex',
         height: '300px',
         overflowX: 'scroll',
         overflowY: 'hidden',
-        height: 200
+        height: 400
     }
 
     const cardDivStyle = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: 'solid 1px black',
+        // border: 'solid 1px black',
         margin: 20,
         width: 150,
-        height: 150,
+        height: 350,
         overflow: 'hidden',
         flex: '0 0 auto' // keeps size of box constant
+    }
+
+    const handleShowDetails = (pinmark) => {
+        setDetailInfo(pinmark);
+        setShowModal(true);
     }
 
     return (
@@ -53,13 +64,13 @@ function Pinmarks() {
                         )
                     }
                     return (
-                        <MDBCard style={cardDivStyle}>
+                        <MDBCard onClick={() => handleShowDetails(pinmark)} background="dark" style={cardDivStyle}>
                             {photo_reference}
                             <MDBCardOverlay>
-                                <MDBCardTitle>
+                                <MDBCardTitle className="text-white">
                                     {pinmark.locationName}
                                 </MDBCardTitle>
-                                <MDBCardText>
+                                <MDBCardText className="text-white">
                                     {pinmark.locationId.city}, {pinmark.locationId.state}
                                 </MDBCardText>
                             </MDBCardOverlay>
@@ -67,16 +78,16 @@ function Pinmarks() {
                         </MDBCard>
                     )
                 })
-            }
-            {/* {
-                categoryArray.map((category) => {
-                    return (
-                        <div style={categoryDivStyle}>
-                            <p>{category}</p>
-                        </div>
-                    )
-                })
-            } */}
+            }       
+            <MDBModal show={showModal} setShow={setShowModal}>
+                <MDBModalDialog centered>
+                    <MDBModalContent>
+                        <MDBCardHeader>
+                            <MDBModalTitle>{detailInfo.locationName}</MDBModalTitle>
+                        </MDBCardHeader>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
         </div>
     )
 }

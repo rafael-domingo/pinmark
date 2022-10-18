@@ -18,7 +18,7 @@ function Locations() {
     // styles
     const containerDivStyle = {
         display: 'flex',
-        height: '300px',
+        height: 200,
         overflowX: 'scroll',
         overflowY: 'hidden'
     }
@@ -30,7 +30,8 @@ function Locations() {
         // alignItems: 'flex-end', 
         // border: 'solid 1px black', 
         margin: 20,
-        width: 200,
+        width: 400,
+        height: '80%',
         flex: '0 0 auto', // keeps size of box constant 
         overflow: 'hidden'
     }    
@@ -46,12 +47,12 @@ function Locations() {
                         )
                     } else {
                         var photo_reference = (
-                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                            <MDBCardImage style={{height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                         )
                     }
                     return (
-                        <Link to={`/PinmarkList/${location.locationId}`}>
-                            <MDBCard style={locationDivStyle}>
+                        <Link style={{color: 'white'}} to={`/PinmarkList/${location.locationId}`}>
+                            <MDBCard background='dark' className='text-white' style={locationDivStyle}>
                                 {photo_reference}
                                 {/* <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={location.photo_reference !== undefined && (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)}/> */}
                                 <MDBCardOverlay>

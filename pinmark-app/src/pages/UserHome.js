@@ -250,7 +250,7 @@ function UserHome() {
             <h3>Your Locations</h3>  
                 <Locations />    
             <h3>Most Recent Pinmarks</h3>
-                <Pinmarks />    
+                <Pinmarks/>    
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
