@@ -31,7 +31,11 @@ import {
     MDBModalDialog,
     MDBModalContent,
     MDBInput,
-    MDBModalFooter,    
+    MDBModalFooter,
+    MDBModalHeader,
+    MDBModalBody,
+    MDBCardFooter,    
+    MDBNavbar
 } from 'mdb-react-ui-kit'
 
 // list of pinmarks based on either location selection or category selection
@@ -44,8 +48,9 @@ function PinmarkList() {
     const tripListState = useSelector((state) => state.pinmark.tripLists);
     const [tabState, setTabState] = React.useState('all');
     const [createTripModal, setCreateTripModal] = React.useState(false);
+    const [tripViewModal, setTripViewModal] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
-    const [tripId, setTripId] = React.useState('');
+    const [tripViewObject, setTripViewObject] = React.useState('');
 
     const dispatch = useDispatch();
 
@@ -86,6 +91,21 @@ function PinmarkList() {
             dispatch(removePinmarkFromTrip(updateObject))
         }   
     }
+
+    const handleSetTripView = (trip) => {
+        const tripPinmarkList = [];
+        pinmarkListState.map((pinmark) => {
+            if (pinmark.tripIds.includes(trip.tripId)) {
+                tripPinmarkList.push(pinmark);
+            }
+        })
+        const tripObject = {
+            trip: trip,
+            pinmarks: tripPinmarkList
+        }
+        setTripViewObject(tripObject)
+        setTripViewModal(true);
+    };
 
     // React.useEffect(() => {
 
@@ -243,13 +263,48 @@ function PinmarkList() {
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
+            <MDBModal staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
+                <MDBModalDialog size='fullscreen-xxl-down'>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                              {tripViewObject?.trip?.tripName}
+                              <MDBBtn onClick={() => setTripViewModal(false)}>Close</MDBBtn>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <MDBRow>                            
+                            {
+                                tripViewObject?.pinmarks?.map((pinmark) => {
+                                    return (
+                                        <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
+                                            <MDBCard>
+                                                <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                                <MDBCardBody>
+                                                    <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                                    <MDBCardText>{pinmark.address}</MDBCardText>
+                                                </MDBCardBody>
+                                                <MDBCardFooter>
+                                                    <MDBBtn>View</MDBBtn>
+                                                    <MDBBtn>Remove</MDBBtn>
+                                                </MDBCardFooter>
+                                            </MDBCard>
+                                        </MDBCol>
+                                        
+                                    )
+                                })
+                            }
+                            </MDBRow>
+                        </MDBModalBody>
+                    </MDBModalContent>
+                </MDBModalDialog>
+
+            </MDBModal>
             <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
                     <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
                     <MDBDropdownMenu>
                         {
                             tripList.map((trip) => {
                              return (
-                                <MDBDropdownItem link childTag="button">
+                                <MDBDropdownItem link childTag="button" onClick={() => handleSetTripView(trip)}>
                                     {trip.tripName}
                                 </MDBDropdownItem>
                              )       
