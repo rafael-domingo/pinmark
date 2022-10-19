@@ -35,7 +35,8 @@ import {
     MDBModalHeader,
     MDBModalBody,
     MDBCardFooter,    
-    MDBNavbar
+    MDBNavbar,
+    MDBContainer
 } from 'mdb-react-ui-kit'
 
 // list of pinmarks based on either location selection or category selection
@@ -227,7 +228,10 @@ function PinmarkList() {
     })
     return (
         <div>
-            <header className="bg-image" style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>            
+            <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white'}} >            
+            <MDBContainer fluid className="bg-image" style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+
+            
                 {/* <h1>{locationObject.city}</h1> */}
                 <img style={{objectFit: 'cover', width: '100%'}} className="img-fluid" src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                 <div className="mask" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}>
@@ -236,8 +240,69 @@ function PinmarkList() {
                     <h3 className="text-white">{locationObject.state}, {locationObject.country}</h3>
                 </div>
                 </div>
-               
-            </header>   
+                <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
+                    <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
+                    <MDBDropdownMenu>
+                        {
+                            tripList.map((trip) => {
+                             return (
+                                <MDBDropdownItem link childTag="button" onClick={() => handleSetTripView(trip)}>
+                                    {trip.tripName}
+                                </MDBDropdownItem>
+                             )       
+                            })
+                        }
+                        <MDBDropdownItem divider/>
+                        <MDBDropdownItem link childTag="button" onClick={() => setCreateTripModal(true)}>
+                            Create New Trip
+                        </MDBDropdownItem>
+                    </MDBDropdownMenu>
+                </MDBDropdown>                 
+          
+            </MDBContainer>
+            <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick('all')} active={tabState === 'all'}>
+                        All
+                    </MDBTabsLink>
+                </MDBTabsItem>  
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[0])} active={tabState === pinmarkCategories[0]}>
+                        <MDBIcon fas icon='coffee' className='me-2' />Coffee
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[1])} active={tabState === pinmarkCategories[1]}>
+                        <MDBIcon fas icon='moon' className='me-2' />Night Life
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[2])} active={tabState === pinmarkCategories[2]}>
+                        <MDBIcon fas icon='utensils' className='me-2' />Food
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[3])} active={tabState === pinmarkCategories[3]}>
+                        <MDBIcon fas icon='hotel' className='me-2' />Lodging
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick('other')} active={tabState === 'other'}>
+                        <MDBIcon fas icon='ellipsis-h' className='me-2' />Other
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[4])} active={tabState === pinmarkCategories[4]}>
+                        <MDBIcon fas icon='shopping-bag' className='me-2' />Shopping
+                    </MDBTabsLink>
+                </MDBTabsItem>
+                <MDBTabsItem>
+                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[5])} active={tabState === pinmarkCategories[5]}>
+                        <MDBIcon fas icon='archway' className='me-2' />Tourist Attraction
+                    </MDBTabsLink>
+                </MDBTabsItem>
+            </MDBTabs>
+            </MDBNavbar>   
             <MDBModal staticBackdrop show={createTripModal} setShow={setCreateTripModal}>
                 <MDBModalDialog centered>
                     <MDBModalContent style={{padding: 20}}>
@@ -298,66 +363,7 @@ function PinmarkList() {
                 </MDBModalDialog>
 
             </MDBModal>
-            <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
-                    <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
-                    <MDBDropdownMenu>
-                        {
-                            tripList.map((trip) => {
-                             return (
-                                <MDBDropdownItem link childTag="button" onClick={() => handleSetTripView(trip)}>
-                                    {trip.tripName}
-                                </MDBDropdownItem>
-                             )       
-                            })
-                        }
-                        <MDBDropdownItem divider/>
-                        <MDBDropdownItem link childTag="button" onClick={() => setCreateTripModal(true)}>
-                            Create New Trip
-                        </MDBDropdownItem>
-                    </MDBDropdownMenu>
-                </MDBDropdown>                 
-            <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick('all')} active={tabState === 'all'}>
-                        All
-                    </MDBTabsLink>
-                </MDBTabsItem>  
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[0])} active={tabState === pinmarkCategories[0]}>
-                        <MDBIcon fas icon='coffee' className='me-2' />Coffee
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[1])} active={tabState === pinmarkCategories[1]}>
-                        <MDBIcon fas icon='moon' className='me-2' />Night Life
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[2])} active={tabState === pinmarkCategories[2]}>
-                        <MDBIcon fas icon='utensils' className='me-2' />Food
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[3])} active={tabState === pinmarkCategories[3]}>
-                        <MDBIcon fas icon='hotel' className='me-2' />Lodging
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick('other')} active={tabState === 'other'}>
-                        <MDBIcon fas icon='ellipsis-h' className='me-2' />Other
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[4])} active={tabState === pinmarkCategories[4]}>
-                        <MDBIcon fas icon='shopping-bag' className='me-2' />Shopping
-                    </MDBTabsLink>
-                </MDBTabsItem>
-                <MDBTabsItem>
-                    <MDBTabsLink onClick={() => handleTabClick(pinmarkCategories[5])} active={tabState === pinmarkCategories[5]}>
-                        <MDBIcon fas icon='archway' className='me-2' />Tourist Attraction
-                    </MDBTabsLink>
-                </MDBTabsItem>
-            </MDBTabs>
+            
             <MDBTabsContent>
                 <MDBTabsPane show={tabState === 'all'}>
                     <MDBRow>
