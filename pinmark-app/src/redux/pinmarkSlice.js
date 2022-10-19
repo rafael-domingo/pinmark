@@ -106,6 +106,50 @@ export const pinmarkSlice = createSlice({
                 pinmarks: updatedPinmarksArray
             }
         },
+        addPinmarkToTrip: (state, action) => {
+            const updatedPinmarksArray = [];
+            state.pinmarks.forEach((item) => {                
+                if (item.pinmarkId === action.payload.pinmarkId) {                                      
+                    // check to see if tripids already exists in this pinmark
+                    if (item.tripIds.includes(action.payload.tripId)) {
+                        updatedPinmarksArray.push(item)
+                    } else {
+                        updatedPinmarksArray.push({
+                            ...item,
+                            tripIds: [
+                                ...item.tripIds,
+                                action.payload.tripId
+                            ]
+                        })     
+                    }                                 
+                } else {
+                    updatedPinmarksArray.push(item)
+                }
+            })
+            return {
+                ...state,                
+                pinmarks: updatedPinmarksArray
+            }
+        },
+        removePinmarkFromTrip: (state, action) => {
+            const updatedPinmarksArray = [];
+            state.pinmarks.forEach((item) => {                
+                if (item.pinmarkId === action.payload.pinmarkId) {                                      
+                    // remove tripid from tripidArray
+                    const updatedTripIds = item.tripIds.filter(e => e !== action.payload.tripId)             
+                    updatedPinmarksArray.push({
+                        ...item,
+                        tripIds: updatedTripIds
+                    })                                
+                } else {
+                    updatedPinmarksArray.push(item)
+                }
+            })
+            return {
+                ...state,                
+                pinmarks: updatedPinmarksArray
+            }
+        },
         addCategories: (state, action) => {
             state.categories.push(action.payload)
         },
@@ -120,6 +164,21 @@ export const pinmarkSlice = createSlice({
                 ...state,
                 categories: updatedCategoriesArray
             }
+        },
+        addTripLists: (state, action) =>{
+            state.tripLists.push(action.payload)
+        },
+        deleteTripLists: (state, action) => {
+            const updatedTripListsArray = [];
+            state.tripLists.forEach((item) => {
+                if(item.tripId !== action.payload) {
+                    updatedTripListsArray.push(item)
+                }
+            })
+            return {
+                ...state,
+                tripLists: updatedTripListsArray
+            }
         }
     }
 })
@@ -133,7 +192,11 @@ export const {
     deleteLocations,
     addPinmark,
     deletePinmark,
+    addPinmarkToTrip,
+    removePinmarkFromTrip,
     addCategories,
-    deleteCategories
+    deleteCategories,
+    addTripLists,
+    deleteTripLists
 } = pinmarkSlice.actions;
 export default pinmarkSlice.reducer

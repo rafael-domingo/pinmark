@@ -84,7 +84,8 @@ function SignIn() {
         setMessage('Getting everything set up.')    
         setPasswordInputModal(false);    
         setRegister(false); 
-        checkUser().then(result => {                            
+        checkUser().then(result => {   
+            console.log(result);                         
             dispatch(setUserName(result.displayName));
             dispatch(setEmail(result.email));
             dispatch(setPhone(result.phoneNumber));
@@ -102,6 +103,7 @@ function SignIn() {
 
     const getUserData = async (userId) => {
         getUser(userId).then((result) => {
+            console.log(result)
             if (result === 'new user') {
                 return;
             } else {
@@ -109,7 +111,7 @@ function SignIn() {
                 dispatch(setPinmarks(result.pinmark.pinmarks));
                 dispatch(setTripLists(result.pinmark.tripLists));
             }
-        });
+        }).catch((error) => console.log(error));
     }
 
     // form input functions

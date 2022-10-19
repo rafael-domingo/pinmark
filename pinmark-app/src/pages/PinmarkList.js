@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 import Hero from "../components/Hero";
 import List from "../components/List";
+import { updateUser } from "../util/Firebase";
+import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
     MDBListGroupItem,
@@ -19,14 +22,32 @@ import {
     MDBTabsLink,
     MDBIcon,
     MDBTabsContent,
-    MDBTabsPane    
+    MDBTabsPane,
+    MDBDropdown,
+    MDBDropdownMenu,
+    MDBDropdownItem,
+    MDBDropdownToggle,
+    MDBModal,
+    MDBModalDialog,
+    MDBModalContent,
+    MDBInput,
+    MDBModalFooter,    
 } from 'mdb-react-ui-kit'
+
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
     const { locationId } = useParams();
+    const userState = useSelector((state) => state.user);
     const locationState = useSelector((state) => state.pinmark.locations);
+    const pinmarkState = useSelector((state) => state.pinmark);
     const pinmarkListState = useSelector((state) => state.pinmark.pinmarks);
+    const tripListState = useSelector((state) => state.pinmark.tripLists);
     const [tabState, setTabState] = React.useState('all');
+    const [createTripModal, setCreateTripModal] = React.useState(false);
+    const [createTripName, setCreateTripName] = React.useState('');
+    const [tripId, setTripId] = React.useState('');
+
+    const dispatch = useDispatch();
 
     const handleTabClick = (value) => {
         if (value === tabState) {
@@ -34,6 +55,103 @@ function PinmarkList() {
         } 
         setTabState(value);
     }
+
+    const handleCreateTrip = () => {
+        const tripObject = {
+            tripName: createTripName,
+            tripId: uuidv4(),
+            locationId: locationId            
+        }              
+        dispatch(addTripLists(tripObject));
+        setCreateTripModal(false);
+        setCreateTripName('');
+        
+    }
+
+    const createTripInput = (e) => {
+        console.log(e.target.value);
+        setCreateTripName(e.target.value);
+    }
+
+    const handleAddPinmarkToTrip = (pinmark, tripId, add) => {    
+        var updateObject = {
+            pinmarkId: pinmark.pinmarkId,
+            tripId: tripId,
+            sharedWith: []
+        }
+        if (add) {            
+            console.log(updateObject);
+            dispatch(addPinmarkToTrip(updateObject));
+        } else {
+            dispatch(removePinmarkFromTrip(updateObject))
+        }   
+    }
+
+    // React.useEffect(() => {
+
+    // }, [tripId])
+
+    React.useEffect(() => {        
+        console.log('update firebase')
+        console.log(pinmarkState);
+        updateUser(userState.uid, pinmarkState);
+    }, [pinmarkListState])
+
+    React.useEffect(() => {
+        console.log(pinmarkListState);
+        console.log(`locationId: ${locationId}`);
+        var pinmarkList = [];
+        pinmarkListState.map((pinmark) => {
+            if (pinmark.locationId.locationId === locationId) {
+                pinmarkList.push(pinmark);
+            }
+        })      
+        var locationObject = {};
+        locationState.map((location) => {
+            if (location.locationId === locationId ) {
+                locationObject = {
+                    city: location.city,
+                    state: location.state,
+                    country: location.country,
+                    photo_reference: location.photo_reference                
+                }
+            }
+        })  
+        var tripList = []; 
+        tripListState.map((trip) => {
+            if (trip.locationId === locationId) {
+                tripList.push(trip);
+            }
+        })
+    
+        const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
+        var coffeePinmarks = [];
+        var nightLifePinmarks = [];
+        var foodPinmarks = [];
+        var lodgingPinmarks = [];
+        var shoppingPinmarks = [];
+        var touristAttractionPinmarks = [];
+        var otherPinmarks = [];
+    
+        pinmarkList.map((pinmark) => {
+            if (pinmark.pinmarkCategory === pinmarkCategories[0]) {
+                coffeePinmarks.push(pinmark);
+            } else if (pinmark.pinmarkCategory === pinmarkCategories[1]) {
+                nightLifePinmarks.push(pinmark);
+            } else if (pinmark.pinmarkCategory === pinmarkCategories[2]) {
+                foodPinmarks.push(pinmark);
+            } else if (pinmark.pinmarkCategory === pinmarkCategories[3]) {
+                lodgingPinmarks.push(pinmark);
+            } else if (pinmark.pinmarkCategory === pinmarkCategories[4]) {
+                shoppingPinmarks.push(pinmark);
+            } else if (pinmark.pinmarkCategory === pinmarkCategories[5]) {
+                touristAttractionPinmarks.push(pinmark);
+            } else {
+                otherPinmarks.push(pinmark);
+            }
+        })
+    }, [pinmarkListState])
+
 
     console.log(pinmarkListState);
     console.log(`locationId: ${locationId}`);
@@ -53,7 +171,13 @@ function PinmarkList() {
                 photo_reference: location.photo_reference                
             }
         }
-    })   
+    })  
+    var tripList = []; 
+    tripListState.map((trip) => {
+        if (trip.locationId === locationId) {
+            tripList.push(trip);
+        }
+    })
 
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
     var coffeePinmarks = [];
@@ -87,12 +211,56 @@ function PinmarkList() {
                 {/* <h1>{locationObject.city}</h1> */}
                 <img style={{objectFit: 'cover', width: '100%'}} className="img-fluid" src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                 <div className="mask" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}>
-                <div style={{marginRight: 15, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', flexWrap: 'wrap'}} className='h-100'>
-                    <h1 style={{width: '100%', textAlign: 'right'}} className='text-white'>{locationObject.city}</h1>                    
+                <div style={{marginRight: 15, display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexWrap: 'wrap'}} className='h-100'>
+                    <h1 style={{width: '100%', textAlign: 'left'}} className='text-white'>{locationObject.city}</h1>                    
                     <h3 className="text-white">{locationObject.state}, {locationObject.country}</h3>
                 </div>
                 </div>
-            </header>                    
+               
+            </header>   
+            <MDBModal staticBackdrop show={createTripModal} setShow={setCreateTripModal}>
+                <MDBModalDialog centered>
+                    <MDBModalContent style={{padding: 20}}>
+                        <h3>Create A New Trip</h3>                        
+                        <div style={{padding: 20}}>
+                            <MDBInput onInput={createTripInput} value={createTripName} label={`What's your trip called?`}/>
+                        </div>       
+                       
+                        <MDBModalFooter>
+                            <MDBRow>
+                            <MDBCol>
+                                <MDBBtn onClick={() => {
+                                    setCreateTripModal(false)
+                                    setCreateTripName('')
+                                }} color='link'>Cancel</MDBBtn>  
+                            </MDBCol>               
+                            <MDBCol>
+                                <MDBBtn onClick={() => handleCreateTrip()}>Create</MDBBtn>
+                            </MDBCol>
+                            </MDBRow>
+                    
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+            <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
+                    <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
+                    <MDBDropdownMenu>
+                        {
+                            tripList.map((trip) => {
+                             return (
+                                <MDBDropdownItem link childTag="button">
+                                    {trip.tripName}
+                                </MDBDropdownItem>
+                             )       
+                            })
+                        }
+                        <MDBDropdownItem divider/>
+                        <MDBDropdownItem link childTag="button" onClick={() => setCreateTripModal(true)}>
+                            Create New Trip
+                        </MDBDropdownItem>
+                    </MDBDropdownMenu>
+                </MDBDropdown>                 
             <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
                 <MDBTabsItem>
                     <MDBTabsLink onClick={() => handleTabClick('all')} active={tabState === 'all'}>
@@ -150,6 +318,30 @@ function PinmarkList() {
                                                 {pinmark.address}
                                             </MDBCardText>
                                             <MDBBtn href='#'>Button</MDBBtn>
+                                            <MDBDropdown>
+                                                <MDBDropdownToggle>Add To Trip</MDBDropdownToggle>
+                                                <MDBDropdownMenu>
+                                                {
+                                                    tripList.map((trip) => {
+                                                    return (
+                                                        <MDBDropdownItem link childTag="button" onClick={() => {                                                            
+                                                            if (pinmark.tripIds.includes(trip.tripId)) {
+                                                                handleAddPinmarkToTrip(pinmark, trip.tripId, false)
+                                                            } else {
+                                                                handleAddPinmarkToTrip(pinmark, trip.tripId, true)}
+                                                            }
+                                                        }>
+                                                            {pinmark.tripIds.includes(trip.tripId) && (<MDBIcon icon='check' />)}
+                                                            {!pinmark.tripIds.includes(trip.tripId) && (<MDBIcon icon='plus' />)}                                                            
+                                                            {trip.tripName}                                                                                                                            
+                                                        </MDBDropdownItem>
+                                                    )       
+                                                    })
+                                                }
+                                                    <MDBDropdownItem divider/>
+                                                    <MDBDropdownItem link>Create New Trip</MDBDropdownItem>
+                                                </MDBDropdownMenu>
+                                            </MDBDropdown>
                                         </MDBCardBody>
                                     </MDBCard>  
                                 </MDBCol>                                                                              
