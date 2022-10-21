@@ -245,6 +245,13 @@ function UserHome() {
         setSearchResults(results.results);               
     }
     
+    React.useEffect(() => {
+        if (showSearch) {
+            document.body.classList.add('overflow-hidden');
+        } else {
+            document.body.classList.remove('overflow-hidden');
+        }
+    }, [showSearch])
     return (
         <div>
             <h3>Your Locations</h3>  
@@ -255,7 +262,7 @@ function UserHome() {
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
             <MDBModal tabIndex='-1' show={showSearch && !secondModal} setShow={setShowSearch}>
-                <MDBModalDialog size='fullscreen-xxl-down'>
+                <MDBModalDialog size='fullscreen-xxl-down' scrollable>
                     <MDBModalContent>
                         <MDBModalHeader>  
                             <MDBInputGroup className='mb-3' noBorder textBefore={<MDBIcon fas icon='search' />}>
@@ -269,7 +276,7 @@ function UserHome() {
                                                                 
                                 return (
                                     <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
-                                        <MDBCard>
+                                        <MDBCard className='h-100'>
                                             <MDBCardBody>
                                                 <MDBCardTitle>{result.name}</MDBCardTitle>
                                                 <MDBCardText>{result.formatted_address}</MDBCardText>                                            

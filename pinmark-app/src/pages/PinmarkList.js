@@ -58,7 +58,8 @@ function PinmarkList() {
     const [tripViewObject, setTripViewObject] = React.useState('');
     const [searchInput, setSearchInput] = React.useState('');
     const [searchResults, setSearchResults] = React.useState([]);
-    const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');    
+    const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');        
+
     const dispatch = useDispatch();
 
     const handleTabClick = (value) => {
@@ -124,6 +125,7 @@ function PinmarkList() {
             })
             .catch(e => console.log(e))
         }
+        
     }
 
     const handleSearchResults = (results) => {
@@ -252,9 +254,117 @@ function PinmarkList() {
         } else {
             otherPinmarks.push(pinmark);
         }
-    })
+    }) 
+
+    React.useEffect(() => {
+        console.log(createTripModal)
+        if (createTripModal || tripViewModal || showSearch) {
+            document.body.classList.add('overflow-hidden')
+        } else {
+            document.body.classList.remove('overflow-hidden')
+        }
+    }, [createTripModal, tripViewModal, showSearch])
     return (
         <div>
+                 <MDBModal staticBackdrop show={createTripModal} setShow={setCreateTripModal}>
+                <MDBModalDialog centered>
+                    <MDBModalContent style={{padding: 20}}>
+                        <h3>Create A New Trip</h3>                        
+                        <div style={{padding: 20}}>
+                            <MDBInput onInput={createTripInput} value={createTripName} label={`What's your trip called?`}/>
+                        </div>       
+                       
+                        <MDBModalFooter>
+                            <MDBRow>
+                            <MDBCol>
+                                <MDBBtn onClick={() => {
+                                    setCreateTripModal(false)
+                                    setCreateTripName('')
+                                }} color='link'>Cancel</MDBBtn>  
+                            </MDBCol>               
+                            <MDBCol>
+                                <MDBBtn onClick={() => handleCreateTrip()}>Create</MDBBtn>
+                            </MDBCol>
+                            </MDBRow>
+                    
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+            <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
+                <MDBModalDialog size='fullscreen' scrollable>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                              {tripViewObject?.trip?.tripName}
+                              <MDBBtn onClick={() => setTripViewModal(false)}>Close</MDBBtn>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <MDBRow>                            
+                            {
+                                tripViewObject?.pinmarks?.map((pinmark) => {
+                                    return (
+                                        <MDBCol xxl={4} xl={4} l={4} md={4} className='mb-4'>
+                                            <MDBCard className="h-100">
+                                                <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
+                                                <MDBCardBody>
+                                                    <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
+                                                    <MDBCardText>{pinmark.address}</MDBCardText>
+                                                </MDBCardBody>
+                                                <MDBCardFooter>
+                                                    <MDBBtn>View</MDBBtn>
+                                                    <MDBBtn>Remove</MDBBtn>
+                                                </MDBCardFooter>
+                                            </MDBCard>
+                                        </MDBCol>
+                                        
+                                    )
+                                })
+                            }
+                            </MDBRow>
+                        </MDBModalBody>
+                    </MDBModalContent>
+                </MDBModalDialog>
+
+            </MDBModal>
+            <MDBModal staticBackdrop show={showSearch} setShow={setShowSearch} tabIndex='-1'>
+                <MDBModalDialog size='fullscreen' scrollable>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBInputGroup>
+                                <input className="search form-control" type='text' placeholder="Search" onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                            </MDBInputGroup>
+                        </MDBModalHeader>
+                        <MDBModalBody style={{height: '100%'}} >
+                            <MDBRow>
+                                {
+                                    searchResults.map((result) => {
+                                        return (
+                                            <MDBCol xxl={12} xl={4} l={4} md={4}>
+                                                <MDBCard>
+                                                    <MDBCardBody>
+                                                        <MDBCardTitle>{result.name}</MDBCardTitle>
+                                                        <MDBCardText>{result.formatted_address}</MDBCardText>
+                                                    </MDBCardBody>
+                                                    <MDBCardFooter background="light" border='0' className="p-2 d-flex justify-content-around">
+                                                        
+                                                    </MDBCardFooter>
+                                                        
+                                                </MDBCard>
+                                            </MDBCol>
+                                        )
+                                    })
+                                }
+                            </MDBRow>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => setShowSearch(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                                <MDBIcon fas icon='times'/>
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                   
+                </MDBModalDialog>
+            </MDBModal>
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
             <MDBContainer fluid className="bg-image" style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>                            
                 <img style={{objectFit: 'cover', width: '100%'}} className="img-fluid" src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
@@ -327,105 +437,7 @@ function PinmarkList() {
                 </MDBTabsItem>
             </MDBTabs>
             </MDBNavbar>   
-            <MDBModal staticBackdrop show={createTripModal} setShow={setCreateTripModal}>
-                <MDBModalDialog centered>
-                    <MDBModalContent style={{padding: 20}}>
-                        <h3>Create A New Trip</h3>                        
-                        <div style={{padding: 20}}>
-                            <MDBInput onInput={createTripInput} value={createTripName} label={`What's your trip called?`}/>
-                        </div>       
-                       
-                        <MDBModalFooter>
-                            <MDBRow>
-                            <MDBCol>
-                                <MDBBtn onClick={() => {
-                                    setCreateTripModal(false)
-                                    setCreateTripName('')
-                                }} color='link'>Cancel</MDBBtn>  
-                            </MDBCol>               
-                            <MDBCol>
-                                <MDBBtn onClick={() => handleCreateTrip()}>Create</MDBBtn>
-                            </MDBCol>
-                            </MDBRow>
-                    
-                        </MDBModalFooter>
-                    </MDBModalContent>
-                </MDBModalDialog>
-            </MDBModal>
-            <MDBModal staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
-                <MDBModalDialog size='fullscreen-xxl-down'>
-                    <MDBModalContent>
-                        <MDBModalHeader>
-                              {tripViewObject?.trip?.tripName}
-                              <MDBBtn onClick={() => setTripViewModal(false)}>Close</MDBBtn>
-                        </MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBRow>                            
-                            {
-                                tripViewObject?.pinmarks?.map((pinmark) => {
-                                    return (
-                                        <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
-                                            <MDBCard>
-                                                <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
-                                                <MDBCardBody>
-                                                    <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
-                                                    <MDBCardText>{pinmark.address}</MDBCardText>
-                                                </MDBCardBody>
-                                                <MDBCardFooter>
-                                                    <MDBBtn>View</MDBBtn>
-                                                    <MDBBtn>Remove</MDBBtn>
-                                                </MDBCardFooter>
-                                            </MDBCard>
-                                        </MDBCol>
-                                        
-                                    )
-                                })
-                            }
-                            </MDBRow>
-                        </MDBModalBody>
-                    </MDBModalContent>
-                </MDBModalDialog>
-
-            </MDBModal>
-            <MDBModal show={showSearch} setShow={setShowSearch}>
-                <MDBModalDialog size='fullscreen-xxl-down'>
-                    <MDBModalContent>
-                        <MDBModalHeader>
-                            <MDBInputGroup>
-                                <input className="search form-control" type='text' placeholder="Search" onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
-                            </MDBInputGroup>
-                        </MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBRow>
-                                {
-                                    searchResults.map((result) => {
-                                        return (
-                                            <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
-                                                <MDBCard>
-                                                    <MDBCardBody>
-                                                        <MDBCardTitle>{result.name}</MDBCardTitle>
-                                                        <MDBCardText>{result.formatted_address}</MDBCardText>
-                                                    </MDBCardBody>
-                                                    <MDBCardFooter background="light" border='0' className="p-2 d-flex justify-content-around">
-                                                        
-                                                    </MDBCardFooter>
-                                                        
-                                                </MDBCard>
-                                            </MDBCol>
-                                        )
-                                    })
-                                }
-                            </MDBRow>
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                            <MDBBtn onClick={() => setShowSearch(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                                <MDBIcon fas icon='times'/>
-                            </MDBBtn>
-                        </MDBModalFooter>
-                    </MDBModalContent>
-                   
-                </MDBModalDialog>
-            </MDBModal>
+       
             
             <MDBTabsContent >
                 <MDBTabsPane show={tabState === 'all'} style={{justifyContent: 'center'}}>
