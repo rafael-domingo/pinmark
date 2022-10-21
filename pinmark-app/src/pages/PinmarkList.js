@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Hero from "../components/Hero";
 import List from "../components/List";
 import { updateUser } from "../util/Firebase";
+import { Google } from "../util/Google";
 import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
@@ -36,7 +37,8 @@ import {
     MDBModalBody,
     MDBCardFooter,    
     MDBNavbar,
-    MDBContainer
+    MDBContainer,
+    MDBInputGroup
 } from 'mdb-react-ui-kit'
 
 // list of pinmarks based on either location selection or category selection
@@ -46,13 +48,17 @@ function PinmarkList() {
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkState = useSelector((state) => state.pinmark);
     const pinmarkListState = useSelector((state) => state.pinmark.pinmarks);
+    const [localPinmarkListState, setLocalPinmarkListState] = React.useState([]); // use for local search
     const tripListState = useSelector((state) => state.pinmark.tripLists);
     const [tabState, setTabState] = React.useState('all');
     const [createTripModal, setCreateTripModal] = React.useState(false);
     const [tripViewModal, setTripViewModal] = React.useState(false);
+    const [showSearch, setShowSearch] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
     const [tripViewObject, setTripViewObject] = React.useState('');
-
+    const [searchInput, setSearchInput] = React.useState('');
+    const [searchResults, setSearchResults] = React.useState([]);
+    const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');    
     const dispatch = useDispatch();
 
     const handleTabClick = (value) => {
@@ -108,9 +114,26 @@ function PinmarkList() {
         setTripViewModal(true);
     };
 
-    // React.useEffect(() => {
+    const handleSearchInput = (e) => {
+        setSearchInput(e.target.value);
+        if (e.target.value.length > 3) {
+            // need to add location specificity since searching within Location
+            Google.placeSearch(e.target.value, null)
+            .then(data => {
+                handleSearchResults(data);
+            })
+            .catch(e => console.log(e))
+        }
+    }
 
-    // }, [tripId])
+    const handleSearchResults = (results) => {
+        setSearchResults(results.results);
+    }
+
+    const handlePinmarkSearchInput = (e) => {
+        console.log(e.target.value);
+        setPinmarkSearchInput(e.target.value)
+    }
 
     React.useEffect(() => {        
         console.log('update firebase')
@@ -123,10 +146,14 @@ function PinmarkList() {
         console.log(`locationId: ${locationId}`);
         var pinmarkList = [];
         pinmarkListState.map((pinmark) => {
-            if (pinmark.locationId.locationId === locationId) {
-                pinmarkList.push(pinmark);
+            if (pinmark.locationId.locationId === locationId) {                
+                if (pinmark.locationName.toLowerCase().includes(pinmarkSearchInput.toLowerCase()) || pinmarkSearchInput === '') {
+                    pinmarkList.push(pinmark);
+                }             
+             
             }
         })      
+        setLocalPinmarkListState(pinmarkList);
         var locationObject = {};
         locationState.map((location) => {
             if (location.locationId === locationId ) {
@@ -171,7 +198,7 @@ function PinmarkList() {
                 otherPinmarks.push(pinmark);
             }
         })
-    }, [pinmarkListState])
+    }, [pinmarkListState, pinmarkSearchInput])
 
 
     console.log(pinmarkListState);
@@ -228,11 +255,8 @@ function PinmarkList() {
     })
     return (
         <div>
-            <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white'}} >            
-            <MDBContainer fluid className="bg-image" style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-
-            
-                {/* <h1>{locationObject.city}</h1> */}
+            <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
+            <MDBContainer fluid className="bg-image" style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>                            
                 <img style={{objectFit: 'cover', width: '100%'}} className="img-fluid" src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                 <div className="mask" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}>
                 <div style={{marginRight: 15, display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexWrap: 'wrap'}} className='h-100'>
@@ -363,15 +387,66 @@ function PinmarkList() {
                 </MDBModalDialog>
 
             </MDBModal>
+            <MDBModal show={showSearch} setShow={setShowSearch}>
+                <MDBModalDialog size='fullscreen-xxl-down'>
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBInputGroup>
+                                <input className="search form-control" type='text' placeholder="Search" onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                            </MDBInputGroup>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <MDBRow>
+                                {
+                                    searchResults.map((result) => {
+                                        return (
+                                            <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
+                                                <MDBCard>
+                                                    <MDBCardBody>
+                                                        <MDBCardTitle>{result.name}</MDBCardTitle>
+                                                        <MDBCardText>{result.formatted_address}</MDBCardText>
+                                                    </MDBCardBody>
+                                                    <MDBCardFooter background="light" border='0' className="p-2 d-flex justify-content-around">
+                                                        
+                                                    </MDBCardFooter>
+                                                        
+                                                </MDBCard>
+                                            </MDBCol>
+                                        )
+                                    })
+                                }
+                            </MDBRow>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => setShowSearch(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                                <MDBIcon fas icon='times'/>
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                   
+                </MDBModalDialog>
+            </MDBModal>
             
-            <MDBTabsContent>
-                <MDBTabsPane show={tabState === 'all'}>
-                    <MDBRow>
+            <MDBTabsContent >
+                <MDBTabsPane show={tabState === 'all'} style={{justifyContent: 'center'}}>
+                    <MDBInputGroup style={{padding:20}}>
+                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                    </MDBInputGroup>
+                    <MDBRow style={{width: '100%'}}>
+                    <MDBCol xl={4} md={4} s={2} xs={2}>
+                        <MDBCard className="h-100">
+                            <MDBCardBody onClick={() => setShowSearch(true)} className='d-flex justify-content-center align-items-center'>                               
+                                <MDBBtn color='link'>                                                            
+                                    <MDBIcon icon='plus-circle'/> Add a Pinmark
+                                </MDBBtn>
+                            </MDBCardBody>
+                        </MDBCard>
+                    </MDBCol>
                     {
-                    pinmarkList.map((pinmark) => {
+                    localPinmarkListState.map((pinmark) => {
                    return (                                            
                                 <MDBCol xl={4} md={4} s={2} xs={2}>
-                                    <MDBCard>
+                                    <MDBCard className="h-100">
                                         <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
                                         <MDBCardBody>
                                             <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
@@ -410,6 +485,8 @@ function PinmarkList() {
                    
                     })
                     }
+                    
+                    
                     </MDBRow>
                
                 </MDBTabsPane>
