@@ -41,6 +41,7 @@ import {
     MDBInputGroup,
     MDBBadge
 } from 'mdb-react-ui-kit'
+import PinmarkModal from "../modals/PinmarkModal";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
@@ -161,6 +162,10 @@ function PinmarkList() {
             setPinmarkDetailObject(pinmarkDetailObject);
         })
         
+    }
+
+    const handleClosePinmarkModal = () => {
+        setPinmarkDetailModal(false);
     }
 
     React.useEffect(() => {        
@@ -404,7 +409,8 @@ function PinmarkList() {
                     className="justify-content-center align-item-center"
                     >
                     <MDBModalContent>
-                        <MDBModalHeader className="bg-image" style={{padding: 0}}>
+                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal}/>
+                        {/* <MDBModalHeader className="bg-image" style={{padding: 0}}>
                             <img position='top' overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmarkDetailObject.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                             <div
                                 className="mask"
@@ -479,9 +485,8 @@ function PinmarkList() {
                             setPinmarkDetailObject({});
                             }} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                             <MDBIcon fas icon='times'/>
-                        </MDBBtn> 
+                        </MDBBtn>  */}
                     </MDBModalContent>
-
                 </MDBModalDialog>
             </MDBModal>
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            

@@ -28,6 +28,7 @@ import {
     MDBModalHeader
 } from 'mdb-react-ui-kit';
 import { Google } from "../util/Google";
+import PinmarkModal from "../modals/PinmarkModal";
 
 function Pinmarks() {
     const pinmarkState = useSelector((state) => state.pinmark.pinmarks);
@@ -68,6 +69,10 @@ function Pinmarks() {
         })
         .catch((error) => console.log(error))        
         
+    }   
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     }
 
     return (
@@ -103,8 +108,9 @@ function Pinmarks() {
             }       
             <MDBModal show={showModal} setShow={setShowModal}>
                 <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
-                    <MDBModalContent>                            
-                        <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
+                    <MDBModalContent> 
+                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleCloseModal}/>
+                        {/* <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
                         <img position="top" overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>  
                         <div
                             className='mask'
@@ -177,7 +183,7 @@ function Pinmarks() {
                         </MDBModalBody>                              
                         <MDBBtn onClick={() => setShowModal(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                             <MDBIcon fas icon='times'/>
-                        </MDBBtn>                    
+                        </MDBBtn>                     */}
                     </MDBModalContent>                  
                 </MDBModalDialog>
             </MDBModal>

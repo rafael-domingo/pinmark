@@ -31,6 +31,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
 import Pinmarks from '../components/Pinmarks';
 import Trips from '../components/Trips';
+import PinmarkModal from '../modals/PinmarkModal';
+
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);
@@ -41,7 +43,7 @@ function UserHome() {
     const [searchInput, setSearchInput] = React.useState('');
     const [searchResults, setSearchResults] = React.useState([]);
     const [secondModal, setSecondModal] = React.useState(false);
-    const [detailInfo, setDetailInfo] = React.useState([]);  
+    const [detailInfo, setDetailInfo] = React.useState({});  
     const [pinmarkIdArray, setPinmarkIdArray] = React.useState([]);
     const [currentLocationObject, setCurrentLocationObject] = React.useState({
         city: '',
@@ -225,8 +227,18 @@ function UserHome() {
     }
 
     const handleShowDetails = (info) => {
-        setSecondModal(true);        
-        setDetailInfo(info);
+        console.log(info);
+        Google.placeDetails(info.place_id)
+        .then(result => {
+            console.log(result);
+            const detailInfoObject = {
+                pinmark: {},
+                details: result
+            }
+            setSecondModal(true);        
+            setDetailInfo(detailInfoObject);
+        })
+        
     }
 
     const handleSearchInput = (e) => {
@@ -244,6 +256,11 @@ function UserHome() {
     const handleSearchResults = (results) => {
         console.log(results);
         setSearchResults(results.results);               
+    }
+
+    const handleClosePinmarkModal = () => {
+        setSecondModal(false);
+        setShowSearch(true);
     }
     
     React.useEffect(() => {
@@ -322,7 +339,8 @@ function UserHome() {
             <MDBModal staticBackdrop show={secondModal} setShow={setSecondModal}>
                 <MDBModalDialog centered>
                     <MDBModalContent>
-                        <MDBCardHeader>
+                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleClosePinmarkModal}/>
+                        {/* <MDBCardHeader>
                             
                             <MDBModalTitle>{detailInfo.name}</MDBModalTitle>
                         </MDBCardHeader>
@@ -338,7 +356,7 @@ function UserHome() {
                                 }}>
                                     Back
                             </MDBBtn>
-                        </MDBModalFooter>
+                        </MDBModalFooter> */}
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
