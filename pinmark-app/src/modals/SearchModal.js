@@ -24,7 +24,8 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
     const [pinmarkIdArray, setPinmarkIdArray] = React.useState([]);
     const pinmarkState = useSelector((state) => state.pinmark);
     const userState = useSelector((state) => state.user);
-    
+    const ref = React.useRef();
+
     // side effect to keep track of pinmark IDs to help with search results UI (add/remove pinmarks)
     React.useEffect(() => {
         console.log(pinmarkState);
@@ -35,6 +36,11 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
         setPinmarkIdArray(pinmarkArray);
         updateUser(userState.uid, pinmarkState);
     }, [pinmarkState])
+
+    // scroll back to top when search results are refreshed
+    React.useEffect(() => {
+        ref.current.scrollTo(0,0);
+    }, [searchResults])
 
     const handleSearchInput = (e) => {
         setSearchInput(e.target.value);
@@ -57,7 +63,7 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
                     <input className='search form-control' type='text' placeholder='Search' onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
                 </MDBInputGroup>                      
             </MDBModalHeader>
-            <MDBModalBody>
+            <MDBModalBody ref={ref}>
                 <MDBRow>
                 {/* put list of search results here */}
                 {searchResults.map((result) => {

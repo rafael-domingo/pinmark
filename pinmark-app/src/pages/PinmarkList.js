@@ -43,6 +43,7 @@ import {
 } from 'mdb-react-ui-kit'
 import PinmarkModal from "../modals/PinmarkModal";
 import SearchModal from "../modals/SearchModal";
+import TripViewModal from "../modals/TripViewModal";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
@@ -125,7 +126,7 @@ function PinmarkList() {
         const tripObject = {
             trip: trip,
             pinmarks: tripPinmarkList
-        }
+        }        
         setTripViewObject(tripObject)
         setTripViewModal(true);
     };
@@ -312,7 +313,7 @@ function PinmarkList() {
             const pinmarkDetailObject = {
                 pinmark: pinmark,
                 details: result
-            }
+            }            
             setPinmarkDetailModal(true);
             setPinmarkDetailObject(pinmarkDetailObject);
         })
@@ -321,6 +322,10 @@ function PinmarkList() {
 
     const handleClosePinmarkModal = () => {
         setPinmarkDetailModal(false);
+    }
+
+    const handleCloseTripModal = () => {
+        setTripViewModal(false);
     }
 
     React.useEffect(() => {        
@@ -483,7 +488,8 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <MDBModalHeader>
+                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal}/>
+                        {/* <MDBModalHeader>
                               {tripViewObject?.trip?.tripName}
                               <MDBBtn onClick={() => setTripViewModal(false)}>Close</MDBBtn>
                         </MDBModalHeader>
@@ -510,7 +516,7 @@ function PinmarkList() {
                                 })
                             }
                             </MDBRow>
-                        </MDBModalBody>
+                        </MDBModalBody> */}
                     </MDBModalContent>
                 </MDBModalDialog>
             {/* Search Modal */}
