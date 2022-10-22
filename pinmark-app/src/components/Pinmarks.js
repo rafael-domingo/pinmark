@@ -103,8 +103,7 @@ function Pinmarks() {
             }       
             <MDBModal show={showModal} setShow={setShowModal}>
                 <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
-                    <MDBModalContent>    
-                        
+                    <MDBModalContent>                            
                         <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
                         <img position="top" overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>  
                         <div
@@ -117,22 +116,17 @@ function Pinmarks() {
                                 <h1 className='fw-bold text-white mb-4'>{detailInfo.pinmark?.locationName}</h1>
                             </div>
                             </div>
-                        </div>
-                      
+                        </div>                      
                         </MDBModalHeader>
-                        <MDBModalBody>
-                        
+                        <MDBModalBody>                        
                             <MDBRow>
                                 <MDBCol size='12' className='mb-4'>
                                     <MDBCard>
-                                        <MDBCardBody>
-                                           
+                                        <MDBCardBody>                                           
                                             <MDBCardText>
-                                            <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>
-                                                {/* <a href={`https://www.google.com/maps/search/?api=1&map_action=map&query=${detailInfo.pinmark?.geometry.lat}%2C${detailInfo.pinmark?.geometry.lng}&query_place_id=${detailInfo.pinmark?.pinmarkId}`}> */}
+                                            <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>                                                
                                                     {detailInfo.pinmark?.address}
-                                                </a>
-                                                
+                                                </a>                                                
                                                 </MDBCardText>
                                         </MDBCardBody>
                                     </MDBCard>
@@ -180,54 +174,11 @@ function Pinmarks() {
                                     </MDBCard>
                                 </MDBCol>                                
                             </MDBRow>
-{/*                             
-                        <MDBCard alignment="start">           
-                           
-                            <MDBCardBody>
-                                <MDBCardTitle>{detailInfo.pinmark?.locationName}</MDBCardTitle>
-                                <MDBCardText>{detailInfo.details?.result.editorial_summary?.overview}</MDBCardText>
-                            </MDBCardBody>
-                            <MDBListGroup flush>
-                                <MDBListGroupItem>
-                                    <MDBBadge pill light>{detailInfo.pinmark?.pinmarkCategory}</MDBBadge>                                                              
-                                </MDBListGroupItem>
-                                <MDBListGroupItem>
-                                    { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
-                                </MDBListGroupItem>
-                                <MDBListGroupItem><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBListGroupItem>
-                                <MDBListGroupItem>{detailInfo.details?.result.price_level}</MDBListGroupItem> 
-                                <MDBListGroupItem>{detailInfo.details?.result.rating}</MDBListGroupItem>
-                            </MDBListGroup>
-                            <MDBCardBody>
-                           
-                            </MDBCardBody>                */}
-                          {/* <MDBCardImage style={{width: '60vw', height: '80vh', objectFit: 'cover', opacity: 0.8}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
-                                <MDBCardOverlay>                                
-                                    <MDBCardTitle><h2 className="fw-bold">{detailInfo.pinmark?.locationName}</h2></MDBCardTitle>
-                                    <MDBCardSubTitle><p>{detailInfo.details?.result.vicinity}</p></MDBCardSubTitle>                                    
-                                    <MDBBadge pill light>{detailInfo.pinmark?.pinmarkCategory}</MDBBadge>                                
-                                    { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}                                    
-                                    <MDBListGroup flush>                   
-                                        
-                                        <MDBListGroupItem noBorders>{detailInfo.details?.result.price_level}</MDBListGroupItem> 
-                                        <MDBListGroupItem noBorders>{detailInfo.details?.result.rating}</MDBListGroupItem>
-                                        <MDBListGroupItem noBorders>
-                                            <h5 className="fw-bold">Description</h5>
-                                            {detailInfo.details?.result.editorial_summary?.overview}
-                                        </MDBListGroupItem>
-                                        <MDBListGroupItem noBorders><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBListGroupItem>
-                                    </MDBListGroup>
-                                </MDBCardOverlay>                             */}
-                        {/* </MDBCard>   */}
-                      
-                        </MDBModalBody>      
-                        <MDBModalFooter>
-                            <MDBBtn onClick={() => setShowModal(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                                <MDBIcon fas icon='times'/>
-                            </MDBBtn>
-                        </MDBModalFooter>                                       
-                    </MDBModalContent>
-                  
+                        </MDBModalBody>                              
+                        <MDBBtn onClick={() => setShowModal(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                            <MDBIcon fas icon='times'/>
+                        </MDBBtn>                    
+                    </MDBModalContent>                  
                 </MDBModalDialog>
             </MDBModal>
         </div>

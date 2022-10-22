@@ -30,6 +30,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
 import Pinmarks from '../components/Pinmarks';
+import Trips from '../components/Trips';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);
@@ -253,11 +254,13 @@ function UserHome() {
         }
     }, [showSearch])
     return (
-        <div>
+        <div style={{overflow: 'scroll',height: '100vh'}}>
             <h3>Your Locations</h3>  
                 <Locations />    
             <h3>Most Recent Pinmarks</h3>
                 <Pinmarks/>    
+            <h3>Most Recent Trips</h3>
+                <Trips />
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
