@@ -14,8 +14,20 @@ import {
     MDBModalDialog,
     MDBModalContent,
     MDBCardHeader,
-    MDBModalTitle
+    MDBModalTitle,
+    MDBModalFooter,
+    MDBBtn,
+    MDBCardSubTitle,
+    MDBBadge,
+    MDBListGroup,
+    MDBRow,
+    MDBIcon,
+    MDBCol,
+    MDBListGroupItem,
+    MDBModalBody,
+    MDBModalHeader
 } from 'mdb-react-ui-kit';
+import { Google } from "../util/Google";
 
 function Pinmarks() {
     const pinmarkState = useSelector((state) => state.pinmark.pinmarks);
@@ -44,8 +56,18 @@ function Pinmarks() {
     }
 
     const handleShowDetails = (pinmark) => {
-        setDetailInfo(pinmark);
-        setShowModal(true);
+        Google.placeDetails(pinmark.pinmarkId)
+        .then(result => {
+            console.log(result)
+            const infoObject = {
+                pinmark: pinmark,
+                details: result
+            }
+            setDetailInfo(infoObject);
+            setShowModal(true);
+        })
+        .catch((error) => console.log(error))        
+        
     }
 
     return (
@@ -60,7 +82,7 @@ function Pinmarks() {
                         )
                     } else {
                         var photo_reference = (
-                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                         )
                     }
                     return (
@@ -80,12 +102,132 @@ function Pinmarks() {
                 })
             }       
             <MDBModal show={showModal} setShow={setShowModal}>
-                <MDBModalDialog centered>
-                    <MDBModalContent>
-                        <MDBCardHeader>
-                            <MDBModalTitle>{detailInfo.locationName}</MDBModalTitle>
-                        </MDBCardHeader>
+                <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
+                    <MDBModalContent>    
+                        
+                        <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
+                        <img position="top" overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>  
+                        <div
+                            className='mask'
+                            style={{
+                            background: 'linear-gradient(to bottom, hsla(0, 0%, 0%, 0) 50%, hsla(0, 0%, 0%, 0.5))',
+                            }}>
+                            <div className='bottom-0 d-flex align-items-end h-100 text-center justify-content-flex-start'>
+                            <div style={{paddingLeft: 20}}>
+                                <h1 className='fw-bold text-white mb-4'>{detailInfo.pinmark?.locationName}</h1>
+                            </div>
+                            </div>
+                        </div>
+                      
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                        
+                            <MDBRow>
+                                <MDBCol size='12' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                           
+                                            <MDBCardText>
+                                            <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>
+                                                {/* <a href={`https://www.google.com/maps/search/?api=1&map_action=map&query=${detailInfo.pinmark?.geometry.lat}%2C${detailInfo.pinmark?.geometry.lng}&query_place_id=${detailInfo.pinmark?.pinmarkId}`}> */}
+                                                    {detailInfo.pinmark?.address}
+                                                </a>
+                                                
+                                                </MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>
+                                <MDBCol size='12' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            <MDBCardText>{detailInfo.details?.result.editorial_summary?.overview}</MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>
+                                <MDBCol size='6' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            <MDBCardText>{detailInfo.pinmark?.pinmarkCategory}</MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>
+                                <MDBCol size='6' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>
+                                <MDBCol size='6' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            <MDBCardText><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>
+                                <MDBCol size='6' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            <MDBCardText>$$$$ {detailInfo.details?.result.price_level}</MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>   
+                                <MDBCol size='6' className='mb-4'>
+                                    <MDBCard>
+                                        <MDBCardBody>
+                                            <MDBCardText>$$$$ {detailInfo.details?.result.rating} stars</MDBCardText>
+                                        </MDBCardBody>
+                                    </MDBCard>
+                                </MDBCol>                                
+                            </MDBRow>
+{/*                             
+                        <MDBCard alignment="start">           
+                           
+                            <MDBCardBody>
+                                <MDBCardTitle>{detailInfo.pinmark?.locationName}</MDBCardTitle>
+                                <MDBCardText>{detailInfo.details?.result.editorial_summary?.overview}</MDBCardText>
+                            </MDBCardBody>
+                            <MDBListGroup flush>
+                                <MDBListGroupItem>
+                                    <MDBBadge pill light>{detailInfo.pinmark?.pinmarkCategory}</MDBBadge>                                                              
+                                </MDBListGroupItem>
+                                <MDBListGroupItem>
+                                    { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
+                                </MDBListGroupItem>
+                                <MDBListGroupItem><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBListGroupItem>
+                                <MDBListGroupItem>{detailInfo.details?.result.price_level}</MDBListGroupItem> 
+                                <MDBListGroupItem>{detailInfo.details?.result.rating}</MDBListGroupItem>
+                            </MDBListGroup>
+                            <MDBCardBody>
+                           
+                            </MDBCardBody>                */}
+                          {/* <MDBCardImage style={{width: '60vw', height: '80vh', objectFit: 'cover', opacity: 0.8}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                                <MDBCardOverlay>                                
+                                    <MDBCardTitle><h2 className="fw-bold">{detailInfo.pinmark?.locationName}</h2></MDBCardTitle>
+                                    <MDBCardSubTitle><p>{detailInfo.details?.result.vicinity}</p></MDBCardSubTitle>                                    
+                                    <MDBBadge pill light>{detailInfo.pinmark?.pinmarkCategory}</MDBBadge>                                
+                                    { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}                                    
+                                    <MDBListGroup flush>                   
+                                        
+                                        <MDBListGroupItem noBorders>{detailInfo.details?.result.price_level}</MDBListGroupItem> 
+                                        <MDBListGroupItem noBorders>{detailInfo.details?.result.rating}</MDBListGroupItem>
+                                        <MDBListGroupItem noBorders>
+                                            <h5 className="fw-bold">Description</h5>
+                                            {detailInfo.details?.result.editorial_summary?.overview}
+                                        </MDBListGroupItem>
+                                        <MDBListGroupItem noBorders><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBListGroupItem>
+                                    </MDBListGroup>
+                                </MDBCardOverlay>                             */}
+                        {/* </MDBCard>   */}
+                      
+                        </MDBModalBody>      
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => setShowModal(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                                <MDBIcon fas icon='times'/>
+                            </MDBBtn>
+                        </MDBModalFooter>                                       
                     </MDBModalContent>
+                  
                 </MDBModalDialog>
             </MDBModal>
         </div>
