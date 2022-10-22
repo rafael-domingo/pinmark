@@ -6,7 +6,7 @@ import Hero from "../components/Hero";
 import List from "../components/List";
 import { updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
-import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip } from "../redux/pinmarkSlice";
+import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
     MDBListGroupItem,
@@ -42,10 +42,11 @@ import {
     MDBBadge
 } from 'mdb-react-ui-kit'
 import PinmarkModal from "../modals/PinmarkModal";
+import SearchModal from "../modals/SearchModal";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
-    const { locationId } = useParams();
+    const { locationId } = useParams();    
     const userState = useSelector((state) => state.user);
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkState = useSelector((state) => state.pinmark);
@@ -63,7 +64,7 @@ function PinmarkList() {
     const [searchResults, setSearchResults] = React.useState([]);
     const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');        
     const [pinmarkDetailObject, setPinmarkDetailObject] = React.useState({});
-    
+    const [currentLocationObject, setCurrentLocationObject] = React.useState({});
     const dispatch = useDispatch();
 
     const handleTabClick = (value) => {
@@ -129,22 +130,176 @@ function PinmarkList() {
         setTripViewModal(true);
     };
 
-    const handleSearchInput = (e) => {
-        setSearchInput(e.target.value);
-        if (e.target.value.length > 3) {
-            // need to add location specificity since searching within Location
-            Google.placeSearch(e.target.value, null)
-            .then(data => {
-                handleSearchResults(data);
-            })
-            .catch(e => console.log(e))
-        }
-        
+    const handleShowSearch = () => {
+        setShowSearch(false);
     }
 
-    const handleSearchResults = (results) => {
-        setSearchResults(results.results);
+    const handleShowDetails = (info) => {
+        Google.placeDetails(info.place_id)
+        .then(result => {
+            console.log(result);
+            const detailInfoObject = {
+                pinmark: {},
+                details: result
+            }
+            setPinmarkDetailModal(true);        
+            setPinmarkDetailObject(detailInfoObject);
+        })
     }
+
+    const handleDeletePinmark = (pinmark) => {        
+        var locationIdReference = '';
+        var locationIdCount = 0;
+        pinmarkState.pinmarks.map((pin) => {
+            if (pinmark.place_id === pin.pinmarkId) {
+                locationIdReference = pin.locationId.locationId;
+            }
+        })
+        pinmarkState.pinmarks.map((pin) => {
+            if(pin.locationId.locationId === locationIdReference) {
+                locationIdCount++;
+            }
+        })
+        if (locationIdCount <= 1) {
+            dispatch(deleteLocations(locationIdReference));
+        }
+        dispatch(deletePinmark(pinmark.place_id))
+    }
+
+    const handleAddPinmark = (pinmark) => {
+        Google.placeDetails(pinmark.place_id, uuidv4())
+        .then(data => {
+            var city = '';
+            var state = '';
+            var postalCode = '';
+            var country = '';
+            
+                    
+            data.result.address_components.map((address_component) => {
+                if(address_component.types.includes('locality') || address_component.types.includes('postal_town')) {
+                    city = address_component.short_name;
+                }
+                if(address_component.types.includes('postal_code')) {
+                    postalCode = address_component.short_name;
+                }
+                if(address_component.types.includes('administrative_area_level_1')) {
+                    state = address_component.short_name;
+                }
+                if(address_component.types.includes('country')) {
+                    country = address_component.short_name;
+                }
+            })         
+            // check if location exists in state, otherwise add to global state   
+            var exists = false;
+            var locationId = uuidv4();
+            // check if newly added pinmark matches current location in component state -- usually used when adding multiple pinmarks from the same city at once
+            if (currentLocationObject.city === city && currentLocationObject.state === state && currentLocationObject.country === country) {
+                exists = true;
+                locationId = currentLocationObject.locationId
+            }
+            
+            // check if newly added pinmark matches existing location in global state -- usually used when first opening up search
+            pinmarkState.locations.map((location) => {
+                if (location.city === city && location.state === state && location.country === country) {
+                    exists = true;
+                    locationId = location.locationId;
+                }                
+            })            
+            if (!exists) {        
+                var locationObject = {
+                    city: city,
+                    state: state,
+                    country: country,                      
+                    locationId: locationId                                                                   
+                }            
+                // created a separate function to speed up so that checking location isn't holding up the adding pinmark action
+                handleCheckLocationExists(locationObject);                    
+            } else {
+                var locationObject = {
+                    city: city,
+                    state: state,
+                    country: country,
+                    locationId: locationId
+                }                 
+            }
+            setCurrentLocationObject(locationObject); // update local state with new location object
+            console.log(pinmark);
+            console.log(data);
+
+            // add pinmark category to pinmark
+            const coffeeKeyWords = ['cafe'];
+            const nightLifeKeywords = ['casino', 'night_club', 'movie_theater'];
+            const foodKeywords = ['restaurant', 'bakery', 'bar', 'food'];    
+            const lodgingKeywords = ['lodging', 'campground', 'rv_park', '']
+            const shoppingKeywords = ['clothing_store', 'department_store', 'electronics_store', 'furniture_store', 'home_goods_store', 'jewelry_store', 'shoe_store', 'book_store', 'shopping_mall'];
+            const touristAttractionKeywords = ['tourist_attraction', 'amusement_park', 'aquarium', 'art_gallery', 'museum', 'casino', 'zoo', 'city_hall'];
+            var pinmarkCategory = '';
+            if (pinmark.types.some(r => coffeeKeyWords.includes(r))) {
+                pinmarkCategory = 'coffee';                
+            } else if (pinmark.types.some(r => nightLifeKeywords.includes(r))) {
+                pinmarkCategory = 'night-life';
+            } else if (pinmark.types.some(r => foodKeywords.includes(r))) {
+                pinmarkCategory = 'food';
+            } else if (pinmark.types.some(r => lodgingKeywords.includes(r))) {
+                pinmarkCategory = 'lodging';
+            } else if (pinmark.types.some(r => shoppingKeywords.includes(r))) {
+                pinmarkCategory = 'shopping';
+            } else if (pinmark.types.some(r => touristAttractionKeywords.includes(r))) {
+                pinmarkCategory = 'tourist-attraction';
+            } else {
+                pinmarkCategory = 'other';
+            }
+            // create pinmark object to store in state
+            const pinmarkObject = {
+                pinmarkId: pinmark.place_id,
+                locationId: locationObject,
+                locationName: pinmark.name,
+                geometry: {
+                    lat: pinmark.geometry.location.lat,
+                    lng: pinmark.geometry.location.lng
+                },
+                address: pinmark.formatted_address,
+                photoURL: pinmark.photos?.[0].photo_reference,
+                rating: pinmark.rating,
+                categories: pinmark.types,
+                pinmarkCategory: pinmarkCategory,
+                tripIds: []
+            }
+            dispatch(addPinmark(pinmarkObject));   
+        })
+    }
+
+    const handleCheckLocationExists = (locationObject) => {
+        Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
+            console.log(data);            
+            const photo_reference = data.results[0].photos?.[0].photo_reference;
+            const newLocationObject = {
+                city: locationObject.city,
+                state: locationObject.state,
+                country: locationObject.country,
+                locationId: locationObject.locationId,
+                photo_reference: photo_reference
+            }
+            dispatch(addLocations(newLocationObject));
+        }).catch((error) => console.log(error))
+    }
+
+    // const handleSearchInput = (e) => {
+    //     setSearchInput(e.target.value);
+    //     if (e.target.value.length > 3) {
+    //         // need to add location specificity since searching within Location
+    //         Google.placeSearch(e.target.value, null)
+    //         .then(data => {
+    //             handleSearchResults(data);
+    //         })
+    //         .catch(e => console.log(e))
+    //     }
+        
+    // }
+
+    // const handleSearchResults = (results) => {
+    //     setSearchResults(results.results);
+    // }
 
     const handlePinmarkSearchInput = (e) => {
         console.log(e.target.value);
@@ -363,7 +518,8 @@ function PinmarkList() {
             <MDBModal staticBackdrop show={showSearch} setShow={setShowSearch} tabIndex='-1'>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <MDBModalHeader>
+                        <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>
+                        {/* <MDBModalHeader>
                             <MDBInputGroup>
                                 <input className="search form-control" type='text' placeholder="Search" onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
                             </MDBInputGroup>
@@ -394,7 +550,7 @@ function PinmarkList() {
                             <MDBBtn onClick={() => setShowSearch(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                                 <MDBIcon fas icon='times'/>
                             </MDBBtn>
-                        </MDBModalFooter>
+                        </MDBModalFooter> */}
                     </MDBModalContent>
                    
                 </MDBModalDialog>

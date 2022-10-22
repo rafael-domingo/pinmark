@@ -32,6 +32,7 @@ import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../red
 import Pinmarks from '../components/Pinmarks';
 import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
+import SearchModal from '../modals/SearchModal';
 
 
 function UserHome() {
@@ -44,7 +45,7 @@ function UserHome() {
     const [searchResults, setSearchResults] = React.useState([]);
     const [secondModal, setSecondModal] = React.useState(false);
     const [detailInfo, setDetailInfo] = React.useState({});  
-    const [pinmarkIdArray, setPinmarkIdArray] = React.useState([]);
+    
     const [currentLocationObject, setCurrentLocationObject] = React.useState({
         city: '',
         state: '',
@@ -52,16 +53,7 @@ function UserHome() {
         locationId: ''
     }); // state to keep track of newly create locationId -- to fix bug that would add duplicate cities if state didn't update fast enough
 
-    // side effect to keep track of pinmark IDs to help with search results UI (add/remove pinmarks)
-    React.useEffect(() => {
-        console.log(pinmarkState);
-        var pinmarkArray = [];
-        pinmarkState.pinmarks.map((pinmark) => {
-            pinmarkArray.push(pinmark.pinmarkId);
-        })
-        setPinmarkIdArray(pinmarkArray);
-        updateUser(userState.uid, pinmarkState);
-    }, [pinmarkState])
+    
 
     React.useEffect(() => {
         Google.placeSearch('houston, tx', null).then(data => console.log(data)).catch(e => console.log(e))
@@ -262,7 +254,8 @@ function UserHome() {
         setSecondModal(false);
         setShowSearch(true);
     }
-    
+
+
     React.useEffect(() => {
         if (showSearch) {
             document.body.classList.add('overflow-hidden');
@@ -284,14 +277,14 @@ function UserHome() {
             <MDBModal tabIndex='-1' show={showSearch && !secondModal} setShow={setShowSearch}>
                 <MDBModalDialog size='fullscreen-xxl-down' scrollable>
                     <MDBModalContent>
-                        <MDBModalHeader>  
+                        <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>
+                        {/* <MDBModalHeader>  
                             <MDBInputGroup className='mb-3' noBorder textBefore={<MDBIcon fas icon='search' />}>
                                 <input className='search form-control' type='text' placeholder='Search' onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
                             </MDBInputGroup>                      
                         </MDBModalHeader>
                         <MDBModalBody>
-                            <MDBRow>
-                            {/* put list of search results here */}
+                            <MDBRow>                            
                             {searchResults.map((result) => {
                                                                 
                                 return (
@@ -331,7 +324,7 @@ function UserHome() {
                         <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                             <MDBIcon fas icon='times'/>
                         </MDBBtn>
-                        </MDBModalFooter>
+                        </MDBModalFooter> */}
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
