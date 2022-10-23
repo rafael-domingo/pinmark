@@ -18,6 +18,7 @@ function TripViewModal({tripObject, handleCloseModal}) {
 
     // side effect to reset scroll to top when opening modal
     React.useEffect(() => {
+        console.log(ref);
         ref.current.scrollTo(0,0);
     })   
     return (
