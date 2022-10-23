@@ -56,6 +56,7 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
     const handleSearchResults = (results) => {
         setSearchResults(results.results);
     }
+
     return (
         <>
             <MDBModalHeader>  

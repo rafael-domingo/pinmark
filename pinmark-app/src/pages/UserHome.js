@@ -3,29 +3,12 @@ import React from 'react';
 import Locations from "../components/Locations";
 import { Google } from '../util/Google';
 import { v4 as uuidv4 } from 'uuid';
-import { signInWithGoogle, signUserOut, updateUser } from '../util/Firebase';
-import Search from '../components/Search';
 import { 
     MDBBtn, 
     MDBIcon,
     MDBModal,
     MDBModalDialog,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
-    MDBModalFooter,
-    MDBInputGroup,    
-    MDBCard,
-    MDBCardBody,
-    MDBCardFooter,
-    MDBCardTitle,
-    MDBCardText,
-    MDBCardImage,    
-    MDBRipple,
-    MDBRow,
-    MDBCol,
-    MDBCardHeader
+    MDBModalContent,  
 } from 'mdb-react-ui-kit';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
@@ -34,26 +17,19 @@ import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
 
-
 function UserHome() {
-    const pinmarkState = useSelector((state) => state.pinmark);
-    const userState = useSelector((state) => state.user);
+    const pinmarkState = useSelector((state) => state.pinmark);   
     const dispatch = useDispatch();
     const sessionToken = uuidv4();        
-    const [showSearch, setShowSearch] = React.useState(false);
-    const [searchInput, setSearchInput] = React.useState('');
-    const [searchResults, setSearchResults] = React.useState([]);
+    const [showSearch, setShowSearch] = React.useState(false);   
     const [secondModal, setSecondModal] = React.useState(false);
     const [detailInfo, setDetailInfo] = React.useState({});  
-    
     const [currentLocationObject, setCurrentLocationObject] = React.useState({
         city: '',
         state: '',
         country: '',
         locationId: ''
     }); // state to keep track of newly create locationId -- to fix bug that would add duplicate cities if state didn't update fast enough
-
-    
 
     React.useEffect(() => {
         Google.placeSearch('houston, tx', null).then(data => console.log(data)).catch(e => console.log(e))
@@ -84,8 +60,7 @@ function UserHome() {
             var state = '';
             var postalCode = '';
             var country = '';
-            
-                    
+                      
             data.result.address_components.map((address_component) => {
                 if(address_component.types.includes('locality') || address_component.types.includes('postal_town')) {
                     city = address_component.short_name;
@@ -177,8 +152,7 @@ function UserHome() {
                 tripIds: []
             }
             dispatch(addPinmark(pinmarkObject));                
-        
-                    
+               
         });        
                    
     }
@@ -214,8 +188,7 @@ function UserHome() {
     
     const handleShowSearch = () => {
         setShowSearch(!showSearch);
-        setSearchInput('');
-        setSearchResults([]);
+     
     }
 
     const handleShowDetails = (info) => {
@@ -223,31 +196,19 @@ function UserHome() {
         Google.placeDetails(info.place_id)
         .then(result => {
             console.log(result);
-            const detailInfoObject = {
-                pinmark: {},
+            const pinmarkObject = {
+                photoURL: result.result.photos?.[0]?.photo_reference,
+                locationName: result.result.name,
+                address: result.result.formatted_address            
+            }
+            const detailObject = {
+                pinmark: pinmarkObject,
                 details: result
             }
             setSecondModal(true);        
-            setDetailInfo(detailInfoObject);
+            setDetailInfo(detailObject);
         })
         
-    }
-
-    const handleSearchInput = (e) => {
-        console.log(e.target.value);
-        setSearchInput(e.target.value);
-        if (e.target.value.length > 3) {
-            Google.placeSearch(e.target.value, null)
-            .then(data => {
-                console.log(data);
-                handleSearchResults(data);
-            })
-            .catch(e => console.log(e))
-        }
-    }    
-    const handleSearchResults = (results) => {
-        console.log(results);
-        setSearchResults(results.results);               
     }
 
     const handleClosePinmarkModal = () => {
@@ -278,78 +239,15 @@ function UserHome() {
                 <MDBModalDialog size='fullscreen-xxl-down' scrollable>
                     <MDBModalContent>
                         <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>
-                        {/* <MDBModalHeader>  
-                            <MDBInputGroup className='mb-3' noBorder textBefore={<MDBIcon fas icon='search' />}>
-                                <input className='search form-control' type='text' placeholder='Search' onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
-                            </MDBInputGroup>                      
-                        </MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBRow>                            
-                            {searchResults.map((result) => {
-                                                                
-                                return (
-                                    <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
-                                        <MDBCard className='h-100'>
-                                            <MDBCardBody>
-                                                <MDBCardTitle>{result.name}</MDBCardTitle>
-                                                <MDBCardText>{result.formatted_address}</MDBCardText>                                            
-                                            </MDBCardBody>
-                                            <MDBCardFooter background='light' border='0' className='p-2 d-flex justify-content-around'>
-                                                <MDBBtn onClick={() => handleShowDetails(result)} color='link' rippleColor='primary' className='text-reset m-0'>
-                                                View <MDBIcon fas icon='eye' />
-                                                </MDBBtn>
-                                                {
-                                                    !pinmarkIdArray.includes(result.place_id) && (
-                                                        <MDBBtn onClick={() => handleAddPinmark(result)} color='primary'>
-                                                            Add Pinmark <MDBIcon fas icon='plus' />
-                                                        </MDBBtn>
-                                                    )
-                                                }
-                                                 {
-                                                    pinmarkIdArray.includes(result.place_id) && (
-                                                        <MDBBtn onClick={() => handleDeletePinmark(result)} color='link' rippleColor='primary' className='text-reset m-0'>
-                                                            Remove Pinmark <MDBIcon fas icon='minus' />
-                                                        </MDBBtn>
-                                                    )
-                                                }
-                                                
-                                            </MDBCardFooter>
-                                        </MDBCard>                      
-                                    </MDBCol>                                                  
-                                )
-                            })}
-                            </MDBRow>
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                        <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                            <MDBIcon fas icon='times'/>
-                        </MDBBtn>
-                        </MDBModalFooter> */}
+                        
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
             
             <MDBModal staticBackdrop show={secondModal} setShow={setSecondModal}>
-                <MDBModalDialog centered>
+                <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
                     <MDBModalContent>
-                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleClosePinmarkModal}/>
-                        {/* <MDBCardHeader>
-                            
-                            <MDBModalTitle>{detailInfo.name}</MDBModalTitle>
-                        </MDBCardHeader>
-                        
-                        <MDBModalBody>
-                            {detailInfo.formatted_address}
-
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                        <MDBBtn color='link' onClick={() => {
-                                setSecondModal(false)
-                                setShowSearch(true);
-                                }}>
-                                    Back
-                            </MDBBtn>
-                        </MDBModalFooter> */}
+                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleClosePinmarkModal}/>                       
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>

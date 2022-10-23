@@ -141,12 +141,17 @@ function PinmarkList() {
         Google.placeDetails(info.place_id)
         .then(result => {
             console.log(result);
-            const detailInfoObject = {
-                pinmark: {},
+            const pinmarkObject = {
+                photoURL: result.result.photos?.[0]?.photo_reference,
+                locationName: result.result.name,
+                address: result.result.formatted_address            
+            }
+            const detailObject = {
+                pinmark: pinmarkObject,
                 details: result
             }
             setPinmarkDetailModal(true);        
-            setPinmarkDetailObject(detailInfoObject);
+            setPinmarkDetailObject(detailObject);
         })
     }
 
