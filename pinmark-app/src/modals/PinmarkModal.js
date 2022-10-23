@@ -11,9 +11,16 @@ import {
     MDBBadge,    
 } from 'mdb-react-ui-kit';
 import React from 'react';
+import Rating from '../components/Rating';
+import Price from '../components/Price';
+import Category from '../components/Category';
 
 function PinmarkModal({detailInfo, handleCloseModal}) {
-
+    const ref = React.useRef();
+    React.useEffect(() => {
+        ref.current.scrollTo(0,0);
+    });
+    
     return (
         <>
             <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
@@ -30,60 +37,52 @@ function PinmarkModal({detailInfo, handleCloseModal}) {
                     </div>
                 </div>                        
             </MDBModalHeader>
-            <MDBModalBody>                        
+            <MDBModalBody ref={ref}>                        
                 <MDBRow>
                     <MDBCol size='12' className='mb-4'>
-                        <MDBCard>
-                            <MDBCardBody>                                           
-                                <MDBCardText>
-                                <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>                                                
-                                        {detailInfo.pinmark?.address}
-                                    </a>                                                
-                                    </MDBCardText>
+                        <MDBCard className='h-100'>
+                            <MDBCardBody className='d-flex justify-content-center align-items-center'>                                           
+                                <MDBCardText className='text-start'>{detailInfo.pinmark?.address}</MDBCardText>
+                                <MDBBtn color='none' href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>
+                                    <MDBIcon size='2x' icon='directions'/>                                              
+                                </MDBBtn>                                    
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
                     <MDBCol size='12' className='mb-4'>
-                        <MDBCard>
+                        <MDBCard className='h-100'>
                             <MDBCardBody>
                                 <MDBCardText>{detailInfo.details?.result?.editorial_summary?.overview}</MDBCardText>
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
                     <MDBCol size='6' className='mb-4'>
-                        <MDBCard>
-                            <MDBCardBody>
-                                <MDBCardText>{detailInfo.pinmark?.pinmarkCategory}</MDBCardText>
+                        <Category category={detailInfo.pinmark?.pinmarkCategory}/>                      
+                    </MDBCol>
+                    <MDBCol size='6' className='mb-4'>
+                        <MDBCard className='h-100'>
+                            <MDBCardBody className='d-flex justify-content-center align-items-center'>
+                                { detailInfo.details?.result?.opening_hours?.open_now ? (<MDBBadge color='success'>Open</MDBBadge>) : (<MDBBadge color='danger'>Closed</MDBBadge>)}  
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
                     <MDBCol size='6' className='mb-4'>
-                        <MDBCard>
-                            <MDBCardBody>
-                                { detailInfo.details?.result?.opening_hours?.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
-                    <MDBCol size='6' className='mb-4'>
-                        <MDBCard>
-                            <MDBCardBody>
+                        <MDBCard className='h-100'>
+                            <MDBCardBody className='d-flex justify-content-center align-items-center'>
                                 <MDBCardText><a href={`tel:${detailInfo.details?.result?.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBCardText>
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
                     <MDBCol size='6' className='mb-4'>
-                        <MDBCard>
+                        <Price price={detailInfo.details?.result?.price_level}/>
+                        {/* <MDBCard>
                             <MDBCardBody>
                                 <MDBCardText>$$$$ {detailInfo.details?.result?.price_level}</MDBCardText>
                             </MDBCardBody>
-                        </MDBCard>
+                        </MDBCard> */}
                     </MDBCol>   
-                    <MDBCol size='6' className='mb-4'>
-                        <MDBCard>
-                            <MDBCardBody>
-                                <MDBCardText>$$$$ {detailInfo.details?.result?.rating} stars</MDBCardText>
-                            </MDBCardBody>
-                        </MDBCard>
+                    <MDBCol size='6' className='mb-4'>                        
+                        <Rating rating={detailInfo.details?.result?.rating}/>                                                                        
                     </MDBCol>                                
                 </MDBRow>
             </MDBModalBody>                              

@@ -61,9 +61,7 @@ function PinmarkList() {
     const [showSearch, setShowSearch] = React.useState(false);
     const [pinmarkDetailModal, setPinmarkDetailModal] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
-    const [tripViewObject, setTripViewObject] = React.useState('');
-    const [searchInput, setSearchInput] = React.useState('');
-    const [searchResults, setSearchResults] = React.useState([]);
+    const [tripViewObject, setTripViewObject] = React.useState('');   
     const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');        
     const [pinmarkDetailObject, setPinmarkDetailObject] = React.useState({});
     const [currentLocationObject, setCurrentLocationObject] = React.useState({});
@@ -289,23 +287,6 @@ function PinmarkList() {
         }).catch((error) => console.log(error))
     }
 
-    // const handleSearchInput = (e) => {
-    //     setSearchInput(e.target.value);
-    //     if (e.target.value.length > 3) {
-    //         // need to add location specificity since searching within Location
-    //         Google.placeSearch(e.target.value, null)
-    //         .then(data => {
-    //             handleSearchResults(data);
-    //         })
-    //         .catch(e => console.log(e))
-    //     }
-        
-    // }
-
-    // const handleSearchResults = (results) => {
-    //     setSearchResults(results.results);
-    // }
-
     const handlePinmarkSearchInput = (e) => {
         console.log(e.target.value);
         setPinmarkSearchInput(e.target.value)
@@ -492,35 +473,7 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal}/>
-                        {/* <MDBModalHeader>
-                              {tripViewObject?.trip?.tripName}
-                              <MDBBtn onClick={() => setTripViewModal(false)}>Close</MDBBtn>
-                        </MDBModalHeader>
-                        <MDBModalBody>
-                            <MDBRow>                            
-                            {
-                                tripViewObject?.pinmarks?.map((pinmark) => {
-                                    return (
-                                        <MDBCol xxl={4} xl={4} l={4} md={4} className='mb-4'>
-                                            <MDBCard className="h-100">
-                                                <MDBCardImage style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...' />
-                                                <MDBCardBody>
-                                                    <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
-                                                    <MDBCardText>{pinmark.address}</MDBCardText>
-                                                </MDBCardBody>
-                                                <MDBCardFooter>
-                                                    <MDBBtn>View</MDBBtn>
-                                                    <MDBBtn>Remove</MDBBtn>
-                                                </MDBCardFooter>
-                                            </MDBCard>
-                                        </MDBCol>
-                                        
-                                    )
-                                })
-                            }
-                            </MDBRow>
-                        </MDBModalBody> */}
+                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal}/>                        
                     </MDBModalContent>
                 </MDBModalDialog>
             {/* Search Modal */}
@@ -528,39 +481,7 @@ function PinmarkList() {
             <MDBModal staticBackdrop show={showSearch} setShow={setShowSearch} tabIndex='-1'>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>
-                        {/* <MDBModalHeader>
-                            <MDBInputGroup>
-                                <input className="search form-control" type='text' placeholder="Search" onChange={handleSearchInput} value={searchInput} style={{border: 'none', boxShadow: 'none'}}/>
-                            </MDBInputGroup>
-                        </MDBModalHeader>
-                        <MDBModalBody style={{height: '100%'}} >
-                            <MDBRow>
-                                {
-                                    searchResults.map((result) => {
-                                        return (
-                                            <MDBCol xxl={12} xl={4} l={4} md={4}>
-                                                <MDBCard>
-                                                    <MDBCardBody>
-                                                        <MDBCardTitle>{result.name}</MDBCardTitle>
-                                                        <MDBCardText>{result.formatted_address}</MDBCardText>
-                                                    </MDBCardBody>
-                                                    <MDBCardFooter background="light" border='0' className="p-2 d-flex justify-content-around">
-                                                        
-                                                    </MDBCardFooter>
-                                                        
-                                                </MDBCard>
-                                            </MDBCol>
-                                        )
-                                    })
-                                }
-                            </MDBRow>
-                        </MDBModalBody>
-                        <MDBModalFooter>
-                            <MDBBtn onClick={() => setShowSearch(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                                <MDBIcon fas icon='times'/>
-                            </MDBBtn>
-                        </MDBModalFooter> */}
+                        <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>                       
                     </MDBModalContent>
                    
                 </MDBModalDialog>
@@ -575,83 +496,7 @@ function PinmarkList() {
                     className="justify-content-center align-item-center"
                     >
                     <MDBModalContent>
-                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal}/>
-                        {/* <MDBModalHeader className="bg-image" style={{padding: 0}}>
-                            <img position='top' overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmarkDetailObject.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
-                            <div
-                                className="mask"
-                                style={{background: 'linear-gradient(to bottom, hsla(0, 0%, 0%, 0) 50%, hsla(0, 0%, 0%, 0.5))'}}
-                            >
-                                <div className="bottom-0 d-flex align-items-end h-100 text-center justify-content-flex-start">
-                                    <div style={{padding: 20}}>
-                                        <h1 className="fw-bold text-white mb-4">{pinmarkDetailObject.pinmark?.locationName}</h1>
-                                    </div>                                    
-                                </div>
-                            </div>
-                        </MDBModalHeader>
-                        <MDBModalBody>
-                        <MDBRow>
-                                <MDBCol size='12' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>                                           
-                                            <MDBCardText>
-                                            <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(pinmarkDetailObject.pinmark?.locationName)}&destination_place_id=${pinmarkDetailObject.pinmark?.pinmarkId}`}>                                                
-                                                    {pinmarkDetailObject.pinmark?.address}
-                                                </a>                                                
-                                                </MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='12' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>{pinmarkDetailObject.details?.result.editorial_summary?.overview}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>{pinmarkDetailObject.pinmark?.pinmarkCategory}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            { pinmarkDetailObject.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText><a href={`tel:${pinmarkDetailObject.details?.result.formatted_phone_number}`}>{pinmarkDetailObject.details?.result.formatted_phone_number}</a></MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>$$$$ {pinmarkDetailObject.details?.result.price_level}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>   
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>$$$$ {pinmarkDetailObject.details?.result.rating} stars</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>                                
-                            </MDBRow>
-                        </MDBModalBody>
-                        <MDBBtn onClick={() => {
-                            setPinmarkDetailModal(false);
-                            setPinmarkDetailObject({});
-                            }} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                            <MDBIcon fas icon='times'/>
-                        </MDBBtn>  */}
+                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal}/>                       
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
@@ -672,15 +517,7 @@ function PinmarkList() {
                                 <h3 className='text-white mb-4'>{locationObject.state}, {locationObject.country}</h3>
                             </div>
                         </div>
-                    </div>
-                                       
-                {/* <img style={{objectFit: 'cover', width: '100%'}} className="img-fluid" src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
-                <div className="mask" style={{backgroundColor: 'rgba(0, 0, 0, 0.6)'}}>
-                <div style={{marginRight: 15, display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start', flexWrap: 'wrap'}} className='h-100'>
-                    <h1 style={{width: '100%', textAlign: 'left'}} className='text-white'>{locationObject.city}</h1>                    
-                    <h3 className="text-white">{locationObject.state}, {locationObject.country}</h3>
-                </div>
-                </div> */}
+                    </div>               
                 <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
                     <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
                     <MDBDropdownMenu>
