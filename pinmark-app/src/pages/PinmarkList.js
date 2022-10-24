@@ -39,7 +39,8 @@ import {
     MDBNavbar,
     MDBContainer,
     MDBInputGroup,
-    MDBBadge
+    MDBBadge,
+    MDBTypography
 } from 'mdb-react-ui-kit'
 import PinmarkModal from "../modals/PinmarkModal";
 import SearchModal from "../modals/SearchModal";
@@ -65,6 +66,8 @@ function PinmarkList() {
     const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');        
     const [pinmarkDetailObject, setPinmarkDetailObject] = React.useState({});
     const [currentLocationObject, setCurrentLocationObject] = React.useState({});
+    const [pinmarkCardSort, setPinmarkCardSort] = React.useState('newest');
+    const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
     const viewportRef = React.useRef();
 
     const dispatch = useDispatch();
@@ -336,7 +339,24 @@ function PinmarkList() {
              
             }
         })      
-        setLocalPinmarkListState(pinmarkList);
+        if (pinmarkCardSort === 'newest') {
+            var sortedList = [];
+            pinmarkList.slice(0).reverse().map((pin) => {
+                sortedList.push(pin);
+            })
+            setLocalPinmarkListState(sortedList);
+        } else if (pinmarkCardSort === 'alphabetical') {
+            var sortedList = pinmarkList.sort(function(a,b) {
+                if (a.locationName < b.locationName) {
+                    return -1;
+                } 
+                if (a.locationName > b.locationName) {
+                    return 1;
+                }
+                return 0;
+            })
+            setLocalPinmarkListState(sortedList);
+        }       
         var locationObject = {};
         locationState.map((location) => {
             if (location.locationId === locationId ) {
@@ -355,33 +375,7 @@ function PinmarkList() {
             }
         })
     
-        const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
-        var coffeePinmarks = [];
-        var nightLifePinmarks = [];
-        var foodPinmarks = [];
-        var lodgingPinmarks = [];
-        var shoppingPinmarks = [];
-        var touristAttractionPinmarks = [];
-        var otherPinmarks = [];
-    
-        pinmarkList.map((pinmark) => {
-            if (pinmark.pinmarkCategory === pinmarkCategories[0]) {
-                coffeePinmarks.push(pinmark);
-            } else if (pinmark.pinmarkCategory === pinmarkCategories[1]) {
-                nightLifePinmarks.push(pinmark);
-            } else if (pinmark.pinmarkCategory === pinmarkCategories[2]) {
-                foodPinmarks.push(pinmark);
-            } else if (pinmark.pinmarkCategory === pinmarkCategories[3]) {
-                lodgingPinmarks.push(pinmark);
-            } else if (pinmark.pinmarkCategory === pinmarkCategories[4]) {
-                shoppingPinmarks.push(pinmark);
-            } else if (pinmark.pinmarkCategory === pinmarkCategories[5]) {
-                touristAttractionPinmarks.push(pinmark);
-            } else {
-                otherPinmarks.push(pinmark);
-            }
-        })
-    }, [pinmarkListState, pinmarkSearchInput])
+    }, [pinmarkListState, pinmarkSearchInput, pinmarkCardSort])
 
 
     console.log(pinmarkListState);
@@ -392,6 +386,24 @@ function PinmarkList() {
             pinmarkList.push(pinmark);
         }
     })      
+    if (pinmarkCardSort === 'newest') {
+        var sortedList = [];
+        pinmarkList.slice(0).reverse().map((pin) => {
+            sortedList.push(pin);
+        })
+        // setLocalPinmarkListState(sortedList);
+    } else if (pinmarkCardSort === 'alphabetical') {
+        var sortedList = pinmarkList.sort(function(a,b) {
+            if (a.locationName < b.locationName) {
+                return -1;
+            } 
+            if (a.locationName > b.locationName) {
+                return 1;
+            }
+            return 0;
+        })
+        // setLocalPinmarkListState(sortedList);
+    }   
     var locationObject = {};
     locationState.map((location) => {
         if (location.locationId === locationId ) {
@@ -410,33 +422,7 @@ function PinmarkList() {
         }
     })
 
-    const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
-    var coffeePinmarks = [];
-    var nightLifePinmarks = [];
-    var foodPinmarks = [];
-    var lodgingPinmarks = [];
-    var shoppingPinmarks = [];
-    var touristAttractionPinmarks = [];
-    var otherPinmarks = [];
-
-    pinmarkList.map((pinmark) => {
-        if (pinmark.pinmarkCategory === pinmarkCategories[0]) {
-            coffeePinmarks.push(pinmark);
-        } else if (pinmark.pinmarkCategory === pinmarkCategories[1]) {
-            nightLifePinmarks.push(pinmark);
-        } else if (pinmark.pinmarkCategory === pinmarkCategories[2]) {
-            foodPinmarks.push(pinmark);
-        } else if (pinmark.pinmarkCategory === pinmarkCategories[3]) {
-            lodgingPinmarks.push(pinmark);
-        } else if (pinmark.pinmarkCategory === pinmarkCategories[4]) {
-            shoppingPinmarks.push(pinmark);
-        } else if (pinmark.pinmarkCategory === pinmarkCategories[5]) {
-            touristAttractionPinmarks.push(pinmark);
-        } else {
-            otherPinmarks.push(pinmark);
-        }
-    }) 
-
+    // stop background from scrolling when modal is open
     React.useEffect(() => {
         console.log(createTripModal)
         if (createTripModal || tripViewModal || showSearch) {
@@ -505,6 +491,8 @@ function PinmarkList() {
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
+
+            
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
             <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
                 <img position="top" overlay style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
@@ -590,8 +578,32 @@ function PinmarkList() {
             
             <MDBTabsContent>
                 <MDBTabsPane ref={viewportRef} show={tabState === 'all'} style={{justifyContent: 'center'}}>                                    
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                    <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -602,13 +614,37 @@ function PinmarkList() {
                                 </MDBBtn>
                             </MDBCardBody>
                         </MDBCard>
-                    </MDBCol>
-                    <PinmarkCards pinmarkList={localPinmarkListState} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/>                                        
+                    </MDBCol>                  
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='all' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/>                                        
                     </MDBRow>               
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[0]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                    <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -620,12 +656,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={coffeePinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='coffee' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>
                 </MDBTabsPane>             
                 <MDBTabsPane show={tabState === pinmarkCategories[1]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -637,12 +697,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={nightLifePinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='night-life' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[2]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -654,12 +738,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={foodPinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='food' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[3]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -671,12 +779,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={lodgingPinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='lodging' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === 'other'}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -688,12 +820,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={otherPinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='other' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[4]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -705,12 +861,36 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={shoppingPinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='shopping' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[5]}>
-                    <MDBInputGroup style={{padding:20}}>
-                        <input className="search form-control" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                    <MDBInputGroup style={{padding:20}} className='d-flex justify-content-between'>
+                        <input className="search form-control w-75" type='text' placeholder="Search your Pinmarks" onChange={handlePinmarkSearchInput} value={pinmarkSearchInput} style={{border: 'none', boxShadow: 'none'}}/>
+                        <MDBBtn color='link' className="text-muted w-25 d-flex align-items-center justify-content-end" onClick={() => {
+                            if (pinmarkCardSort === 'alphabetical') {
+                                setPinmarkCardSort('newest');
+                            } else if (pinmarkCardSort === 'newest') {
+                                setPinmarkCardSort('alphabetical');
+                            }   
+                            }}>
+                            {
+                                pinmarkCardSort === 'alphabetical' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Name</MDBTypography>                                    
+                                        <MDBIcon icon='sort-alpha-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                            {
+                                pinmarkCardSort === 'newest' && (                                
+                                    <>                                       
+                                        <MDBTypography tag='small'>Sort by Date Added</MDBTypography>                                    
+                                        <MDBIcon icon='sort-down' className="text-muted"/>
+                                    </>
+                                )
+                            }
+                        </MDBBtn>
                     </MDBInputGroup>
                     <MDBRow style={{padding: 20}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
@@ -722,7 +902,7 @@ function PinmarkList() {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <PinmarkCards pinmarkList={touristAttractionPinmarks} handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='tourist-attraction' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/> 
                     </MDBRow>                    
                 </MDBTabsPane>
             </MDBTabsContent>          
