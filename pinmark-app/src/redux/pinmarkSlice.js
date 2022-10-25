@@ -80,15 +80,32 @@ export const pinmarkSlice = createSlice({
             state.locations = newLocationsArray
         },
         deleteLocations: (state, action) => {
+            // remove locaton from location array
             const updatedLocationsArray = [];
             state.locations.forEach((item) => {
                 if(item.locationId !== action.payload) {
                     updatedLocationsArray.push(item)
                 } 
             })
+            // remove pinmarks at that location
+            const updatedPinmarksArray = [];
+            state.pinmarks.forEach((item) => {
+                if (item.locationId.locationId !== action.payload) {
+                    updatedPinmarksArray.push(item)
+                }
+            })
+            // remove trips at that location
+            const updatedTripsArray = [];
+            state.tripLists.forEach((item) => {
+                if (item.locationId !== action.payload) {
+                    updatedTripsArray.push(item)
+                }
+            })
             return {
                 ...state,
-                locations: updatedLocationsArray
+                pinmarks: updatedPinmarksArray,
+                locations: updatedLocationsArray,
+                tripLists: updatedTripsArray
             }
         },
         addPinmark: (state, action) => {

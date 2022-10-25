@@ -6,6 +6,7 @@ import Hero from "../components/Hero";
 import List from "../components/List";
 import { updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
+import { useNavigate } from "react-router-dom";
 import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
@@ -40,7 +41,9 @@ import {
     MDBContainer,
     MDBInputGroup,
     MDBBadge,
-    MDBTypography
+    MDBTypography,
+    MDBModalTitle,
+    MDBSpinner
 } from 'mdb-react-ui-kit'
 import PinmarkModal from "../modals/PinmarkModal";
 import SearchModal from "../modals/SearchModal";
@@ -50,6 +53,7 @@ import PinmarkCards from "../components/PinmarkCards";
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
     const { locationId } = useParams();    
+    const navigate = useNavigate();
     const userState = useSelector((state) => state.user);
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkState = useSelector((state) => state.pinmark);
@@ -61,6 +65,9 @@ function PinmarkList() {
     const [tripViewModal, setTripViewModal] = React.useState(false);
     const [showSearch, setShowSearch] = React.useState(false);
     const [pinmarkDetailModal, setPinmarkDetailModal] = React.useState(false);
+    const [settingsModal, setSettingsModal] = React.useState(false);
+    const [deleteLocationModal, setDeleteLocationModal] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
     const [tripViewObject, setTripViewObject] = React.useState('');   
     const [pinmarkSearchInput, setPinmarkSearchInput] = React.useState('');        
@@ -156,6 +163,18 @@ function PinmarkList() {
             setPinmarkDetailModal(true);        
             setPinmarkDetailObject(detailObject);
         })
+    }
+
+    const handleDeleteLocation = () => {
+        
+        setLoading(true);
+        // link back to user home
+        setTimeout(() => {
+            navigate('/UserHome')            
+            dispatch(deleteLocations(locationId));
+        }, 2000);
+
+
     }
 
     const handleDeletePinmark = (pinmark) => {        
@@ -440,8 +459,7 @@ function PinmarkList() {
                         <h3>Create A New Trip</h3>                        
                         <div style={{padding: 20}}>
                             <MDBInput onInput={createTripInput} value={createTripName} label={`What's your trip called?`}/>
-                        </div>       
-                       
+                        </div>                              
                         <MDBModalFooter>
                             <MDBRow>
                             <MDBCol>
@@ -492,7 +510,67 @@ function PinmarkList() {
                 </MDBModalDialog>
             </MDBModal>
 
-            
+            {/* Settings Modal */}
+            <MDBModal show={settingsModal} setShow={setSettingsModal}>
+                <MDBModalDialog                    
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Location Settings</MDBModalTitle>
+                            <MDBBtn color='link' onClick={() => setSettingsModal(false)}>Close</MDBBtn>
+                        </MDBModalHeader>
+                        <MDBModalBody className="d-flex justify-content-center">
+                            <MDBListGroup className="w-75" light>
+                                <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
+                                    Refresh Header Image
+                                    <MDBBtn tag='a' color='none' className='m-1' style={{padding: 10}}><MDBIcon icon='redo'/></MDBBtn>
+                                </MDBListGroupItem>
+                                <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
+                                    Delete Location
+                                    <MDBBtn onClick={() => {
+                                        setDeleteLocationModal(true)
+                                        setSettingsModal(false)
+                                        }} color='danger' className="d-flex justify-content-between align-items-center"><MDBIcon icon='trash'/></MDBBtn>
+                                </MDBListGroupItem>
+                            </MDBListGroup>
+                        </MDBModalBody>                       
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+
+            {/* Delete Location Confirmation */}
+            <MDBModal show={deleteLocationModal} setShow={setDeleteLocationModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Delete Location?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to delete this location?</p>
+                            <p className="text-muted">All pinmarks and trips at this location will be deleted</p>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setDeleteLocationModal(false)
+                                setSettingsModal(true)
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => handleDeleteLocation()} color='danger'>
+                                {!loading && (<>Delete</>)}
+                                {loading && (<MDBSpinner size='sm' role='status'/>)}
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+
+
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
             <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
                 <img position="top" overlay style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
@@ -502,13 +580,14 @@ function PinmarkList() {
                         background: 'linear-gradient(to bottom, hsla(0, 0%, 0%, 0.2) 50%, hsla(0, 0%, 0%, 0.8))',
                         }}
                     >
-                        <div className='bottom-0 d-flex align-items-end h-100 text-center justify-content-flex-start'>
+                        <div className='bottom-0 d-flex align-items-end h-100 text-center justify-content-between'>
                             <div style={{paddingLeft: 20}}>
-                                <h1 className='fw-bold text-white mb-4'>{locationObject.city}</h1>
-                            </div>
-                            <div style={{paddingLeft: 20}}>
-                                <h3 className='text-white mb-4'>{locationObject.state}, {locationObject.country}</h3>
-                            </div>
+                                <h1 className='fw-bold text-white mb-1'>{locationObject.city}</h1>
+                                <h3 className='text-muted mb-2'>{locationObject.state}, {locationObject.country}</h3>
+                            </div>                            
+                            <MDBBtn onClick={() => setSettingsModal(true)} tag='a' color='none' className='m-1' style={{ color: 'white', padding: 10}}>
+                                <MDBIcon size='2x' icon='ellipsis-h'/>
+                            </MDBBtn>             
                         </div>
                     </div>               
                 <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
@@ -528,7 +607,8 @@ function PinmarkList() {
                             Create New Trip
                         </MDBDropdownItem>
                     </MDBDropdownMenu>
-                </MDBDropdown>                 
+                </MDBDropdown>    
+                
           
             </MDBContainer>
             <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>

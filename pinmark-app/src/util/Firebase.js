@@ -149,11 +149,11 @@ export const getUser = async(userId) => {
 
 // Update user
 export const updateUser = async(userId, userObject) => {
-    const docExists = await getDoc(doc(db, "pinmarks", userId));
-    if (docExists.exists()) {
+    const docExists = await getDoc(doc(db, "pinmarks", userId));    
+    if (docExists.exists()) {                
         await updateDoc(doc(db, "pinmarks", userId), {
             pinmark: userObject
-        })
+        }).catch(e => console.log(e))
     } else {
         await setDoc(doc(db, "pinmarks", userId), {
             pinmark: {}
