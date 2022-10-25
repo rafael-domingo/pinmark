@@ -4,28 +4,32 @@ import {
     MDBCol, 
     MDBModalBody, 
     MDBModalHeader, 
+    MDBModal,
     MDBRow,
     MDBCard,
     MDBCardImage,
     MDBCardBody,
     MDBCardText,
     MDBCardTitle,
-    MDBCardFooter
+    MDBCardFooter,
+    MDBIcon,
+    MDBModalTitle
 } from 'mdb-react-ui-kit';
 
-function TripViewModal({tripObject, handleCloseModal}) { 
+function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip}) { 
     const ref = React.useRef();
-
+    
+    console.log(tripObject)
     // side effect to reset scroll to top when opening modal
     React.useEffect(() => {
         console.log(ref);
         ref.current.scrollTo(0,0);
     })   
     return (
-        <>
+        <>            
             <MDBModalHeader>
-                {tripObject?.trip?.tripName}
-                <MDBBtn onClick={() => handleCloseModal()}>Close</MDBBtn>
+                <MDBModalTitle>{tripObject?.trip?.tripName}</MDBModalTitle>               
+                <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
             </MDBModalHeader>
             <MDBModalBody ref={ref}>
                 <MDBRow>
@@ -50,6 +54,9 @@ function TripViewModal({tripObject, handleCloseModal}) {
                     }
                 </MDBRow>
             </MDBModalBody>
+            <MDBBtn onClick={() => handleCloseModal()} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                <MDBIcon fas icon='times'/>
+            </MDBBtn>  
         </>
     )
 }

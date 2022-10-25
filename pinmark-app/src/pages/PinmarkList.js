@@ -7,7 +7,7 @@ import List from "../components/List";
 import { updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
 import { useNavigate } from "react-router-dom";
-import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations } from "../redux/pinmarkSlice";
+import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
     MDBListGroupItem,
@@ -67,6 +67,8 @@ function PinmarkList() {
     const [pinmarkDetailModal, setPinmarkDetailModal] = React.useState(false);
     const [settingsModal, setSettingsModal] = React.useState(false);
     const [deleteLocationModal, setDeleteLocationModal] = React.useState(false);
+    const [deleteTripModal, setDeleteTripModal] = React.useState(false);
+    const [deleteTripId, setDeleteTripId] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
     const [tripViewObject, setTripViewObject] = React.useState('');   
@@ -165,16 +167,29 @@ function PinmarkList() {
         })
     }
 
-    const handleDeleteLocation = () => {
-        
+    const handleDeleteLocation = () => { 
         setLoading(true);
         // link back to user home
         setTimeout(() => {
             navigate('/UserHome')            
             dispatch(deleteLocations(locationId));
+        }, 2000);   
+    }
+
+    const handleDeleteTripModal = (tripId) => {
+        setDeleteTripModal(true);
+        setLoading(false);
+        setTripViewModal(false);
+        setDeleteTripId(tripId);
+    }
+
+    const handleDeleteTrip = (tripId) => {
+        setLoading(true);
+        setTimeout(() => {
+            setTripViewModal(false);
+            setDeleteTripModal(false);
+            dispatch(deleteTripLists(tripId));
         }, 2000);
-
-
     }
 
     const handleDeletePinmark = (pinmark) => {        
@@ -482,7 +497,7 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal}/>                        
+                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal}/>                        
                     </MDBModalContent>
                 </MDBModalDialog>
             {/* Search Modal */}
@@ -562,6 +577,37 @@ function PinmarkList() {
                                 setSettingsModal(true)
                                 }} color='link'>Cancel</MDBBtn>
                             <MDBBtn style={{width: 100}} onClick={() => handleDeleteLocation()} color='danger'>
+                                {!loading && (<>Delete</>)}
+                                {loading && (<MDBSpinner size='sm' role='status'/>)}
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+
+            {/* Delete Trip Confirmation */}
+            <MDBModal show={deleteTripModal} setShow={setDeleteTripModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Delete Trip?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to delete this location?</p>
+                            <p className="text-muted">Only this trip will be deleted. Your pinmarks will remain in your Location page.</p>
+                        </MDBModalBody>
+                    
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setDeleteTripModal(false)
+                                setTripViewModal(true)
+                                setDeleteTripId('')
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => handleDeleteTrip(deleteTripId)} color='danger'>
                                 {!loading && (<>Delete</>)}
                                 {loading && (<MDBSpinner size='sm' role='status'/>)}
                             </MDBBtn>
