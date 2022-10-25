@@ -179,7 +179,7 @@ function PinmarkList() {
     const handleDeleteTripModal = (tripId) => {
         setDeleteTripModal(true);
         setLoading(false);
-        setTripViewModal(false);
+        // setTripViewModal(false);
         setDeleteTripId(tripId);
     }
 
@@ -557,7 +557,7 @@ function PinmarkList() {
             </MDBModal>
 
             {/* Delete Location Confirmation */}
-            <MDBModal show={deleteLocationModal} setShow={setDeleteLocationModal}>
+            <MDBModal staticBackdrop show={deleteLocationModal} setShow={setDeleteLocationModal}>
                 <MDBModalDialog
                     centered
                     scrollable
@@ -586,7 +586,7 @@ function PinmarkList() {
             </MDBModal>
 
             {/* Delete Trip Confirmation */}
-            <MDBModal show={deleteTripModal} setShow={setDeleteTripModal}>
+            <MDBModal staticBackdrop show={deleteTripModal} setShow={setDeleteTripModal}>
                 <MDBModalDialog
                     centered
                     scrollable
@@ -597,7 +597,7 @@ function PinmarkList() {
                             <MDBModalTitle>Delete Trip?</MDBModalTitle>
                         </MDBModalHeader>
                         <MDBModalBody>
-                            <p>Are you sure you want to delete this location?</p>
+                            <p>Are you sure you want to delete this trip?</p>
                             <p className="text-muted">Only this trip will be deleted. Your pinmarks will remain in your Location page.</p>
                         </MDBModalBody>
                     
