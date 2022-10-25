@@ -29,12 +29,15 @@ import {
 } from 'mdb-react-ui-kit';
 import { Google } from "../util/Google";
 import PinmarkModal from "../modals/PinmarkModal";
+import { deleteLocations, deletePinmark } from "../redux/pinmarkSlice";
 
 function Pinmarks() {
     const pinmarkState = useSelector((state) => state.pinmark.pinmarks);
     const dispatch = useDispatch();
     const [showModal, setShowModal] = React.useState(false);
     const [detailInfo, setDetailInfo] = React.useState({});
+    const [confirmationModal, setConfirmationModal] = React.useState(false);
+
     // styles
     const containerDivStyle = {
         display: 'flex',
@@ -64,6 +67,7 @@ function Pinmarks() {
                 pinmark: pinmark,
                 details: result
             }
+            console.log(infoObject)
             setDetailInfo(infoObject);
             setShowModal(true);
         })
@@ -74,6 +78,34 @@ function Pinmarks() {
     const handleCloseModal = () => {
         setShowModal(false);
     }
+
+    const handleDeletePinmarkModal = () => {
+        setConfirmationModal(true);
+        console.log(detailInfo)
+    }
+
+    const handleDeletePinmark = (pinmark) => {
+        console.log(pinmark);
+        var locationIdReference = '';
+        var locationIdCount = 0;
+        pinmarkState.map((pin) => {
+            if (pinmark.pinmark.pinmarkId === pin.pinmarkId) {
+                locationIdReference = pin.locationId.locationId;
+            }
+        })
+        pinmarkState.map((pin) => {
+            if(pin.locationId.locationId === locationIdReference) {
+                locationIdCount++;
+            }
+        })
+        console.log(locationIdReference)
+        if (locationIdCount <= 1) {
+            dispatch(deleteLocations(locationIdReference));
+        }
+        dispatch(deletePinmark(pinmark.pinmark.pinmarkId))
+    }
+
+
 
     return (
         <div style={containerDivStyle}>
@@ -109,82 +141,40 @@ function Pinmarks() {
             <MDBModal show={showModal} setShow={setShowModal}>
                 <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
                     <MDBModalContent> 
-                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleCloseModal}/>
-                        {/* <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
-                        <img position="top" overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>  
-                        <div
-                            className='mask'
-                            style={{
-                            background: 'linear-gradient(to bottom, hsla(0, 0%, 0%, 0) 50%, hsla(0, 0%, 0%, 0.5))',
-                            }}>
-                            <div className='bottom-0 d-flex align-items-end h-100 text-center justify-content-flex-start'>
-                            <div style={{paddingLeft: 20}}>
-                                <h1 className='fw-bold text-white mb-4'>{detailInfo.pinmark?.locationName}</h1>
-                            </div>
-                            </div>
-                        </div>                      
-                        </MDBModalHeader>
-                        <MDBModalBody>                        
-                            <MDBRow>
-                                <MDBCol size='12' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>                                           
-                                            <MDBCardText>
-                                            <a href={`https://www.google.com/maps/dir/?api=1&map_action=map&destination=${encodeURIComponent(detailInfo.pinmark?.locationName)}&destination_place_id=${detailInfo.pinmark?.pinmarkId}`}>                                                
-                                                    {detailInfo.pinmark?.address}
-                                                </a>                                                
-                                                </MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='12' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>{detailInfo.details?.result.editorial_summary?.overview}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>{detailInfo.pinmark?.pinmarkCategory}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            { detailInfo.details?.result.opening_hours.open_now ? (<MDBBadge>Open</MDBBadge>) : (<MDBBadge>Closed</MDBBadge>)}  
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText><a href={`tel:${detailInfo.details?.result.formatted_phone_number}`}>{detailInfo.details?.result.formatted_phone_number}</a></MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>$$$$ {detailInfo.details?.result.price_level}</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>   
-                                <MDBCol size='6' className='mb-4'>
-                                    <MDBCard>
-                                        <MDBCardBody>
-                                            <MDBCardText>$$$$ {detailInfo.details?.result.rating} stars</MDBCardText>
-                                        </MDBCardBody>
-                                    </MDBCard>
-                                </MDBCol>                                
-                            </MDBRow>
-                        </MDBModalBody>                              
-                        <MDBBtn onClick={() => setShowModal(false)} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
-                            <MDBIcon fas icon='times'/>
-                        </MDBBtn>                     */}
+                        <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleCloseModal} handleDeletePinmark={handleDeletePinmarkModal}/>                        
                     </MDBModalContent>                  
+                </MDBModalDialog>
+            </MDBModal>
+
+             {/* Delete Pinmark Confirmation */}
+             <MDBModal staticBackdrop show={confirmationModal} setShow={setConfirmationModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Delete Pinmark?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to delete this pinmark?</p>
+                            <p className="text-muted">This will also remove the pinmark from any trips it's in.</p>
+                        </MDBModalBody>
+                    
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setConfirmationModal(false)                                
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => {
+                                handleDeletePinmark(detailInfo)
+                                setConfirmationModal(false)                                
+                                setShowModal(false)
+                                }} color='danger'>
+                                Delete
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
         </div>

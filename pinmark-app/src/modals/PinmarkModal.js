@@ -15,12 +15,13 @@ import Rating from '../components/Rating';
 import Price from '../components/Price';
 import Category from '../components/Category';
 
-function PinmarkModal({detailInfo, handleCloseModal}) {
+function PinmarkModal({detailInfo, handleCloseModal, handleDeletePinmark}) {
     const ref = React.useRef();
     React.useEffect(() => {
         ref.current.scrollTo(0,0);
     });
-    
+    console.log(detailInfo);
+
     return (
         <>
             <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
@@ -35,7 +36,7 @@ function PinmarkModal({detailInfo, handleCloseModal}) {
                         <h1 className='fw-bold text-white mb-4'>{detailInfo.pinmark?.locationName}</h1>
                     </div>
                     </div>
-                </div>                        
+                </div>                       
             </MDBModalHeader>
             <MDBModalBody ref={ref}>                        
                 <MDBRow>
@@ -85,7 +86,10 @@ function PinmarkModal({detailInfo, handleCloseModal}) {
                         <Rating rating={detailInfo.details?.result?.rating}/>                                                                        
                     </MDBCol>                                
                 </MDBRow>
-            </MDBModalBody>                              
+            </MDBModalBody>   
+            <MDBBtn onClick={() => handleDeletePinmark(detailInfo.details?.result)} tag='a' color='danger' size='lg' floating style={{position: 'absolute', bottom: 30, left: 30, color: 'white'}}>
+                <MDBIcon fas icon='trash'/>
+            </MDBBtn>                                            
             <MDBBtn onClick={() => handleCloseModal()} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='times'/>
             </MDBBtn>                      

@@ -69,6 +69,8 @@ function PinmarkList() {
     const [deleteLocationModal, setDeleteLocationModal] = React.useState(false);
     const [deleteTripModal, setDeleteTripModal] = React.useState(false);
     const [deleteTripId, setDeleteTripId] = React.useState('');
+    const [deletePinmarkModal, setDeletePinmarkModal] = React.useState(false);
+    const [deletePinmarkObject, setDeletePinmarkObject] = React.useState({});
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
     const [tripViewObject, setTripViewObject] = React.useState('');   
@@ -190,6 +192,11 @@ function PinmarkList() {
             setDeleteTripModal(false);
             dispatch(deleteTripLists(tripId));
         }, 2000);
+    }
+
+    const handleDeletePinmarkModal = (pinmarkObject) => {
+        setDeletePinmarkModal(true);
+        setDeletePinmarkObject(pinmarkObject);
     }
 
     const handleDeletePinmark = (pinmark) => {        
@@ -520,7 +527,7 @@ function PinmarkList() {
                     className="justify-content-center align-item-center"
                     >
                     <MDBModalContent>
-                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal}/>                       
+                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal} handleDeletePinmark={handleDeletePinmarkModal}/>                       
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
@@ -616,6 +623,39 @@ function PinmarkList() {
                 </MDBModalDialog>
             </MDBModal>
 
+            {/* Delete Pinmark Confirmation */}
+            <MDBModal staticBackdrop show={deletePinmarkModal} setShow={setDeletePinmarkModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Delete Pinmark?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to delete this pinmark?</p>
+                            <p className="text-muted">This will also remove the pinmark from any trips it's in.</p>
+                        </MDBModalBody>
+                    
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setDeletePinmarkModal(false)
+                                setDeletePinmarkObject({})                                
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => {
+                                handleDeletePinmark(deletePinmarkObject)
+                                setDeletePinmarkModal(false)
+                                setDeletePinmarkObject({}) 
+                                handleClosePinmarkModal()                                
+                                }} color='danger'>
+                                Delete
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
 
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
             <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
