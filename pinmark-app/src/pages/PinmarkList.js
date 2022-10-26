@@ -341,12 +341,13 @@ function PinmarkList() {
         setPinmarkSearchInput(e.target.value)
     }
      
-    const handlePinmarkDetail = (pinmark) => {
+    const handlePinmarkDetail = (pinmark, showDelete = true) => {
         Google.placeDetails(pinmark.pinmarkId)
         .then(result => {
             const pinmarkDetailObject = {
                 pinmark: pinmark,
-                details: result
+                details: result,
+                showDelete: showDelete
             }            
             setPinmarkDetailModal(true);
             setPinmarkDetailObject(pinmarkDetailObject);
@@ -504,7 +505,7 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal}/>                        
+                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handlePinmarkDetail}/>                        
                     </MDBModalContent>
                 </MDBModalDialog>
             {/* Search Modal */}

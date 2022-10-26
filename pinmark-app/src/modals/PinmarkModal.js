@@ -86,10 +86,15 @@ function PinmarkModal({detailInfo, handleCloseModal, handleDeletePinmark}) {
                         <Rating rating={detailInfo.details?.result?.rating}/>                                                                        
                     </MDBCol>                                
                 </MDBRow>
-            </MDBModalBody>   
-            <MDBBtn onClick={() => handleDeletePinmark(detailInfo.details?.result)} tag='a' color='danger' size='lg' floating style={{position: 'absolute', bottom: 30, left: 30, color: 'white'}}>
-                <MDBIcon fas icon='trash'/>
-            </MDBBtn>                                            
+            </MDBModalBody> 
+            {
+                detailInfo?.showDelete && (
+                    <MDBBtn onClick={() => handleDeletePinmark(detailInfo.details?.result)} tag='a' color='danger' size='lg' floating style={{position: 'absolute', bottom: 30, left: 30, color: 'white'}}>
+                        <MDBIcon fas icon='trash'/>
+                    </MDBBtn>  
+                )
+            }  
+                                                      
             <MDBBtn onClick={() => handleCloseModal()} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='times'/>
             </MDBBtn>                      

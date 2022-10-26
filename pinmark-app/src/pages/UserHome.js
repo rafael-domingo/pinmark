@@ -191,7 +191,7 @@ function UserHome() {
      
     }
 
-    const handleShowDetails = (info) => {
+    const handleShowDetails = (info) => {        
         console.log(info);
         Google.placeDetails(info.place_id)
         .then(result => {
@@ -213,7 +213,8 @@ function UserHome() {
 
     const handleClosePinmarkModal = () => {
         setSecondModal(false);
-        setShowSearch(true);
+       
+        // setShowSearch(true);
     }
 
 
@@ -229,13 +230,13 @@ function UserHome() {
             <h3>Your Locations</h3>  
                 <Locations />    
             <h3>Most Recent Pinmarks</h3>
-                <Pinmarks/>    
+                <Pinmarks />    
             <h3>Most Recent Trips</h3>
-                <Trips />
+                <Trips handlePinmarkDetail={handleShowDetails} />
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
-            <MDBModal tabIndex='-1' show={showSearch && !secondModal} setShow={setShowSearch}>
+            <MDBModal tabIndex='-1' show={showSearch} setShow={setShowSearch}>
                 <MDBModalDialog size='fullscreen-xxl-down' scrollable>
                     <MDBModalContent>
                         <SearchModal handleCloseModal={handleShowSearch} handlePinmarkDetail={handleShowDetails} handleAddPinmark={handleAddPinmark} handleDeletePinmark={handleDeletePinmark}/>

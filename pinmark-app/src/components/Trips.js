@@ -12,7 +12,7 @@ import {
 } from 'mdb-react-ui-kit'
 import TripViewModal from '../modals/TripViewModal';
 import { deleteTripLists } from '../redux/pinmarkSlice';
-function Trips() {
+function Trips({handlePinmarkDetail}) {
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkState = useSelector((state) => state.pinmark.pinmarks);
     const tripsState = useSelector((state) => state.pinmark.tripLists);
@@ -77,6 +77,14 @@ function Trips() {
         }, 2000);
     }
 
+    const handleDetail = (pinmark) => {
+        // format input to handleShowDetails function
+        const newObject = {
+            place_id: pinmark.pinmarkId
+        }
+        handlePinmarkDetail(newObject);
+    }
+
     return (
         <div style={containerDivStyle}>
         {
@@ -118,7 +126,7 @@ function Trips() {
         <MDBModal show={showModal} setShow={setShowModal}>
             <MDBModalDialog size='fullscreen' centered scrollable className='justify-content-center align-item-center'>
                 <MDBModalContent>
-                    <TripViewModal tripObject={modalInfo} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal}/>                    
+                    <TripViewModal tripObject={modalInfo} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handleDetail}/>                    
                 </MDBModalContent>
             </MDBModalDialog>
         </MDBModal>
