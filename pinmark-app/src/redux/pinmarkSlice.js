@@ -108,6 +108,23 @@ export const pinmarkSlice = createSlice({
                 tripLists: updatedTripsArray
             }
         },
+        updateLocationPhoto: (state, action) => {
+            const updatedLocationsArray = [];
+            state.locations.forEach((item) => {
+                if (action.payload.locationId === item.locationId) {
+                    updatedLocationsArray.push({
+                        ...item,
+                        photo_reference: action.payload.photo_reference
+                    })
+                } else {
+                    updatedLocationsArray.push(item)
+                }
+            })
+            return {
+                ...state,
+                locations: updatedLocationsArray
+            }
+        },
         addPinmark: (state, action) => {
             state.pinmarks.push(action.payload)
         },
@@ -207,6 +224,7 @@ export const {
     setTripLists,
     addLocations,
     deleteLocations,
+    updateLocationPhoto,
     addPinmark,
     deletePinmark,
     addPinmarkToTrip,

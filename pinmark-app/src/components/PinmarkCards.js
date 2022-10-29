@@ -11,7 +11,8 @@ import {
     MDBDropdownToggle,
     MDBDropdownMenu,
     MDBDropdownItem,
-    MDBIcon,    
+    MDBIcon,
+    MDBRow,    
 } from 'mdb-react-ui-kit';
 function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDetail, handleCreateTrip, tripList, tripView = false, handleAddPinmarkToTrip}) {    
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
@@ -28,15 +29,21 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                 <MDBCardBody>
                                     <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>
                                     <MDBCardText>{pinmark.address}</MDBCardText>
-                                    <MDBBtn color='link' onClick={() => handlePinmarkDetail(pinmark)}>More Details</MDBBtn>
+                                    <MDBRow className='d-flex justify-content-between align-items-start'>
+                                    <MDBCol size={6}  style={{top: 0, left: -10, position: 'absolute', display: 'flex', justifyContent: 'flex-start', alignItems: 'flex-start'}}>                                                        
+                                        <MDBBtn color='link' onClick={() => handlePinmarkDetail(pinmark)}>
+                                            <MDBIcon icon='info-circle' size='2x'/>
+                                        </MDBBtn>
+                                    </MDBCol>
+                                    <MDBCol size={6} style={{top: 0, right: -10, position: 'absolute', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start'}}>
                                     {
                                         !tripView && (
-                                            <MDBDropdown>
-                                            <MDBDropdownToggle>
-                                                Add To Trip
+                                            <MDBDropdown group className='shadow-0'>
+                                            <MDBDropdownToggle className='d-flex justify-content-center align-items-center'>
+                                                <MDBIcon icon='plus' tag='a' color='none' style={{color: 'white'}} />
                                                 
                                             </MDBDropdownToggle>
-                                            <MDBDropdownMenu>
+                                            <MDBDropdownMenu style={{maxHeight: '50vh', overflowY: 'scroll'}}>
                                                 {
                                                     tripList.map((trip) => {
                                                         return (
@@ -54,18 +61,25 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                                         )
                                                     })
                                                 }
-                                                <MDBDropdownItem divider/>
-                                                  
-                                                    <MDBDropdownItem onClick={() => handleCreateTrip()} link>Create New Trip</MDBDropdownItem>
+                                                <MDBDropdownItem divider/>                                                  
+                                                <MDBDropdownItem onClick={() => handleCreateTrip()} link>Create New Trip</MDBDropdownItem>
                                             </MDBDropdownMenu>
                                             </MDBDropdown>
                                         )
                                     }
+                                    </MDBCol>
+                                    
                                     {
                                         tripView && (
-                                            <MDBBtn color='link' onClick={() => {handleAddPinmarkToTrip(pinmark)}}>Remove From Trip</MDBBtn>
+                                            <MDBCol  size={6} style={{top: 0, right: -10, position: 'absolute', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start'}}>
+                                            <MDBBtn color='link' onClick={() => {handleAddPinmarkToTrip(pinmark)}}>
+                                                <MDBIcon size='2x' icon='minus-circle' tag='a' color='link'/>
+                                            </MDBBtn>
+                                            </MDBCol>
                                         )
                                     }
+                                    
+                                    </MDBRow>
                                    
                                 </MDBCardBody>
                             </MDBCard>

@@ -7,7 +7,7 @@ import List from "../components/List";
 import { updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
 import { useNavigate } from "react-router-dom";
-import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists } from "../redux/pinmarkSlice";
+import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
     MDBListGroupItem,
@@ -237,6 +237,28 @@ function PinmarkList() {
             dispatch(deleteLocations(locationIdReference));
         }
         dispatch(deletePinmark(pinmark.place_id))
+    }
+
+    const handleRefreshHeaderImage = (locationId) => {
+        console.log('clicked')
+        console.log(locationId);
+        locationState.map((location) => {
+            if (location.locationId === locationId) {
+                Google.placeSearch(`${location.city} ${location.country} ${location?.state}`, null)
+                .then(result => {
+                    Google.placeDetails(result.results[0].place_id)
+                    .then(result => {
+                        let randIndex = Math.floor(Math.random() * result.result.photos.length);
+                        let new_photo_reference = result.result.photos[randIndex].photo_reference;
+                        dispatch(updateLocationPhoto({
+                            locationId: locationId,
+                            photo_reference: new_photo_reference
+                        }))
+                    })
+                })
+            }
+        })
+     
     }
     
     const handleDeletePinmarkFromTripModal = (pinmark, tripObj, del) => {
@@ -583,7 +605,7 @@ function PinmarkList() {
                             <MDBListGroup className="w-75" light>
                                 <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
                                     Refresh Header Image
-                                    <MDBBtn tag='a' color='none' className='m-1' style={{padding: 10}}><MDBIcon icon='redo'/></MDBBtn>
+                                    <MDBBtn onClick={() => handleRefreshHeaderImage(locationId)} tag='a' color='none' className='m-1' style={{padding: 10}}><MDBIcon icon='redo'/></MDBBtn>
                                 </MDBListGroupItem>
                                 <MDBListGroupItem className='d-flex justify-content-between align-items-center'>
                                     Delete Location
@@ -939,7 +961,7 @@ function PinmarkList() {
                             }
                         </MDBBtn>
                     </MDBInputGroup>
-                    <MDBRow style={{padding: 20}}>
+                    <MDBRow style={{padding: 0}}>
                     <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
                         <MDBCard className="h-100">
                             <MDBCardBody onClick={() => setShowSearch(true)} className='d-flex justify-content-center align-items-center'>                               
