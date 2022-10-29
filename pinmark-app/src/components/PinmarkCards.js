@@ -17,14 +17,22 @@ import {
 function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDetail, handleCreateTrip, tripList, tripView = false, handleAddPinmarkToTrip}) {    
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
     console.log(pinmarkList);
+    const colorArray = [        
+        'secondary',
+        'success',
+        'danger',
+        'warning',
+        'info'
+    ];
     return (
         <>
         {
             pinmarkList?.map((pinmark) => {
+                const colorPicker = Math.floor(Math.random() * colorArray.length);
                 if ((pinmark.pinmarkCategory === category || category === 'all') || (!pinmarkCategories.includes(pinmark.pinmarkCategory) && category === 'other')) {
                     return (
                         <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
-                            <MDBCard className='h-100'>
+                            <MDBCard className='h-100 text-white' background={colorArray[colorPicker]}>
                                 <MDBCardImage  style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...'/>
                                 <MDBCardBody>
                                     <MDBCardTitle>{pinmark.locationName}</MDBCardTitle>

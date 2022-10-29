@@ -8,7 +8,7 @@ import {
     signOut,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    fetchSignInMethodsForEmail
+    fetchSignInMethodsForEmail,    
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -58,9 +58,20 @@ export const signInWithGoogle = async () => {
     }    
 }
 
+// fetch user by email
+export const fetchUserInfo = async () => {
+    const userList = await getDocs(collection(db, "users"))
+    const userArray = [];
+    userList.forEach((doc) => {        
+        userArray.push(doc.data());        
+    })
+    return userArray;
+}
+
 
 // Sign in with email/password
-export const signInWithEmail = async (registering, email, password) => {       
+export const signInWithEmail = async (registering, email, password) => {   
+        
     // check with sign-in methods have been performed -- useful for people who have signed in with google/facebook and try to sign in with email 
    var signInMethods = [];
     return fetchSignInMethodsForEmail(auth, email).then(result => {
@@ -71,8 +82,17 @@ export const signInWithEmail = async (registering, email, password) => {
     if (registering) {           
         return createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+            console.log('registering');
             // signed in
             const user = userCredential.user;
+            setDoc(doc(db, "users", user.uid), {
+                userName: user.displayName,
+                email: user.email,
+                phone: user.phoneNumber,
+                profilePicture: user.photoURL,
+                uid: user.uid,
+                authType: 'email'
+            })     
             console.log(user);
             return user;
         })

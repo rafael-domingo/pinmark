@@ -550,8 +550,7 @@ function PinmarkList() {
                             <MDBCol>
                                 <MDBBtn onClick={() => handleCreateTrip()}>Create</MDBBtn>
                             </MDBCol>
-                            </MDBRow>
-                    
+                            </MDBRow>                    
                         </MDBModalFooter>
                     </MDBModalContent>
                 </MDBModalDialog>
@@ -564,6 +563,15 @@ function PinmarkList() {
                         <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handlePinmarkDetail} handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}/>                        
                     </MDBModalContent>
                 </MDBModalDialog>
+
+            {/* Share Trip Modal */}
+            <MDBModal>
+                <MDBModalDialog>
+
+                </MDBModalDialog>
+            </MDBModal>
+
+
             {/* Search Modal */}
             </MDBModal>
             <MDBModal staticBackdrop show={showSearch} setShow={setShowSearch} tabIndex='-1'>
@@ -763,7 +771,7 @@ function PinmarkList() {
             </MDBModal>
 
         
-            <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
+            <MDBNavbar sticky fixed="top" dark bgColor="primary" style={{padding: 0}} >            
             <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
                 <img position="top" overlay style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                     <div
@@ -782,67 +790,49 @@ function PinmarkList() {
                             </MDBBtn>             
                         </div>
                     </div>        
-                <MDBBtn style={{position: 'absolute', top: 10, right: 10}} onClick={() => setTripListModal(true)}>Your Trips</MDBBtn>
-                {/* <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
-                    <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
-                    <MDBDropdownMenu>
-                        {
-                            tripList.map((trip) => {
-                             return (
-                                <MDBDropdownItem link childTag="button" onClick={() => handleSetTripView(trip)}>
-                                    {trip.tripName}
-                                </MDBDropdownItem>
-                             )       
-                            })
-                        }
-                        <MDBDropdownItem divider/>
-                        <MDBDropdownItem link childTag="button" onClick={() => setCreateTripModal(true)}>
-                            Create New Trip
-                        </MDBDropdownItem>
-                    </MDBDropdownMenu>
-                </MDBDropdown>     */}
+                <MDBBtn style={{position: 'absolute', top: 10, right: 10}} onClick={() => setTripListModal(true)}>Your Trips</MDBBtn>              
                 
             
                         
             </MDBContainer>
-            <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
+            <MDBTabs fill pills style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick('all')} active={tabState === 'all'}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick('all')} active={tabState === 'all'}>
                         All
                     </MDBTabsLink>
                 </MDBTabsItem>  
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[0])} active={tabState === pinmarkCategories[0]}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[0])} active={tabState === pinmarkCategories[0]}>
                         <MDBIcon fas icon='coffee' className='me-2' />Coffee
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[1])} active={tabState === pinmarkCategories[1]}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[1])} active={tabState === pinmarkCategories[1]}>
                         <MDBIcon fas icon='moon' className='me-2' />Night Life
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[2])} active={tabState === pinmarkCategories[2]}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[2])} active={tabState === pinmarkCategories[2]}>
                         <MDBIcon fas icon='utensils' className='me-2' />Food
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[3])} active={tabState === pinmarkCategories[3]}>
+                    <MDBTabsLink color="primary" className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[3])} active={tabState === pinmarkCategories[3]}>
                         <MDBIcon fas icon='hotel' className='me-2' />Lodging
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick('other')} active={tabState === 'other'}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick('other')} active={tabState === 'other'}>
                         <MDBIcon fas icon='ellipsis-h' className='me-2' />Other
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[4])} active={tabState === pinmarkCategories[4]}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[4])} active={tabState === pinmarkCategories[4]}>
                         <MDBIcon fas icon='shopping-bag' className='me-2' />Shopping
                     </MDBTabsLink>
                 </MDBTabsItem>
                 <MDBTabsItem>
-                    <MDBTabsLink onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[5])} active={tabState === pinmarkCategories[5]}>
+                    <MDBTabsLink color="primary" style={{borderBottomColor: 'white'}} className="text-white" onShow={() => window.scrollTo(0,0)} onClick={() => handleTabClick(pinmarkCategories[5])} active={tabState === pinmarkCategories[5]}>
                         <MDBIcon fas icon='archway' className='me-2' />Tourist Attraction
                     </MDBTabsLink>
                 </MDBTabsItem>
@@ -850,7 +840,7 @@ function PinmarkList() {
             </MDBNavbar>   
        
             
-            <MDBTabsContent style={{background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'}}>
+            <MDBTabsContent style={{background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)', minHeight: '100vh'}}>
                 <MDBTabsPane ref={viewportRef} show={tabState === 'all'} style={{justifyContent: 'center'}}>                                    
                     <MDBInputGroup 
                         style={{
@@ -897,7 +887,7 @@ function PinmarkList() {
                     <MDBCol size={12} className='mb-4'>
                         {/* <MDBCard style={{background: 'none'}} className="h-100"> */}
                             <MDBCardBody  className='d-flex justify-content-center align-items-center'>                               
-                                <MDBBtn onClick={() => setShowSearch(true)} color='link' className="text-white">                                                            
+                                <MDBBtn onClick={() => setShowSearch(true)} color='primary' className="text-white">                                                            
                                     <MDBIcon icon='plus-circle'/> Add a Pinmark
                                 </MDBBtn>
                             </MDBCardBody>

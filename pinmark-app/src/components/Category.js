@@ -7,7 +7,7 @@ import {
     MDBIcon 
 } from 'mdb-react-ui-kit';
 
-function Category({category}) {
+function Category({category, background}) {
     const categoryIcons = [
         {
             category: 'coffee',
@@ -47,7 +47,7 @@ function Category({category}) {
     console.log(icon);
 
     return (
-        <MDBCard className='h-100'>
+        <MDBCard className='h-100' background={background}>
             <MDBCardBody>
                 <MDBIcon icon={icon}/>
                 <MDBCardText>{category}</MDBCardText>

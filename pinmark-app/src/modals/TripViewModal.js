@@ -15,17 +15,20 @@ import {
     MDBIcon,
     MDBModalContent,
     MDBModalDialog,
-    MDBModalTitle
+    MDBModalTitle,
+    MDBDropdown,
+    MDBDropdownItem,
+    MDBDropdownToggle,
+    MDBDropdownMenu
 } from 'mdb-react-ui-kit';
 import PinmarkCards from '../components/PinmarkCards';
 import { Google } from '../util/Google';
 import PinmarkModal from './PinmarkModal';
 import { useSelector } from 'react-redux';
 
-function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal}) {    
-    
+function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal}) {        
     const ref = React.useRef();
-
+    
     console.log(tripObject)
     // side effect to reset scroll to top when opening modal
     React.useEffect(() => {
@@ -58,8 +61,25 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                 </MDBModalDialog>
             </MDBModal> */}
             <MDBModalHeader>
-                <MDBModalTitle>{tripObject.trip?.tripName}</MDBModalTitle>               
-                <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
+                {/* <MDBRow className='d-flex justify-content-between align-items-center'> */}
+                    <MDBCol size={8} className='d-flex justify-content-start align-items-center'>
+                        <MDBModalTitle>{tripObject.trip?.tripName}</MDBModalTitle>               
+                    </MDBCol>
+                    <MDBCol size={4} className='d-flex justify-content-between align-items-center'>
+                        <MDBDropdown className='btn-group'>                            
+                        <MDBBtn color='primary'><MDBIcon icon='user-friends'/>+</MDBBtn>
+                        <MDBDropdownToggle color='primary' split></MDBDropdownToggle>
+                        <MDBDropdownMenu >
+                            <MDBDropdownItem header>Shared With</MDBDropdownItem>
+                            <MDBDropdownItem link>Action</MDBDropdownItem>
+                            <MDBDropdownItem link>Another action</MDBDropdownItem>
+                            <MDBDropdownItem link>Something else here</MDBDropdownItem>
+                        </MDBDropdownMenu>
+                        </MDBDropdown>  
+                    <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
+                    </MDBCol>
+                
+                {/* </MDBRow> */}
             </MDBModalHeader>
             <MDBModalBody ref={ref}>
                 <MDBRow>

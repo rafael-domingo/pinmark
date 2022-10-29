@@ -8,7 +8,7 @@ import {
 
 } from 'mdb-react-ui-kit';
 
-function Price({price}) {
+function Price({price, background}) {
     if (price !== undefined) {
         const priceDescription = ['free', 'inexpensive', 'moderate', 'expensive', 'very expensive'];
         var priceJSX = [];
@@ -16,7 +16,7 @@ function Price({price}) {
             priceJSX.push(<MDBIcon icon='dollar-sign'/>)        
         }
         return (
-            <MDBCard className='h-100'>
+            <MDBCard className='h-100' background={background}>
                 <MDBCardBody>
                     {priceJSX}
                     <MDBCardText>{priceDescription[price]}</MDBCardText>
@@ -25,7 +25,7 @@ function Price({price}) {
         )
     } else {
         return (
-            <MDBCard className='h-100'>
+            <MDBCard className='h-100' background={background}>
                 <MDBCardBody>    
                     <MDBIcon icon='hand-holding-usd'/>
                     <MDBCardText>Free</MDBCardText>

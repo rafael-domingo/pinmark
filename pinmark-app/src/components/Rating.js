@@ -7,7 +7,7 @@ import {
     MDBIcon,
 
 } from 'mdb-react-ui-kit';
-function Rating({rating}) {
+function Rating({rating, background}) {
     const adjustedRating = Math.round(rating*2)/2;
     const numWholeStars = Math.floor(adjustedRating);
     const numHalfStar = adjustedRating > numWholeStars ? true : false;
@@ -17,7 +17,7 @@ function Rating({rating}) {
     }
     
     return (
-        <MDBCard className='h-100'>  
+        <MDBCard className='h-100' background={background}>  
             <MDBCardBody>                
                 {wholeStarsJSX}
                 {numHalfStar && (<MDBIcon icon='star-half-alt'/>)} 

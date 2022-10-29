@@ -67,8 +67,7 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
             <MDBModalBody ref={ref}>
                 <MDBRow>
                 {/* put list of search results here */}
-                {searchResults.map((result) => {
-                                                    
+                {searchResults.map((result) => {                                                    
                     return (
                         <MDBCol xxl={12} xl={4} l={4} md={4} className='mb-4'>
                             <MDBCard className='h-100'>
