@@ -43,12 +43,14 @@ import {
     MDBBadge,
     MDBTypography,
     MDBModalTitle,
-    MDBSpinner
+    MDBSpinner,
+    MDBRipple
 } from 'mdb-react-ui-kit'
 import PinmarkModal from "../modals/PinmarkModal";
 import SearchModal from "../modals/SearchModal";
 import TripViewModal from "../modals/TripViewModal";
 import PinmarkCards from "../components/PinmarkCards";
+import TripListModal from "../modals/TripListModal";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
@@ -70,7 +72,8 @@ function PinmarkList() {
     const [deleteTripModal, setDeleteTripModal] = React.useState(false);
     const [deleteTripId, setDeleteTripId] = React.useState('');
     const [deletePinmarkModal, setDeletePinmarkModal] = React.useState(false);
-    const [deletePinmarkObject, setDeletePinmarkObject] = React.useState({});
+    const [deletePinmarkObject, setDeletePinmarkObject] = React.useState({}); 
+    const [tripListModal, setTripListModal] = React.useState(false); 
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
     const [tripViewObject, setTripViewObject] = React.useState('');   
@@ -363,6 +366,7 @@ function PinmarkList() {
         setTripViewModal(false);
     }
 
+
     React.useEffect(() => {        
         console.log('update firebase')
         console.log(pinmarkState);
@@ -467,12 +471,12 @@ function PinmarkList() {
     // stop background from scrolling when modal is open
     React.useEffect(() => {
         console.log(createTripModal)
-        if (createTripModal || tripViewModal || showSearch) {
+        if (createTripModal || tripViewModal || showSearch || tripListModal) {
             document.body.classList.add('overflow-hidden')
         } else {
             document.body.classList.remove('overflow-hidden')
         }
-    }, [createTripModal, tripViewModal, showSearch])
+    }, [createTripModal, tripViewModal, showSearch, tripListModal])
     return (
         <div>
                 {/* Create Trip Modal */}
@@ -658,6 +662,23 @@ function PinmarkList() {
                 </MDBModalDialog>
             </MDBModal>
 
+            {/* TripList Modal */}
+            <MDBModal show={tripListModal} setShow={setTripListModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                >
+                <MDBModalContent style={{height: '75vh'}}>
+                    <TripListModal tripList={tripList} setTripListModal={setTripListModal} setCreateTripModal={setCreateTripModal} handleSetTripView={handleSetTripView}/>                    
+                </MDBModalContent>
+                </MDBModalDialog>                                
+            </MDBModal>
+
+            {/* Delete Pinmark from Trip Confirmation */}
+           
+
+        
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            
             <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
                 <img position="top" overlay style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
@@ -676,8 +697,9 @@ function PinmarkList() {
                                 <MDBIcon size='2x' icon='ellipsis-h'/>
                             </MDBBtn>             
                         </div>
-                    </div>               
-                <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
+                    </div>        
+                <MDBBtn style={{position: 'absolute', top: 10, right: 10}} onClick={() => setTripListModal(true)}>Your Trips</MDBBtn>
+                {/* <MDBDropdown style={{position: 'absolute', top: 10, right: 10}}>
                     <MDBDropdownToggle color='light'>Your Trips</MDBDropdownToggle>
                     <MDBDropdownMenu>
                         {
@@ -694,9 +716,10 @@ function PinmarkList() {
                             Create New Trip
                         </MDBDropdownItem>
                     </MDBDropdownMenu>
-                </MDBDropdown>    
+                </MDBDropdown>     */}
                 
-          
+            
+                        
             </MDBContainer>
             <MDBTabs fill style={{display: "flex", flexWrap: "nowrap", alignItems: 'center', overflowX: 'scroll'}}>
                 <MDBTabsItem>

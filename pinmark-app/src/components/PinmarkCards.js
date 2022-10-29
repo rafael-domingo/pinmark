@@ -31,7 +31,10 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                     {
                                         !tripView && (
                                             <MDBDropdown>
-                                            <MDBDropdownToggle>Add To Trip</MDBDropdownToggle>
+                                            <MDBDropdownToggle>
+                                                Add To Trip
+                                                
+                                            </MDBDropdownToggle>
                                             <MDBDropdownMenu>
                                                 {
                                                     tripList.map((trip) => {
@@ -51,6 +54,7 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                                     })
                                                 }
                                                 <MDBDropdownItem divider/>
+                                                  
                                                     <MDBDropdownItem onClick={() => handleCreateTrip()} link>Create New Trip</MDBDropdownItem>
                                             </MDBDropdownMenu>
                                             </MDBDropdown>
@@ -58,7 +62,7 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                     }
                                     {
                                         tripView && (
-                                            <MDBBtn color='link' onClick={() => handlePinmarkDetail(pinmark)}>Remove From Trip</MDBBtn>
+                                            <MDBBtn color='link' onClick={() => {}}>Remove From Trip</MDBBtn>
                                         )
                                     }
                                    

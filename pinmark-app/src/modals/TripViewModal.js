@@ -29,11 +29,12 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
     React.useEffect(() => {
         console.log(ref);
         ref.current.scrollTo(0,0);
-    })   
+    }, [])   
 
     const handleDetail = (pinmark) => {
         handlePinmarkDetail(pinmark, false);
     }
+    
     return (
         <>            
             {/* <MDBModal show={pinmarkDetailModal} setShow={setPinmarkDetailModal}>
@@ -58,10 +59,11 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                         pinmarkList={tripObject?.pinmarks} 
                         category={'all'} 
                         // handleAddPinmark={} 
-                        handlePinmarkDetail={handleDetail} 
+                        handlePinmarkDetail={handleDetail}                         
                         // handleCreateTrip={() => {}} 
                         // tripList={[]} 
-                        tripView={true}/>                    
+                        tripView={true}
+                        />                    
                 </MDBRow>
             </MDBModalBody>
             <MDBBtn onClick={() => handleCloseModal()} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>

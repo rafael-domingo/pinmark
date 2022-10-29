@@ -113,7 +113,7 @@ export const checkUser = async () => {
         return user;        
     } else {
         console.log('user is not signed in')
-        return;
+        return 'not signed in';
     }
 }
 
