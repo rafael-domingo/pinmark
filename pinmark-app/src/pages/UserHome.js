@@ -8,7 +8,10 @@ import {
     MDBIcon,
     MDBModal,
     MDBModalDialog,
-    MDBModalContent,  
+    MDBModalContent,
+    MDBNavbar,
+    MDBContainer,
+    MDBNavbarBrand,  
 } from 'mdb-react-ui-kit';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
@@ -226,13 +229,33 @@ function UserHome() {
         }
     }, [showSearch])
     return (
-        <div style={{overflow: 'scroll',height: '100vh'}}>
-            <h3>Your Locations</h3>  
-                <Locations />    
-            <h3>Most Recent Pinmarks</h3>
+        
+        <div style={{overflow: 'scroll',height: '100vh',
+        background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'
+
+        }}>
+            <MDBNavbar className='sticky-top' light bgColor='light'>
+                <MDBContainer fluid>
+                    
+                    <MDBNavbarBrand className='w-100 d-flex justify-content-between align-items-center'> 
+                        <MDBIcon icon='map-marked'/>
+                        <h1>pinmark</h1>
+                        
+                    </MDBNavbarBrand>
+                </MDBContainer>
+            </MDBNavbar>
+            <div className='d-flex justify-content-start flex-wrap text-white'>
+                <h3 style={{padding: 20}}>Your Locations</h3>  
+                <Locations /> 
+            </div>
+            <div className='d-flex justify-content-start flex-wrap text-white'>
+                <h3 style={{padding: 20}}>Most Recent Pinmarks</h3>
                 <Pinmarks />    
-            <h3>Most Recent Trips</h3>
+            </div>
+            <div className='d-flex justify-content-start flex-wrap text-white'>
+                <h3 style={{padding: 20}}>Most Recent Trips</h3>
                 <Trips handlePinmarkDetail={handleShowDetails} />
+            </div>
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
@@ -253,6 +276,7 @@ function UserHome() {
                 </MDBModalDialog>
             </MDBModal>
         </div>
+        
     )
 }
 

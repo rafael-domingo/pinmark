@@ -112,7 +112,7 @@ function Pinmarks() {
         <div style={containerDivStyle}>
             {
                 // reverse the pinmarkState array to get reverse chronological order of pinmarks
-                pinmarkState.slice(0).reverse().map((pinmark) => {
+                pinmarkState.slice(0).reverse().slice(0,10).map((pinmark) => {
                      // put placeholder image in case image doesn't exist
                      if (pinmark.photoURL === undefined) {
                         var photo_reference = (

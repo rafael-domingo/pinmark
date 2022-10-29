@@ -125,7 +125,7 @@ function Trips({handlePinmarkDetail}) {
     return (
         <div style={containerDivStyle}>
         {
-            tripsState.slice(0).reverse().map((trip) => {
+            tripsState.slice(0).reverse().slice(0,10).map((trip) => {
                 var city = '';
                 var state = '';
                 var country = '';

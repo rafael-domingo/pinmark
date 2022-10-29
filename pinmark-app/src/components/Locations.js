@@ -18,7 +18,7 @@ function Locations() {
     // styles
     const containerDivStyle = {
         display: 'flex',
-        height: 200,
+        height: 300,
         overflowX: 'scroll',
         overflowY: 'hidden'
     }
@@ -31,7 +31,7 @@ function Locations() {
         // border: 'solid 1px black', 
         margin: 20,
         width: 400,
-        height: '80%',
+        height: '90%',
         flex: '0 0 auto', // keeps size of box constant 
         overflow: 'hidden'
     }    
