@@ -20,8 +20,10 @@ import {
 import PinmarkCards from '../components/PinmarkCards';
 import { Google } from '../util/Google';
 import PinmarkModal from './PinmarkModal';
+import { useSelector } from 'react-redux';
 
-function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail}) { 
+function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal}) {    
+    
     const ref = React.useRef();
 
     console.log(tripObject)
@@ -34,6 +36,12 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
     const handleDetail = (pinmark) => {
         handlePinmarkDetail(pinmark, false);
     }
+
+    const handleDeletePinmarkFromTrip = (pinmark) => {
+        console.log(tripObject.trip.tripId)
+        handleDeletePinmarkFromTripModal(pinmark, tripObject.trip.tripId, false);
+    }
+    
     
     return (
         <>            
@@ -50,7 +58,7 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                 </MDBModalDialog>
             </MDBModal> */}
             <MDBModalHeader>
-                <MDBModalTitle>{tripObject?.trip?.tripName}</MDBModalTitle>               
+                <MDBModalTitle>{tripObject.trip?.tripName}</MDBModalTitle>               
                 <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
             </MDBModalHeader>
             <MDBModalBody ref={ref}>
@@ -59,7 +67,8 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                         pinmarkList={tripObject?.pinmarks} 
                         category={'all'} 
                         // handleAddPinmark={} 
-                        handlePinmarkDetail={handleDetail}                         
+                        handlePinmarkDetail={handleDetail} 
+                        handleAddPinmarkToTrip={handleDeletePinmarkFromTrip}                        
                         // handleCreateTrip={() => {}} 
                         // tripList={[]} 
                         tripView={true}

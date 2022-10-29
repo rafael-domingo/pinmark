@@ -65,7 +65,8 @@ function Pinmarks() {
             console.log(result)
             const infoObject = {
                 pinmark: pinmark,
-                details: result
+                details: result,
+                showDelete: true
             }
             console.log(infoObject)
             setDetailInfo(infoObject);

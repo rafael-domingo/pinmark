@@ -73,6 +73,8 @@ function PinmarkList() {
     const [deleteTripId, setDeleteTripId] = React.useState('');
     const [deletePinmarkModal, setDeletePinmarkModal] = React.useState(false);
     const [deletePinmarkObject, setDeletePinmarkObject] = React.useState({}); 
+    const [deletePinmarkFromTripModal, setDeletePinmarkFromTripModal] = React.useState(false);
+    const [deletePinmarkFromTripObject, setDeletePinmarkFromTripObject] = React.useState({});
     const [tripListModal, setTripListModal] = React.useState(false); 
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
@@ -122,17 +124,29 @@ function PinmarkList() {
     }
 
     const handleAddPinmarkToTrip = (pinmark, tripId, add) => {    
+        console.log('delete pinmark from trip')
+        
         var updateObject = {
             pinmarkId: pinmark.pinmarkId,
             tripId: tripId,
             sharedWith: []
         }
+        console.log(updateObject);
         if (add) {            
             console.log(updateObject);
             dispatch(addPinmarkToTrip(updateObject));
         } else {
             dispatch(removePinmarkFromTrip(updateObject))
-        }   
+        }        
+        if (tripViewModal) {
+            console.log('updatetripobject')
+            tripListState.map((trip) => {
+                if (trip.tripId === tripId) {
+                    handleSetTripView(trip)
+                }
+            })
+        }
+        
     }
 
     const handleSetTripView = (trip) => {
@@ -145,9 +159,13 @@ function PinmarkList() {
         const tripObject = {
             trip: trip,
             pinmarks: tripPinmarkList
-        }        
+        }  
+        console.log(tripObject);      
         setTripViewObject(tripObject)
-        setTripViewModal(true);
+        if (!tripViewModal) {
+            setTripViewModal(true);
+        }
+        
     };
 
     const handleShowSearch = () => {
@@ -219,6 +237,16 @@ function PinmarkList() {
             dispatch(deleteLocations(locationIdReference));
         }
         dispatch(deletePinmark(pinmark.place_id))
+    }
+    
+    const handleDeletePinmarkFromTripModal = (pinmark, tripObj, del) => {
+        setDeletePinmarkFromTripModal(true);
+        const object = {
+            pinmark: pinmark,
+            tripObj: tripObj, 
+            del: del
+        }
+        setDeletePinmarkFromTripObject(object);
     }
 
     const handleAddPinmark = (pinmark) => {
@@ -420,8 +448,10 @@ function PinmarkList() {
                 tripList.push(trip);
             }
         })
-    
-    }, [pinmarkListState, pinmarkSearchInput, pinmarkCardSort])
+        if (tripViewModal) {
+            handleSetTripView(tripViewObject?.trip)
+        }
+    }, [pinmarkListState, pinmarkSearchInput, pinmarkCardSort, tripListState])
 
 
     console.log(pinmarkListState);
@@ -509,7 +539,7 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handlePinmarkDetail}/>                        
+                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handlePinmarkDetail} handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}/>                        
                     </MDBModalContent>
                 </MDBModalDialog>
             {/* Search Modal */}
@@ -677,6 +707,38 @@ function PinmarkList() {
 
             {/* Delete Pinmark from Trip Confirmation */}
            
+           <MDBModal staticBackdrop show={deletePinmarkFromTripModal} setShow={setDeletePinmarkFromTripModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Remove Pinmark From Trip?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to remove this pinmark?</p>
+                            <p className="text-muted">This will remove the pinmark from this trip but it will still remain in your pinmark list.</p>
+                        </MDBModalBody>
+                    
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setDeletePinmarkFromTripModal(false)
+                                // setDeletePinmarkObject({})                                
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => {
+                                handleAddPinmarkToTrip(deletePinmarkFromTripObject?.pinmark, deletePinmarkFromTripObject?.tripObj, deletePinmarkFromTripObject?.del)
+                                setDeletePinmarkFromTripModal(false)
+                                // setDeletePinmarkObject({}) 
+                                // handleClosePinmarkModal()                                
+                                }} color='danger'>
+                                Delete
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
 
         
             <MDBNavbar sticky fixed="top" style={{backgroundColor: 'white', padding: 0}} >            

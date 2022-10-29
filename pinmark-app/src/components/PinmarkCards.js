@@ -13,8 +13,9 @@ import {
     MDBDropdownItem,
     MDBIcon,    
 } from 'mdb-react-ui-kit';
-function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDetail, handleCreateTrip, tripList, tripView = false}) {    
+function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDetail, handleCreateTrip, tripList, tripView = false, handleAddPinmarkToTrip}) {    
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
+    console.log(pinmarkList);
     return (
         <>
         {
@@ -62,7 +63,7 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                     }
                                     {
                                         tripView && (
-                                            <MDBBtn color='link' onClick={() => {}}>Remove From Trip</MDBBtn>
+                                            <MDBBtn color='link' onClick={() => {handleAddPinmarkToTrip(pinmark)}}>Remove From Trip</MDBBtn>
                                         )
                                     }
                                    
