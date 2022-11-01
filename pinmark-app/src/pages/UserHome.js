@@ -225,12 +225,12 @@ function UserHome() {
 
 
     React.useEffect(() => {
-        if (showSearch) {
+        if (showSearch || secondModal) {
             document.body.classList.add('overflow-hidden');
         } else {
             document.body.classList.remove('overflow-hidden');
         }
-    }, [showSearch])
+    }, [showSearch, secondModal])
     return (
         
         <div style={{overflow: 'scroll',height: '100vh',
@@ -271,7 +271,7 @@ function UserHome() {
                 </MDBModalDialog>
             </MDBModal>
             
-            <MDBModal staticBackdrop show={secondModal} setShow={setSecondModal}>
+            <MDBModal staticBackdrop show={secondModal} setShow={setSecondModal} tabIndex='-1'>
                 <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
                     <MDBModalContent>
                         <PinmarkModal detailInfo={detailInfo} handleCloseModal={handleClosePinmarkModal}/>                       

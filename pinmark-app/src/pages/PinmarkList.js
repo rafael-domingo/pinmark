@@ -622,12 +622,12 @@ function PinmarkList() {
     // stop background from scrolling when modal is open
     React.useEffect(() => {
         console.log(createTripModal)
-        if (createTripModal || tripViewModal || showSearch || tripListModal) {
+        if (createTripModal || tripViewModal || showSearch || tripListModal || pinmarkDetailModal) {
             document.body.classList.add('overflow-hidden')
         } else {
             document.body.classList.remove('overflow-hidden')
         }
-    }, [createTripModal, tripViewModal, showSearch, tripListModal])
+    }, [createTripModal, tripViewModal, showSearch, tripListModal, pinmarkDetailModal])
     return (
         <div>
                 {/* Create Trip Modal */}
@@ -676,8 +676,8 @@ function PinmarkList() {
 
             {/* Search Users Modal */}
             <MDBModal show={searchUsersModalState} setShow={setSearchUsersModalState}>
-                <MDBModalDialog size='fullscreen-sm-down' scrollable centered>
-                    <MDBModalContent style={{height: '75vh'}}>
+                <MDBModalDialog size='fullscreen' scrollable centered>
+                    <MDBModalContent>
                         <SearchUserModal 
                             tripObject={tripViewObject}
                             openModal={searchUsersModalState}

@@ -30,7 +30,7 @@ function PinmarkModal({detailInfo, handleCloseModal, handleDeletePinmark}) {
     console.log(detailInfo);
 
     return (
-        <div className='text-white'>
+        <div className='text-white' style={{overflow: 'scroll'}}>
             <MDBModalHeader className="bg-image" style={{padding: 0}}>                       
                 <img position="top" overlay style={{width: '100%', height: '35vh', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${detailInfo.pinmark?.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>  
                 <div
@@ -46,7 +46,7 @@ function PinmarkModal({detailInfo, handleCloseModal, handleDeletePinmark}) {
                 </div>                       
             </MDBModalHeader>
             <MDBModalBody ref={ref}>                        
-                <MDBRow>
+                <MDBRow >
                     <MDBCol size='12' className='mb-4'>
                         <MDBCard background={colorArray[0]} className='h-100'>
                             <MDBCardBody className='d-flex justify-content-center align-items-center'>                                           
