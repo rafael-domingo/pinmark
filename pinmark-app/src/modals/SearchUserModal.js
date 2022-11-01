@@ -1,4 +1,3 @@
-import e from 'cors';
 import { 
     MDBCard, 
     MDBCardBody, 
@@ -15,28 +14,18 @@ import {
     MDBBtn
 } from 'mdb-react-ui-kit';
 import React from 'react';
-import { fetchUserInfo } from '../util/Firebase';
+import { useSelector } from 'react-redux';
 
-function SearchUserModal({openModal, tripObject, handleAddSharedUser, handleRemoveSharedUser, handleCloseModal}) {
-const [firebaseUsers, setFirebaseUsers] = React.useState([]);
+function SearchUserModal({tripObject, handleAddSharedUser, handleRemoveSharedUser, handleCloseModal, firebaseUsers}) {
 const [filteredUsers, setFilteredUsers] = React.useState([]);
 const [value, setValue] = React.useState('');
 const [addUsersState, setAddUsersState] = React.useState([]);
+const tripListState = useSelector((state) => state.pinmark.tripLists);
 
 const handleInput = (e) => {
     setValue(e.target.value); 
     console.log(e.target.value);
     filterUsers();
-}
-
-const fetchUsers = () => {
-    fetchUserInfo()
-    .then(result => {
-        console.log(result)
-        setFirebaseUsers(result);   
-        setFilteredUsers(result);     
-    })
- 
 }
 
 const filterUsers = () => {    
@@ -52,49 +41,22 @@ const filterUsers = () => {
     setFilteredUsers(searchUsers);
 }
 
-const handleAddUser = (user) => {
-    handleAddSharedUser(user);        
-    const newUsersState = addUsersState;
-    newUsersState.push(user.uid);
-    console.log(newUsersState);
-    setAddUsersState(newUsersState);
-    
-}
-
-const handleRemoveUser = (user) => {
-    handleRemoveSharedUser(user);
-    var index = addUsersState.indexOf(user.uid);
-    const newUsersState = addUsersState;
-    if (index !== -1) {
-        newUsersState.splice(index, 1);
-    }    
-    console.log(newUsersState);
-    setAddUsersState(newUsersState);
-}
-
-const checkUser = () => {
-    var checkedUsers = [];
-    if (tripObject.trip?.sharedWith) {
-        firebaseUsers.map((user) => {
-            tripObject.trip.sharedWith.map((uid) => {
-                if (uid === user.uid) {
-                    checkedUsers.push(uid);
-                }
-            })
-        })
-    }
-    setAddUsersState(checkedUsers);
-}
-
 React.useEffect(() => {
-    
-    fetchUsers();
-    
-}, [tripObject])
+    console.log('check list of shared users')
+    var userArray = [];
+    var sharedWith = [];
+    tripListState?.map((trip) => {
+        if (trip?.tripId === tripObject?.trip?.tripId) {
+            sharedWith = trip?.sharedWith;
+        }
+    })
+   sharedWith.map((user) => {
+        userArray.push(user);
+    })
+    console.log(userArray);
+    setAddUsersState(userArray);
+}, [tripListState])
 
-React.useEffect(() => {
-    checkUser();
-}, [openModal])
     return (
         <>
             <MDBModalHeader>
@@ -141,12 +103,12 @@ React.useEffect(() => {
                                         </div>     
                                         {
                                             (addUsersState.includes(user.uid)) && (
-                                                <MDBBtn onClick={() => handleRemoveUser(user)}>Remove User</MDBBtn>                                            
+                                                <MDBBtn onClick={() => handleRemoveSharedUser(user)}>Remove User</MDBBtn>                                            
                                             )
                                         }     
                                         {
                                             (!addUsersState.includes(user.uid)) && (
-                                                <MDBBtn onClick={() => handleAddUser(user)}>Add User</MDBBtn>                                            
+                                                <MDBBtn onClick={() => handleAddSharedUser(user)}>Add User</MDBBtn>                                            
                                             )
                                         }
                                         
@@ -158,6 +120,9 @@ React.useEffect(() => {
                     }
                 </MDBRow>
             </MDBModalBody>
+                <MDBBtn onClick={() => handleCloseModal()} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
+                    <MDBIcon fas icon='times'/>
+                </MDBBtn>  
             <MDBModalFooter>
                 
             </MDBModalFooter>

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
 import Hero from "../components/Hero";
 import List from "../components/List";
-import { updateUser } from "../util/Firebase";
+import { checkUser, fetchUserInfo, updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
 import { useNavigate } from "react-router-dom";
 import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto, addUserToTrip, removeUserFromTrip } from "../redux/pinmarkSlice";
@@ -77,6 +77,8 @@ function PinmarkList() {
     const [deletePinmarkFromTripModal, setDeletePinmarkFromTripModal] = React.useState(false);
     const [deletePinmarkFromTripObject, setDeletePinmarkFromTripObject] = React.useState({});
     const [searchUsersModalState, setSearchUsersModalState] = React.useState(false);
+    const [firebaseUsers, setFirebaseUsers] = React.useState([]);
+    const [sharedUsers, setSharedUsers] = React.useState([]);
     const [tripListModal, setTripListModal] = React.useState(false); 
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
@@ -153,6 +155,7 @@ function PinmarkList() {
 
     const handleSetTripView = (trip) => {
         const tripPinmarkList = [];
+                
         pinmarkListState.map((pinmark) => {
             if (pinmark.tripIds.includes(trip.tripId)) {
                 tripPinmarkList.push(pinmark);
@@ -162,11 +165,25 @@ function PinmarkList() {
             trip: trip,
             pinmarks: tripPinmarkList
         }  
-        console.log(tripObject);      
+        var checkedUsers = [];
+        fetchUserInfo()
+        .then(result => {            
+            setFirebaseUsers(result);
+            result.map((user) => {
+                tripObject?.trip?.sharedWith?.map((uid) => {
+                    if (uid === user.uid) {
+                        checkedUsers.push(user);
+                    }
+                })
+            })
+        })
+        
+        setSharedUsers(checkedUsers);
         setTripViewObject(tripObject)
         if (!tripViewModal) {
             setTripViewModal(true);
         }
+        
         
     };
 
@@ -230,10 +247,22 @@ function PinmarkList() {
             }
         })    
         console.log(newTrip)
+        var checkedUsers = [];
+        firebaseUsers.map((user) => {
+            newTrip?.sharedWith?.map((uid) => {
+                if (uid === user.uid) {
+                    checkedUsers.push(user);
+                }
+            })
+        })        
+        const newSharedUsers = sharedUsers;
+        newSharedUsers.push(user.uid);
+        setSharedUsers(newSharedUsers);
         setTripViewObject({
             ...tripViewObject,
             trip: newTrip
         })
+        
         console.log(tripViewObject)
     }
 
@@ -249,11 +278,36 @@ function PinmarkList() {
             }
         })    
         console.log(newTrip)
+        var checkedUsers = [];
+        firebaseUsers.map((user) => {
+            newTrip?.sharedWith?.map((uid) => {
+                if (uid === user.uid) {
+                    checkedUsers.push(user);
+                }
+            })
+        })        
+        setSharedUsers(checkedUsers);
         setTripViewObject({
             ...tripViewObject,
             trip: newTrip
         })
         console.log(tripViewObject)
+    }
+
+    const handleCheckSharedUsers = () => {
+        console.log(firebaseUsers);
+        var checkedUsers = [];
+        if (tripViewObject.trip?.sharedWith) {
+            firebaseUsers.map((user) => {
+                tripViewObject.trip.sharedWith.map((uid) => {
+                    if (uid === user.uid) {
+                        checkedUsers.push(user);
+                    }
+                })
+            })
+        }
+        console.log(checkedUsers);
+        setSharedUsers(checkedUsers);
     }
 
     const handleDeletePinmarkModal = (pinmarkObject) => {
@@ -612,6 +666,9 @@ function PinmarkList() {
                             handlePinmarkDetail={handlePinmarkDetail} 
                             handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}
                             handleShareTrip={handleShareTrip}
+                            handleCheckSharedUsers={handleCheckSharedUsers}
+                            sharedUsers={sharedUsers}
+                            firebaseUsers={firebaseUsers}
                             />                        
                     </MDBModalContent>
                 </MDBModalDialog>
@@ -627,6 +684,8 @@ function PinmarkList() {
                             handleAddSharedUser={handleAddSharedUser}
                             handleRemoveSharedUser={handleRemoveSharedUser}
                             handleCloseModal={() => setSearchUsersModalState(false)}
+                            firebaseUsers={firebaseUsers}
+                            sharedUsers={sharedUsers}
                             />
                     </MDBModalContent>
                 </MDBModalDialog>

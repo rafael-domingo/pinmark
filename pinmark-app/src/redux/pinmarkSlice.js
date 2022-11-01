@@ -155,6 +155,8 @@ export const pinmarkSlice = createSlice({
                                     action.payload.userId
                                 ]
                             })
+                        } else {
+                            updatedTripListsArray.push(item)
                         }                        
                     } else {
                         updatedTripListsArray.push({
@@ -196,6 +198,8 @@ export const pinmarkSlice = createSlice({
                             ...item,
                             sharedWith: updatedSharedWith                                      
                         })
+                    } else {
+                        updatedTripListsArray.push(item);
                     }
                 } else {
                     updatedTripListsArray.push(item);

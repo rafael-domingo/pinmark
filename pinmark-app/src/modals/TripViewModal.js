@@ -26,15 +26,47 @@ import { Google } from '../util/Google';
 import PinmarkModal from './PinmarkModal';
 import { useSelector } from 'react-redux';
 
-function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal, handleShareTrip}) {        
+function TripViewModal({
+    tripObject, 
+    handleCloseModal, 
+    handleDeleteTrip, 
+    handlePinmarkDetail, 
+    handleDeletePinmarkFromTripModal, 
+    handleShareTrip,
+    firebaseUsers,
+    // handleCheckSharedUsers,
+    // sharedUsers
+
+}) {        
     const ref = React.useRef();
-    
+    const tripListState = useSelector((state) => state.pinmark.tripLists);
+    const [sharedUsers, setSharedUsers] = React.useState([]);
+
     console.log(tripObject)
     // side effect to reset scroll to top when opening modal
     React.useEffect(() => {
         console.log(ref);
         ref.current.scrollTo(0,0);
+        // handleCheckSharedUsers()
     }, [])   
+
+    React.useEffect(() => {
+        var userArray = [];
+        var sharedWith = [];
+        tripListState.map((trip) => {
+            if (trip?.tripId === tripObject.trip?.tripId) {
+                sharedWith = trip?.sharedWith;
+            }
+        })
+        firebaseUsers?.map((firebaseUser) => {
+            sharedWith.map((user) => {
+                if (user === firebaseUser.uid) {
+                    userArray.push(firebaseUser)
+                }
+            })
+        })      
+        setSharedUsers(userArray);
+    }, [tripListState])
 
     const handleDetail = (pinmark) => {
         handlePinmarkDetail(pinmark, false);
@@ -71,9 +103,16 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                         <MDBDropdownToggle color='primary' split></MDBDropdownToggle>
                         <MDBDropdownMenu >
                             <MDBDropdownItem header>Shared With</MDBDropdownItem>
-                            <MDBDropdownItem link>Action</MDBDropdownItem>
-                            <MDBDropdownItem link>Another action</MDBDropdownItem>
-                            <MDBDropdownItem link>Something else here</MDBDropdownItem>
+                            {
+                                sharedUsers?.map((user) => {
+                                    return (
+                                        <MDBDropdownItem link>
+                                            {user.userName}
+                                            {user.email}
+                                        </MDBDropdownItem>
+                                    )
+                                })
+                            }                                                        
                         </MDBDropdownMenu>
                         </MDBDropdown>  
                     <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
