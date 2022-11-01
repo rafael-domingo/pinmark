@@ -26,7 +26,7 @@ import { Google } from '../util/Google';
 import PinmarkModal from './PinmarkModal';
 import { useSelector } from 'react-redux';
 
-function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal}) {        
+function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePinmarkDetail, handleDeletePinmarkFromTripModal, handleShareTrip}) {        
     const ref = React.useRef();
     
     console.log(tripObject)
@@ -67,7 +67,7 @@ function TripViewModal({tripObject, handleCloseModal, handleDeleteTrip, handlePi
                     </MDBCol>
                     <MDBCol size={4} className='d-flex justify-content-between align-items-center'>
                         <MDBDropdown className='btn-group'>                            
-                        <MDBBtn color='primary'><MDBIcon icon='user-friends'/>+</MDBBtn>
+                        <MDBBtn onClick={() => handleShareTrip(tripObject.trip)} color='primary'><MDBIcon icon='user-friends'/>+</MDBBtn>
                         <MDBDropdownToggle color='primary' split></MDBDropdownToggle>
                         <MDBDropdownMenu >
                             <MDBDropdownItem header>Shared With</MDBDropdownItem>

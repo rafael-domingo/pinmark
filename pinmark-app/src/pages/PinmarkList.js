@@ -7,7 +7,7 @@ import List from "../components/List";
 import { updateUser } from "../util/Firebase";
 import { Google } from "../util/Google";
 import { useNavigate } from "react-router-dom";
-import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto } from "../redux/pinmarkSlice";
+import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto, addUserToTrip, removeUserFromTrip } from "../redux/pinmarkSlice";
 import { 
     MDBListGroup,
     MDBListGroupItem,
@@ -51,6 +51,7 @@ import SearchModal from "../modals/SearchModal";
 import TripViewModal from "../modals/TripViewModal";
 import PinmarkCards from "../components/PinmarkCards";
 import TripListModal from "../modals/TripListModal";
+import SearchUserModal from "../modals/SearchUserModal";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
@@ -75,6 +76,7 @@ function PinmarkList() {
     const [deletePinmarkObject, setDeletePinmarkObject] = React.useState({}); 
     const [deletePinmarkFromTripModal, setDeletePinmarkFromTripModal] = React.useState(false);
     const [deletePinmarkFromTripObject, setDeletePinmarkFromTripObject] = React.useState({});
+    const [searchUsersModalState, setSearchUsersModalState] = React.useState(false);
     const [tripListModal, setTripListModal] = React.useState(false); 
     const [loading, setLoading] = React.useState(false);
     const [createTripName, setCreateTripName] = React.useState('');
@@ -215,6 +217,45 @@ function PinmarkList() {
         }, 2000);
     }
 
+    const handleAddSharedUser = (user) => {  
+        console.log(user)      
+        dispatch(addUserToTrip({
+            tripId: tripViewObject.trip.tripId,
+            userId: user.uid
+        }))
+        var newTrip = {};
+        tripListState.map((trip) => {
+            if (tripViewObject.trip.tripId === trip.tripId) {
+                newTrip = trip;
+            }
+        })    
+        console.log(newTrip)
+        setTripViewObject({
+            ...tripViewObject,
+            trip: newTrip
+        })
+        console.log(tripViewObject)
+    }
+
+    const handleRemoveSharedUser = (user) => {
+        dispatch(removeUserFromTrip({
+            tripId: tripViewObject.trip.tripId,
+            userId: user.uid
+        }))
+        var newTrip = {};
+        tripListState.map((trip) => {
+            if (tripViewObject.trip.tripId === trip.tripId) {
+                newTrip = trip;
+            }
+        })    
+        console.log(newTrip)
+        setTripViewObject({
+            ...tripViewObject,
+            trip: newTrip
+        })
+        console.log(tripViewObject)
+    }
+
     const handleDeletePinmarkModal = (pinmarkObject) => {
         setDeletePinmarkModal(true);
         setDeletePinmarkObject(pinmarkObject);
@@ -269,6 +310,10 @@ function PinmarkList() {
             del: del
         }
         setDeletePinmarkFromTripObject(object);
+    }
+
+    const handleShareTrip = (tripObject) => {
+        setSearchUsersModalState(true);
     }
 
     const handleAddPinmark = (pinmark) => {
@@ -560,20 +605,35 @@ function PinmarkList() {
             <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
-                        <TripViewModal tripObject={tripViewObject} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handlePinmarkDetail} handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}/>                        
+                        <TripViewModal 
+                            tripObject={tripViewObject} 
+                            handleCloseModal={handleCloseTripModal} 
+                            handleDeleteTrip={handleDeleteTripModal} 
+                            handlePinmarkDetail={handlePinmarkDetail} 
+                            handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}
+                            handleShareTrip={handleShareTrip}
+                            />                        
                     </MDBModalContent>
                 </MDBModalDialog>
+            </MDBModal>
 
-            {/* Share Trip Modal */}
-            <MDBModal>
-                <MDBModalDialog>
-
+            {/* Search Users Modal */}
+            <MDBModal show={searchUsersModalState} setShow={setSearchUsersModalState}>
+                <MDBModalDialog size='fullscreen-sm-down' scrollable centered>
+                    <MDBModalContent style={{height: '75vh'}}>
+                        <SearchUserModal 
+                            tripObject={tripViewObject}
+                            openModal={searchUsersModalState}
+                            handleAddSharedUser={handleAddSharedUser}
+                            handleRemoveSharedUser={handleRemoveSharedUser}
+                            handleCloseModal={() => setSearchUsersModalState(false)}
+                            />
+                    </MDBModalContent>
                 </MDBModalDialog>
-            </MDBModal>
+            </MDBModal>            
 
 
-            {/* Search Modal */}
-            </MDBModal>
+            {/* Search Modal */}            
             <MDBModal staticBackdrop show={showSearch} setShow={setShowSearch} tabIndex='-1'>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>

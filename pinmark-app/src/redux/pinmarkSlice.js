@@ -140,6 +140,72 @@ export const pinmarkSlice = createSlice({
                 pinmarks: updatedPinmarksArray
             }
         },
+        addUserToTrip: (state, action) => {
+            const updatedTripListsArray = [];
+            state.tripLists.forEach((item) => {
+                if (item.tripId === action.payload.tripId) {
+                    // check if sharedWith property already exists 
+                    if (item?.sharedWith) {        
+                        // check uid is not already in system   
+                        if (!item?.sharedWith.includes(action.payload.userId)) {
+                            updatedTripListsArray.push({
+                                ...item,
+                                sharedWith: [
+                                    ...item?.sharedWith,
+                                    action.payload.userId
+                                ]
+                            })
+                        }                        
+                    } else {
+                        updatedTripListsArray.push({
+                            ...item,
+                            sharedWith: [
+                                // ...item?.sharedWith,
+                                action.payload.userId
+                            ]
+                        })
+                    }
+                    
+                } else {
+                    updatedTripListsArray.push(item)
+                }
+            })
+            return {
+                ...state,
+                tripLists: updatedTripListsArray
+            }
+        },  
+        removeUserFromTrip: (state, action) => {
+            const updatedTripListsArray = [];
+            state.tripLists.forEach((item) => {
+                if (item.tripId === action.payload.tripId) {
+                    // check if sharedWith property already exists
+                    if (item?.sharedWith) {
+                        var updatedSharedWith = [];
+                        item.sharedWith.map((uid) => {
+                            if (uid !== action.payload.userId) {
+                                updatedSharedWith.push(uid);
+                            }
+                        })
+                        // var newSharedWith = item?.sharedWith;
+                        // var index = newSharedWith.indexOf(action.payload.userId);                        
+                        // if (index !== -1) {
+                        //     newSharedWith.splice(index, 1);
+                        // }                         
+                        updatedTripListsArray.push({
+                            ...item,
+                            sharedWith: updatedSharedWith                                      
+                        })
+                    }
+                } else {
+                    updatedTripListsArray.push(item);
+                }
+            })
+            return {
+                ...state,
+                tripLists: updatedTripListsArray
+            }
+        },
         addPinmarkToTrip: (state, action) => {
             const updatedPinmarksArray = [];
             state.pinmarks.forEach((item) => {                
@@ -227,6 +293,8 @@ export const {
     updateLocationPhoto,
     addPinmark,
     deletePinmark,
+    addUserToTrip,   
+    removeUserFromTrip, 
     addPinmarkToTrip,
     removePinmarkFromTrip,
     addCategories,
