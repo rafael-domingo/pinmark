@@ -27,8 +27,8 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
     return (
         <>
         {
-            pinmarkList?.map((pinmark) => {
-                const colorPicker = Math.floor(Math.random() * colorArray.length);
+            pinmarkList?.map((pinmark, index) => {                
+                const colorPicker = index % colorArray.length;
                 if ((pinmark.pinmarkCategory === category || category === 'all') || (!pinmarkCategories.includes(pinmark.pinmarkCategory) && category === 'other')) {
                     return (
                         <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
