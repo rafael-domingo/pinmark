@@ -1,10 +1,11 @@
 import React from 'react';
 import { MDBInput, MDBBtn, MDBIcon, MDBModal, MDBModalContent, MDBModalDialog, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBSpinner } from 'mdb-react-ui-kit';
-import { checkUser, signInWithGoogle, signUserOut, signInWithEmail, getUser } from '../util/Firebase';
+import { checkUser, signInWithGoogle, signUserOut, signInWithEmail, getUser, fetchSharedTrips } from '../util/Firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType, resetUserState } from '../redux/userSlice';
-import { setLocations, setPinmarks, setTripLists } from '../redux/pinmarkSlice';
+import { setLocations, setPinmarks, setSharedWithUser, setTripLists } from '../redux/pinmarkSlice';
+import { setShared } from '../redux/sharedSlice';
 
 function SignIn() {
     // instantiate variables from supporting functions    
@@ -112,6 +113,10 @@ function SignIn() {
                 dispatch(setTripLists(result.pinmark.tripLists));
             }
         }).catch((error) => console.log(error));
+        fetchSharedTrips().then((result) => {
+            console.log(result);
+            dispatch(setShared(result))
+        })
     }
 
     // form input functions

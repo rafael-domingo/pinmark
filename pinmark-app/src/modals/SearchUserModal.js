@@ -11,22 +11,26 @@ import {
     MDBCardImage,
     MDBCardText,
     MDBIcon,
-    MDBBtn
+    MDBBtn,
+    MDBModalDialog,
+    MDBModalContent
 } from 'mdb-react-ui-kit';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-function SearchUserModal({tripObject, handleAddSharedUser, handleRemoveSharedUser, handleCloseModal, firebaseUsers}) {
+function SearchUserModal({tripObject, openModal, handleAddSharedUser, handleRemoveSharedUser, handleCloseModal, firebaseUsers}) {
 const [filteredUsers, setFilteredUsers] = React.useState([]);
 const [value, setValue] = React.useState('');
 const [addUsersState, setAddUsersState] = React.useState([]);
 const tripListState = useSelector((state) => state.pinmark.tripLists);
-
+const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
+const userState = useSelector((state) => state.user);
 const handleInput = (e) => {
     setValue(e.target.value); 
     console.log(e.target.value);
     filterUsers();
 }
+console.log('search user loaded');
 
 const filterUsers = () => {    
     var searchUsers = [];
@@ -45,20 +49,22 @@ React.useEffect(() => {
     console.log('check list of shared users')
     var userArray = [];
     var sharedWith = [];
-    tripListState?.map((trip) => {
+    sharedTripsState?.map((trip) => {
         if (trip?.tripId === tripObject?.trip?.tripId) {
-            sharedWith = trip?.sharedWith;
+            sharedWith.push(trip.receivingUserId)
         }
     })
-   sharedWith.map((user) => {
-        userArray.push(user);
-    })
-    console.log(userArray);
-    setAddUsersState(userArray);
-}, [tripListState])
+//    sharedWith.map((user) => {
+//         userArray.push(user);
+//     })
+//     console.log(userArray);
+    setAddUsersState(sharedWith);
+}, [sharedTripsState, openModal])
 
-    return (
-        <>
+    return (        
+        
+        <MDBModalDialog size='fullscreen' scrollable centered>
+        <MDBModalContent>
             <MDBModalHeader>
                 <MDBInputGroup className='mb-3' noBorder textBefore={<MDBIcon fas icon='search' />}>
                     <input className='search form-control' type='text' placeholder='Search Users' onChange={handleInput} value={value} style={{border: 'none', boxShadow: 'none'}}/>
@@ -126,8 +132,9 @@ React.useEffect(() => {
             <MDBModalFooter>
                 
             </MDBModalFooter>
-
-        </>
+            </MDBModalContent>
+        </MDBModalDialog>
+        
     )
 }
 

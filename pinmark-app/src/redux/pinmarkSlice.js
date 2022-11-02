@@ -9,21 +9,7 @@ export const pinmarkSlice = createSlice({
                 state: '',
                 country: '',                
                 locationId: ''
-            }
-            // {
-            //     locationId: '',
-            //     locationName: {
-            //         mainText: '',
-            //         secondaryText: ''
-            //     },
-            //     geometry: {
-            //         lat: '',
-            //         lng: ''
-            //     },
-            //     latitude: '',
-            //     longitude: '',
-            //     photoURL: '',                
-            // }
+            }          
         ],
         pinmarks: [
             {
@@ -48,6 +34,15 @@ export const pinmarkSlice = createSlice({
                 tripName: '',
                 sharedWith: [] // array of uids that user has shared this trip with
             }
+        ],
+        sharedWithUser: [
+            {
+                sendingUserId: '',
+                receivingUserId: '', 
+                tripName: '',       
+                location: {},                        
+                tripId: ''
+            }
         ]
     },
     reducers: {
@@ -62,6 +57,9 @@ export const pinmarkSlice = createSlice({
         },
         setTripLists: (state, action) => {
             state.tripLists = action.payload
+        },
+        setSharedWithUser: (state, action) => {
+            state.sharedWithUser = action.payload
         },
         addLocations: (state, action) => {
             var newLocationsArray = state.locations
@@ -283,6 +281,21 @@ export const pinmarkSlice = createSlice({
                 ...state,
                 tripLists: updatedTripListsArray
             }
+        },
+        addSharedWithUser: (state, action) => {
+            state.sharedWithUser.push(action.payload);
+        },
+        removeSharedWithUser: (state, action) => {
+            const updatedSharedWithUserArray = [];
+            state.sharedWithUser.forEach((item) => {
+                if (item.tripId !== action.payload.tripId) {
+                    updatedSharedWithUserArray.push(item);
+                }
+            })
+            return {
+                ...state,
+                sharedWithUser: updatedSharedWithUserArray
+            }
         }
     }
 })
@@ -292,6 +305,7 @@ export const {
     setPinmarks,
     setCategories,
     setTripLists,
+    setSharedWithUser,
     addLocations,
     deleteLocations,
     updateLocationPhoto,
@@ -304,6 +318,8 @@ export const {
     addCategories,
     deleteCategories,
     addTripLists,
-    deleteTripLists
+    deleteTripLists,
+    addSharedWithUser,
+    removeSharedWithUser
 } = pinmarkSlice.actions;
 export default pinmarkSlice.reducer

@@ -180,3 +180,40 @@ export const updateUser = async(userId, userObject) => {
         })
     }    
 }
+
+// Updated shared trips
+export const updatedSharedTrips = async(sharedTripObject) => {
+    console.log(sharedTripObject);
+    const docExists = await getDoc(doc(db, "sharedTrips", 'shared'))
+    if (docExists.exists()) {
+        await updateDoc(doc(db, "sharedTrips", 'shared'), {
+            shared: sharedTripObject
+        })
+    } else {
+        await setDoc(doc(db, "sharedTrips", 'shared'), {
+            shared: sharedTripObject
+        })
+    }
+}
+
+// get shared trips
+export const fetchSharedTrips = async() => {
+    const sharedTrips = await getDoc(doc(db, "sharedTrips", 'shared'));
+    const sharedTripsArray = [];
+    console.log(sharedTrips.data());
+    sharedTrips.data().shared.forEach((trip) => {
+        sharedTripsArray.push(trip);
+    })
+    console.log(sharedTripsArray);
+    return sharedTripsArray;
+    }
+
+// get specific trip
+export const getTrip = async(sharedTripObject) => {
+    const sendingUser = await getDoc(doc(db, "pinmarks", sharedTripObject.sendingUserId));
+    if (sendingUser.exists()) {
+        return sendingUser.data();
+    } else {
+        return 'user not found';
+    }
+}

@@ -20,6 +20,7 @@ import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
 import { fetchUserInfo } from '../util/Firebase';
+import SharedTrips from '../components/SharedTrips';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);   
@@ -258,6 +259,10 @@ function UserHome() {
             <div className='d-flex justify-content-start flex-wrap text-white'>
                 <h3 style={{padding: 20}}>Most Recent Trips</h3>
                 <Trips handlePinmarkDetail={handleShowDetails} />
+            </div>
+            <div className='d-flex justify-content-start flex-wrap text-white'>
+                <h3 style={{padding: 20}}>Trips Shared With You</h3>
+                <SharedTrips />
             </div>
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>

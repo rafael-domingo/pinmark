@@ -28,6 +28,7 @@ import { useSelector } from 'react-redux';
 
 function TripViewModal({
     tripObject, 
+    tripViewModal,
     handleCloseModal, 
     handleDeleteTrip, 
     handlePinmarkDetail, 
@@ -40,6 +41,7 @@ function TripViewModal({
 }) {        
     const ref = React.useRef();
     const tripListState = useSelector((state) => state.pinmark.tripLists);
+    const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
     const [sharedUsers, setSharedUsers] = React.useState([]);
 
     console.log(tripObject)
@@ -53,9 +55,9 @@ function TripViewModal({
     React.useEffect(() => {
         var userArray = [];
         var sharedWith = [];
-        tripListState.map((trip) => {
+        sharedTripsState.map((trip) => {
             if (trip?.tripId === tripObject.trip?.tripId) {
-                sharedWith = trip?.sharedWith;
+                sharedWith.push(trip.receivingUserId)
             }
         })
         firebaseUsers?.map((firebaseUser) => {
@@ -66,7 +68,10 @@ function TripViewModal({
             })
         })      
         setSharedUsers(userArray);
-    }, [tripListState])
+    }, [sharedTripsState, tripViewModal, firebaseUsers])
+
+    
+
 
     const handleDetail = (pinmark) => {
         handlePinmarkDetail(pinmark, false);
