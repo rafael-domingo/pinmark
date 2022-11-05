@@ -543,9 +543,15 @@ function PinmarkList() {
         updateUser(userState.uid, pinmarkState);
     }, [pinmarkListState])
 
-    React.useEffect(() => {
-        updatedSharedTrips(sharedTripsState);
-    }, [sharedTripsState])
+    // React.useEffect(() => {  
+    //     checkUser().then((response) => {
+    //         if (response !== 'not signed in') {
+    //             updatedSharedTrips(sharedTripsState);              
+    //         }
+    //     })
+        
+        
+    // }, [sharedTripsState])
 
     React.useEffect(() => {
         console.log(pinmarkListState);

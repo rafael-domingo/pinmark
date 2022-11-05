@@ -14,7 +14,17 @@ import {
     MDBIcon,
     MDBRow,    
 } from 'mdb-react-ui-kit';
-function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDetail, handleCreateTrip, tripList, tripView = false, handleAddPinmarkToTrip}) {    
+function PinmarkCards({
+    pinmarkList, 
+    category, 
+    handleAddPinmark, 
+    handlePinmarkDetail, 
+    handleCreateTrip, 
+    tripList, 
+    tripView = false, 
+    handleAddPinmarkToTrip,
+    sharedView
+}) {    
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
     console.log(pinmarkList);
     const colorArray = [        
@@ -78,7 +88,7 @@ function PinmarkCards({pinmarkList, category, handleAddPinmark, handlePinmarkDet
                                     </MDBCol>
                                     
                                     {
-                                        tripView && (
+                                        tripView && !sharedView && (
                                             <MDBCol  size={6} style={{top: 0, right: -10, position: 'absolute', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start'}}>
                                             <MDBBtn color='link' onClick={() => {handleAddPinmarkToTrip(pinmark)}}>
                                                 <MDBIcon size='2x' icon='minus-circle' tag='a' color='link'/>

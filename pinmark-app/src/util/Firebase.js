@@ -200,8 +200,8 @@ export const updatedSharedTrips = async(sharedTripObject) => {
 export const fetchSharedTrips = async() => {
     const sharedTrips = await getDoc(doc(db, "sharedTrips", 'shared'));
     const sharedTripsArray = [];
-    console.log(sharedTrips.data());
-    sharedTrips.data().shared.forEach((trip) => {
+    console.log(sharedTrips.data().shared);
+    sharedTrips?.data().shared?.forEach((trip) => {
         sharedTripsArray.push(trip);
     })
     console.log(sharedTripsArray);

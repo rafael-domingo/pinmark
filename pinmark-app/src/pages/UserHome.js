@@ -19,11 +19,13 @@ import Pinmarks from '../components/Pinmarks';
 import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
-import { fetchUserInfo } from '../util/Firebase';
+import { checkUser, fetchUserInfo, updatedSharedTrips, updateUser } from '../util/Firebase';
 import SharedTrips from '../components/SharedTrips';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);   
+    const userState = useSelector((state) => state.user);
+    const sharedTripsState = useSelector((state) => state.sharedTrips);
     const dispatch = useDispatch();
     const sessionToken = uuidv4();        
     const [showSearch, setShowSearch] = React.useState(false);   
@@ -40,9 +42,22 @@ function UserHome() {
         Google.placeSearch('houston, tx', null).then(data => console.log(data)).catch(e => console.log(e))
         // Google.placeDetails('ChIJD7fiBh9u5kcRYJSMaMOCCwQ', sessionToken).then(data => console.log(data)).then(e => console.log(e))
         // Google.placePhotos('AcYSjRib2XvYOWznJfg3ORpwZcNmtZBnpOXAWJLeQ2mSa8oz6fzDiZPRHrj0GmFCLzlnLIT3nc1c4OMsiUT3En4R9t7SmeqaeCIis3ZmrVcbjCHcSjDX7rh8HnYRJ0ByaKBXDS-nHtM4Wxy62bTYb9_Hc-vGxe6VlYlvA3qzweynx1OpVLOb').then(data => console.log(data))            
-        fetchUserInfo('rd').then(result => console.log(result));
+        // fetchUserInfo('rd').then(result => console.log(result));
         
     }, [0])    
+
+    React.useEffect(() => {
+        updateUser(userState.uid, pinmarkState);
+    }, [pinmarkState])
+
+    // React.useEffect(() => {       
+    //     checkUser().then((response) => {
+    //         if (response !== 'not signed in') {
+    //             updatedSharedTrips(sharedTripsState);              
+    //         }
+    //     })
+        
+    // }, [sharedTripsState])
    
     const handleCheckLocationExists = (locationObject) => {
         Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
@@ -262,7 +277,7 @@ function UserHome() {
             </div>
             <div className='d-flex justify-content-start flex-wrap text-white'>
                 <h3 style={{padding: 20}}>Trips Shared With You</h3>
-                <SharedTrips />
+                <SharedTrips handlePinmarkDetail={handleShowDetails}/>
             </div>
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>

@@ -1,5 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 
+
 export const sharedSlice = createSlice({
     name: 'sharedTrips',
     initialState: {
@@ -20,7 +21,7 @@ export const sharedSlice = createSlice({
             state.shared = action.payload
         },
         addShared: (state, action) => {
-            state.shared.push(action.payload);
+            state.shared.push(action.payload);       
         },
         removeShared: (state, action) => {
             console.log(action.payload);
@@ -36,6 +37,7 @@ export const sharedSlice = createSlice({
                 }
             })
             console.log(sharedArray);
+          
             return {
                 ...state,
                 shared: sharedArray

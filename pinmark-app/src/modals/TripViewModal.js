@@ -25,6 +25,7 @@ import PinmarkCards from '../components/PinmarkCards';
 import { Google } from '../util/Google';
 import PinmarkModal from './PinmarkModal';
 import { useSelector } from 'react-redux';
+import { updatedSharedTrips } from '../util/Firebase';
 
 function TripViewModal({
     tripObject, 
@@ -35,6 +36,7 @@ function TripViewModal({
     handleDeletePinmarkFromTripModal, 
     handleShareTrip,
     firebaseUsers,
+    sharedView,    
     // handleCheckSharedUsers,
     // sharedUsers
 
@@ -68,6 +70,9 @@ function TripViewModal({
             })
         })      
         setSharedUsers(userArray);
+        if (tripViewModal) {
+            updatedSharedTrips(sharedTripsState)
+        }        
     }, [sharedTripsState, tripViewModal, firebaseUsers])
 
     
@@ -97,32 +102,65 @@ function TripViewModal({
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal> */}
-            <MDBModalHeader>
+            <MDBModalHeader className='d-flex flex-wrap justify-content-start align-items-center'>
                 {/* <MDBRow className='d-flex justify-content-between align-items-center'> */}
-                    <MDBCol size={8} className='d-flex justify-content-start align-items-center'>
+                <MDBRow className='w-100'>
+                <MDBCol className='d-flex justify-content-between align-items-center'>
                         <MDBModalTitle>{tripObject.trip?.tripName}</MDBModalTitle>               
-                    </MDBCol>
-                    <MDBCol size={4} className='d-flex justify-content-between align-items-center'>
-                        <MDBDropdown className='btn-group'>                            
-                        <MDBBtn onClick={() => handleShareTrip(tripObject.trip)} color='primary'><MDBIcon icon='user-friends'/>+</MDBBtn>
-                        <MDBDropdownToggle color='primary' split></MDBDropdownToggle>
-                        <MDBDropdownMenu >
-                            <MDBDropdownItem header>Shared With</MDBDropdownItem>
-                            {
-                                sharedUsers?.map((user) => {
-                                    return (
-                                        <MDBDropdownItem link>
-                                            {user.userName}
-                                            {user.email}
-                                        </MDBDropdownItem>
-                                    )
-                                })
-                            }                                                        
-                        </MDBDropdownMenu>
-                        </MDBDropdown>  
-                    <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
+                      
+                </MDBCol>
+                </MDBRow>
+                <MDBRow className='w-100 d-flex justify-content-center'>
+                <MDBCol size={12} className='d-flex justify-content-between align-items-center'>
+                        {
+                            !sharedView && (
+                                <MDBDropdown className='btn-group'>                            
+                                <MDBBtn onClick={() => handleShareTrip(tripObject.trip)} color='primary'><MDBIcon icon='user-friends'/>+</MDBBtn>
+                                <MDBDropdownToggle color='primary' split></MDBDropdownToggle>
+                                <MDBDropdownMenu >
+                                    <MDBDropdownItem header>Shared With</MDBDropdownItem>
+                                    {
+                                        sharedUsers?.map((user) => {
+                                            return (
+                                                <MDBDropdownItem link>
+                                                    {user.userName}
+                                                    {user.email}
+                                                </MDBDropdownItem>
+                                            )
+                                        })
+                                    }                                                        
+                                </MDBDropdownMenu>
+                                </MDBDropdown>  
+                            )
+                        }                    
+                        {
+                            sharedView && (
+                                <MDBCol size={10} className='overflow-hidden'>
+                                    <div className='d-flex justify-content-start align-items-center text-muted'>{
+                                        firebaseUsers?.map((user) => {
+                                            if (user?.uid === tripObject?.trip?.sendingUserId) {
+                                                if (user?.userName !== null) {
+                                                    return (
+                                                        <>Shared by {user?.userName}
+                                                        </>)
+                                                } else {
+                                                    return (
+                                                        <>Shared by {user?.email}
+                                                        </>)
+                                                }
+                                                
+                                            }
+                                        })
+                                    }</div>
+                                </MDBCol>
+                            )
+                        }   
+                          <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
                     </MDBCol>
                 
+                </MDBRow>
+                                       
+                    
                 {/* </MDBRow> */}
             </MDBModalHeader>
             <MDBModalBody ref={ref}>
@@ -136,6 +174,7 @@ function TripViewModal({
                         // handleCreateTrip={() => {}} 
                         // tripList={[]} 
                         tripView={true}
+                        sharedView={sharedView}
                         />                    
                 </MDBRow>
             </MDBModalBody>
