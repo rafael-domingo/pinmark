@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType, resetUserState } from '../redux/userSlice';
 import { setLocations, setPinmarks, setSharedWithUser, setTripLists } from '../redux/pinmarkSlice';
 import { setShared } from '../redux/sharedSlice';
-
+import Lottie from 'lottie-react';
+import traveller from '../assets/traveller.json';
+import maps from '../assets/map.json';
 function SignIn() {
     // instantiate variables from supporting functions    
     const dispatch = useDispatch();
@@ -181,13 +183,27 @@ function SignIn() {
 
     return (
         <div 
-            className='bg-image min-vh-100'
-            style={{backgroundImage: "url('https://mdbootstrap.com/img/new/slides/041.webp')"}}
-            >                       
-            <MDBModal staticBackdrop show={!secondModal}>
+            className='bg-image min-vh-100 d-flex flex-wrap align-items-center justify-content-center'
+            style={{
+                padding: 20,
+                background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'
+            }}
+            // style={{backgroundImage: "url('https://mdbootstrap.com/img/new/slides/041.webp')"}}
+            >          
+            <h1 style={{fontFamily: 'Pacifico', fontSize: 50, color: 'white'}}>Pinmark</h1>  
+            <Lottie animationData={maps}/>
+            
+            <h3 style={{fontSize: 30, color: 'white'}}>Save and share your favorite locations and trips</h3>
+            
+            <MDBBtn tag='a' color='none' className='m-1' style={{width: '80%', backgroundColor: '#dd4b39', color: 'white', padding: 10, borderRadius: 20, boxShadow: '0px 3px 5px 0px rgba(0, 0, 0, 0.3)'}}onClick={handleSignInWithGoogle}>
+                <MDBIcon className='me-2' fab icon ='google'/>
+                Sign In with Google
+                </MDBBtn> 
+            {/* <MDBModal staticBackdrop show={secondModal}>
                 <MDBModalDialog size='lg' centered>
                     <MDBModalContent>
-                        <MDBModalHeader>
+                        <MDBModalHeader className='d-flex justify-content-center flex-wrap'>
+                        
                             Welcome to Pinmark
                         </MDBModalHeader>                        
                         <MDBModalBody className='d-grid gap-3'>                                                    
@@ -211,14 +227,15 @@ function SignIn() {
                         </MDBModalFooter>                                                            
                     </MDBModalContent>
                 </MDBModalDialog>        
-            </MDBModal>   
+            </MDBModal>    */}
 
             <MDBModal show={secondModal} staticBackdrop={register} setShow={setSecondModal}>
                 <MDBModalDialog size='lg' centered>
-                    <MDBModalContent>
+                    <MDBModalContent className='d-flex justify-content-center align-items-center'>
                         <MDBModalHeader>
-                            Second Modal
+                            <Lottie animationData={traveller} />
                             <MDBBtn
+                                style={{position: 'absolute', top: 10, right: 10}}
                                 className='btn-close'
                                 color='none'
                                 onClick={() => setSecondModal(!secondModal)}
@@ -226,13 +243,13 @@ function SignIn() {
 
                             </MDBBtn>
                         </MDBModalHeader>
-                        <MDBModalBody className='d-grid gap-3'>
+                        <MDBModalBody className='d-grid gap-3 justify-content-center align-items-center' style={{width: '100%'}}>
                             {message}
                             {passwordInputModal && (<MDBInput required label='Password' id='typePassword' type='password' size='lg' onChange={handlePassword}/>)}  
                             {passwordInputModal && (<MDBBtn onClick={handleEmailSignIn}>Sign In</MDBBtn>)}
                             {passwordInputModal && (<MDBBtn color='link'>Forgot your password?</MDBBtn>)}
                             {confirm && (<MDBBtn onClick={handleConfirm}>Yes</MDBBtn>)}
-                            {loading && (<MDBSpinner role='status'></MDBSpinner>)}                            
+                            {/* {loading && (<MDBSpinner role='status'></MDBSpinner>)}                             */}
                                            
                         </MDBModalBody>
                     </MDBModalContent>

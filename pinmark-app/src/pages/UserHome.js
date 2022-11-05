@@ -258,7 +258,7 @@ function UserHome() {
                     
                     <MDBNavbarBrand className='w-100 d-flex justify-content-between align-items-center'> 
                         <MDBIcon icon='map-marked'/>
-                        <h1>pinmark</h1>
+                        <h1 style={{fontFamily: 'Pacifico'}}>Pinmark</h1>  
                         
                     </MDBNavbarBrand>
                 </MDBContainer>

@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TripViewModal from '../modals/TripViewModal';
 import { removeShared } from '../redux/sharedSlice';
-import { fetchUserInfo, getTrip } from '../util/Firebase';
+import { fetchUserInfo, getTrip, updatedSharedTrips } from '../util/Firebase';
 
 function SharedTrips({handlePinmarkDetail}) {
     const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
@@ -91,6 +91,10 @@ function SharedTrips({handlePinmarkDetail}) {
         handlePinmarkDetail(newObject);
     }
 
+    React.useEffect(() => {
+        updatedSharedTrips(sharedTripsState);
+    }, [confirmationModal])
+
     return (
         <div style={containerDivStyle}>
             {
@@ -129,6 +133,7 @@ function SharedTrips({handlePinmarkDetail}) {
                     <MDBModalContent>
                         <TripViewModal 
                             tripObject={modalInfo}
+                            tripViewModal={showModal}
                             handleCloseModal={handleCloseTripModal}      
                             handleDeleteTrip={handleRemoveTripFromSharedModal}
                             handlePinmarkDetail={handleDetail}         
