@@ -21,7 +21,7 @@ import { resetSharedState } from '../redux/sharedSlice';
 import { Navigate } from 'react-router-dom';
 
 function AccountModal({handleCloseModal, handleDeleteAccountModal}) {
-    const [deleteAccountModal, setDeleteAccountModal] = React.useState(false);
+    
     const dispatch = useDispatch();
 
     const handleSignOut = () => {
@@ -31,10 +31,6 @@ function AccountModal({handleCloseModal, handleDeleteAccountModal}) {
         return <Navigate to='/' replace />
     }
 
-
-    const handleDeleteAccount = () => {
-
-    }
     return (
         <>
         <MDBModalHeader>

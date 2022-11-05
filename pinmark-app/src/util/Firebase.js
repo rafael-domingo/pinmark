@@ -9,6 +9,7 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     fetchSignInMethodsForEmail,    
+    deleteUser
 } from 'firebase/auth';
 import {
     getFirestore,
@@ -19,7 +20,8 @@ import {
     setDoc,
     doc,
     updateDoc,
-    getDoc
+    getDoc,
+    deleteDoc
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -40,8 +42,8 @@ export const db = getFirestore(app);
 // Sign in with  Google
 const provider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
-    try {        
-        signInWithPopup(auth, provider).then((res) => {
+    try {                
+        return signInWithPopup(auth, provider).then((res) => {
             // TODO: Need to add functionality to check whether user already exists
             // add user to firestore 
             setDoc(doc(db, "users", res.user.uid), {
@@ -51,7 +53,8 @@ export const signInWithGoogle = async () => {
                 profilePicture: res.user.photoURL,
                 uid: res.user.uid,
                 authType: 'google'
-            })                                  
+            })   
+            return res.user;      
         })
     } catch(error) {
         console.log(`Google Auth Error: ${error}`);
@@ -179,6 +182,28 @@ export const updateUser = async(userId, userObject) => {
             pinmark: {}
         })
     }    
+}
+
+// Delete user
+export const handleDeleteUser = async() => {
+    const currentUser = auth.currentUser;
+
+    // Delete user data from firestore
+    await deleteDoc(doc(db, "pinmarks", currentUser.uid))
+    await deleteDoc(doc(db, "users", currentUser.uid))
+
+    // Delete User from authentication
+    if (currentUser) {
+        deleteUser(currentUser).then(() => {
+            // user deleted
+        })
+        .catch((error) => {
+            // something went wrong
+            console.log(error)
+        })
+    }
+
+
 }
 
 // Updated shared trips

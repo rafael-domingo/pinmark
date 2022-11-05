@@ -25,39 +25,52 @@ function SignIn() {
     const [googleAuth, setGoogleAuth] = React.useState(false);
 
     // Firebase supporting functions
-    const handleSignInWithGoogle = () => {
+    const handleSignInWithGoogle = async () => {
         setSecondModal(true);
-        signInWithGoogle().then(result => {    
-            handleCheckUser('google'); // run check user function to assign user data to redux state       
+        signInWithGoogle().then((user) => {    
+            console.log(user);
+            setLoading(true);
+            setMessage('Getting everything set up.')    
+
+            dispatch(setUserName(user.displayName));
+            dispatch(setEmail(user.email));
+            dispatch(setPhone(user.phoneNumber));
+            dispatch(setProfilePicture(user.photoURL));
+            dispatch(setUid(user.uid));
+            dispatch(setAuthType('google'));
+            
+            getUserData(user.uid);
+
+            // handleCheckUser('google'); // run check user function to assign user data to redux state       
             // navigate to user home once sign in is successful
              
         }).catch(error => errorHandling(error));
     }        
 
-    const handleSignUserOut = () => {
-        signUserOut().then(result => {
-            console.log(result);
-            dispatch(resetUserState());
-        }).catch(error => console.log(error))
-    }
+    // const handleSignUserOut = () => {
+    //     signUserOut().then(result => {
+    //         console.log(result);
+    //         dispatch(resetUserState());
+    //     }).catch(error => console.log(error))
+    // }
 
-    const handleEmailRegister = () => {   
-        if (password === confirmPassword) {
-            if (register) {                   
-                setSecondModal(true);
-                signInWithEmail(true, email, password)
-                .then(response => {       
-                    typeof response === "string" ? errorHandling(response) : handleCheckUser('password')     
-                }).catch(error => console.log(error)) 
-            } else {
-                setMessage('');
-                setRegister(true);
-            }   
-        } else {
-            setSecondModal(true);
-            errorHandling('auth/password-mismatch');
-        }                   
-    }
+    // const handleEmailRegister = () => {   
+    //     if (password === confirmPassword) {
+    //         if (register) {                   
+    //             setSecondModal(true);
+    //             signInWithEmail(true, email, password)
+    //             .then(response => {       
+    //                 typeof response === "string" ? errorHandling(response) : handleCheckUser('password')     
+    //             }).catch(error => console.log(error)) 
+    //         } else {
+    //             setMessage('');
+    //             setRegister(true);
+    //         }   
+    //     } else {
+    //         setSecondModal(true);
+    //         errorHandling('auth/password-mismatch');
+    //     }                   
+    // }
 
     const handleEmailSignIn = () => {
         setMessage('');
@@ -85,17 +98,23 @@ function SignIn() {
     const handleCheckUser = async (authType) => {
         setLoading(true);
         setMessage('Getting everything set up.')    
-        setPasswordInputModal(false);    
-        setRegister(false); 
+        // setPasswordInputModal(false);    
+        // setRegister(false); 
         checkUser().then(result => {   
-            console.log(result);                         
-            dispatch(setUserName(result.displayName));
-            dispatch(setEmail(result.email));
-            dispatch(setPhone(result.phoneNumber));
-            dispatch(setProfilePicture(result.photoURL));
-            dispatch(setUid(result.uid));    
-            dispatch(setAuthType(authType));
-            getUserData(result.uid);
+            if (result === 'not signed in') {
+                navigate("/UserHome");
+                return;
+            } else {
+                console.log(result);                         
+                dispatch(setUserName(result.displayName));
+                dispatch(setEmail(result.email));
+                dispatch(setPhone(result.phoneNumber));
+                dispatch(setProfilePicture(result.photoURL));
+                dispatch(setUid(result.uid));    
+                dispatch(setAuthType(authType));
+                getUserData(result.uid);
+            }
+            
             
     
         }).catch(error => errorHandling(error));
@@ -105,6 +124,7 @@ function SignIn() {
         getUser(userId).then((result) => {
             console.log(result)
             if (result === 'new user') {
+                navigate("/UserHome");
                 return;
             } else {
                 dispatch(setLocations(result.pinmark.locations));

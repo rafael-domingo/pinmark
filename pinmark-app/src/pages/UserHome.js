@@ -23,14 +23,18 @@ import Pinmarks from '../components/Pinmarks';
 import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
-import { checkUser, fetchUserInfo, updatedSharedTrips, updateUser } from '../util/Firebase';
+import { checkUser, fetchUserInfo, handleDeleteUser, updatedSharedTrips, updateUser } from '../util/Firebase';
 import SharedTrips from '../components/SharedTrips';
 import AccountModal from '../modals/AccountModal';
+import { resetState } from '../redux/pinmarkSlice';
+import { resetUserState } from '../redux/userSlice';
+import { resetSharedState } from '../redux/sharedSlice';
+import { Navigate } from 'react-router-dom';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);   
     const userState = useSelector((state) => state.user);
-    const sharedTripsState = useSelector((state) => state.sharedTrips);
+    const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
     const dispatch = useDispatch();
     const sessionToken = uuidv4();        
     const [showSearch, setShowSearch] = React.useState(false);   
@@ -82,7 +86,24 @@ function UserHome() {
     }
 
     const handleDeleteAccount = () => {
+        // delete user from firebase, user document from firestore, and pinmarks document from firestore
+        handleDeleteUser();
 
+        // delete relevant shared trips from firestore
+        sharedTripsState.map((trip) => {
+            const updatedSharedTripsState = [];
+            if (trip.sendingUserId !== userState.uid && trip.receivingUserId !== userState.uid) {
+                updatedSharedTripsState.push(trip);
+            }
+            console.log(updatedSharedTripsState)
+            updatedSharedTrips(updatedSharedTripsState)
+
+        })
+
+        dispatch(resetState());
+        dispatch(resetUserState());
+        dispatch(resetSharedState());
+        return <Navigate to='/' replace />
     }
 
     const handleAddPinmark = (pinmark) => {
