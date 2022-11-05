@@ -94,9 +94,6 @@ function SignIn() {
             dispatch(setUid(result.uid));    
             dispatch(setAuthType(authType));
             getUserData(result.uid);
-            setTimeout(() => {
-                navigate("/UserHome");    
-            }, 2000);
             
     
         }).catch(error => errorHandling(error));
@@ -111,12 +108,18 @@ function SignIn() {
                 dispatch(setLocations(result.pinmark.locations));
                 dispatch(setPinmarks(result.pinmark.pinmarks));
                 dispatch(setTripLists(result.pinmark.tripLists));
+                fetchSharedTrips().then((result) => {
+                    console.log(result);
+                    dispatch(setShared(result))
+                    setTimeout(() => {
+                        navigate("/UserHome");    
+                    }, 2000);
+                    
+                })
+               
             }
         }).catch((error) => console.log(error));
-        fetchSharedTrips().then((result) => {
-            console.log(result);
-            dispatch(setShared(result))
-        })
+       
     }
 
     // form input functions
