@@ -44,6 +44,7 @@ function Trips({handlePinmarkDetail}) {
     }
 
     React.useEffect(() => {
+        // modify Trip View Modal if trip state changes
         if (showModal) {
             tripsState.map((trip) => {
                 if (trip.tripId === confirmationPinmarkObj.tripId) {
