@@ -4,15 +4,7 @@ import { createSlice, current } from '@reduxjs/toolkit';
 export const sharedSlice = createSlice({
     name: 'sharedTrips',
     initialState: {
-        shared: [
-            {
-                sendingUserId: '',
-                receivingUserId: '', 
-                tripName: '',       
-                location: {},                        
-                tripId: ''
-            }
-        ]
+        shared: []
        
     },
     reducers: {
@@ -42,6 +34,12 @@ export const sharedSlice = createSlice({
                 ...state,
                 shared: sharedArray
             };
+        },
+        resetSharedState: (state) => {
+            return {
+                ...state,
+                shared: []
+            }
         }
     }
 })
@@ -49,6 +47,7 @@ export const sharedSlice = createSlice({
 export const {
     setShared,
     addShared,
-    removeShared
+    removeShared,
+    resetSharedState
 } = sharedSlice.actions;
 export default sharedSlice.reducer

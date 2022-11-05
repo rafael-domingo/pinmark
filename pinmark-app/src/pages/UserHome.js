@@ -12,6 +12,10 @@ import {
     MDBNavbar,
     MDBContainer,
     MDBNavbarBrand,  
+    MDBModalHeader,
+    MDBModalBody,
+    MDBModalTitle,
+    MDBModalFooter
 } from 'mdb-react-ui-kit';
 import { useDispatch, useSelector } from 'react-redux';
 import { addLocations, addPinmark, deleteLocations, deletePinmark } from '../redux/pinmarkSlice';
@@ -21,6 +25,7 @@ import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
 import { checkUser, fetchUserInfo, updatedSharedTrips, updateUser } from '../util/Firebase';
 import SharedTrips from '../components/SharedTrips';
+import AccountModal from '../modals/AccountModal';
 
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);   
@@ -30,6 +35,8 @@ function UserHome() {
     const sessionToken = uuidv4();        
     const [showSearch, setShowSearch] = React.useState(false);   
     const [secondModal, setSecondModal] = React.useState(false);
+    const [accountModal, setAccountModal] = React.useState(false);    
+    const [deleteAccountModal, setDeleteAccountModal] = React.useState(false);
     const [detailInfo, setDetailInfo] = React.useState({});  
     const [currentLocationObject, setCurrentLocationObject] = React.useState({
         city: '',
@@ -72,6 +79,10 @@ function UserHome() {
             }
             dispatch(addLocations(newLocationObject));
         }).catch((error) => console.log(error))
+    }
+
+    const handleDeleteAccount = () => {
+
     }
 
     const handleAddPinmark = (pinmark) => {
@@ -279,6 +290,18 @@ function UserHome() {
                 <h3 style={{padding: 20}}>Trips Shared With You</h3>
                 <SharedTrips handlePinmarkDetail={handleShowDetails}/>
             </div>
+            <div className='m-5 d-flex justify-content-center align-items-center'>
+                <MDBBtn 
+                    onClick={() => setAccountModal(true)}
+                    color='link'     
+                    className='text-white'               
+                    >
+                        <MDBIcon icon='user-circle' className='m-1'/>
+                        Account Settings
+                </MDBBtn>
+            </div>
+            
+            {/* Search Modal */}
             <MDBBtn onClick={handleShowSearch} size='lg' floating tag='a' style={{position:'absolute', bottom: 30, right: 30}}>
                 <MDBIcon fas icon='search'/>
             </MDBBtn>
@@ -291,6 +314,7 @@ function UserHome() {
                 </MDBModalDialog>
             </MDBModal>
             
+            {/* Pinmark Detail Modal */}
             <MDBModal staticBackdrop show={secondModal} setShow={setSecondModal} tabIndex='-1'>
                 <MDBModalDialog size='fullscreen-md-down' centered scrollable className="justify-content-center align-item-center">
                     <MDBModalContent>
@@ -298,6 +322,43 @@ function UserHome() {
                     </MDBModalContent>
                 </MDBModalDialog>
             </MDBModal>
+
+            {/* Account Settings Modal */}
+            <MDBModal staticBackdrop show={accountModal} setShow={setAccountModal}>
+                <MDBModalDialog size='fullscreen-sm-down' centered scrollable className='justify-content-center align-items-center'>
+                    <MDBModalContent>
+                        <AccountModal 
+                            handleCloseModal={setAccountModal}                          
+                            handleDeleteAccountModal={setDeleteAccountModal}
+                        />
+                    </MDBModalContent>
+                    
+                </MDBModalDialog>
+            </MDBModal>
+
+            {/* Account Delete Confirmation Modal */}
+            <MDBModal staticBackdrop show={deleteAccountModal} setShow={setDeleteAccountModal}>
+            <MDBModalDialog
+                centered
+                scrollable                
+                className='justify-content-center align-item-center'
+                >            
+                <MDBModalContent>
+                    <MDBModalHeader>
+                        <MDBModalTitle>Delete Your Account?</MDBModalTitle>
+                    </MDBModalHeader>
+                    <MDBModalBody>
+                        <p>Are you sure you want to delete your account?</p>
+                        <p className='text-muted'>This cannot be undone and all of your data will be deleted.</p>
+                    </MDBModalBody>
+                    <MDBModalFooter>
+                        <MDBBtn color='link' onClick={() => setDeleteAccountModal(false)}>Cancel</MDBBtn>
+                        <MDBBtn color='danger' onClick={() => handleDeleteAccount()}>Delete My Account</MDBBtn>
+                    </MDBModalFooter>
+                </MDBModalContent>
+            </MDBModalDialog>
+        </MDBModal>
+      
         </div>
         
     )

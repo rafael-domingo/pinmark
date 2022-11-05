@@ -3,47 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 export const pinmarkSlice = createSlice({
     name: 'pinmarks',
     initialState: {
-        locations: [            
-            {
-                city: '',
-                state: '',
-                country: '',                
-                locationId: ''
-            }          
-        ],
-        pinmarks: [
-            {
-                pinmarkId: '',
-                locationId: '',
-                locationName: '',
-                geometry: {
-                    lat: '',
-                    lng: ''
-                },
-                address: '',
-                photoURL: '',
-                rating: '',
-                categories: [], 
-                tripIds: [], // array of tripIds that this pinmark is in
-            }
-        ],
-        categories: [],
-        tripLists: [
-            {
-                tripId: '',
-                tripName: '',
-                sharedWith: [] // array of uids that user has shared this trip with
-            }
-        ],
-        sharedWithUser: [
-            {
-                sendingUserId: '',
-                receivingUserId: '', 
-                tripName: '',       
-                location: {},                        
-                tripId: ''
-            }
-        ]
+        locations: [],
+        pinmarks: [],
+        tripLists: []
     },
     reducers: {
         setLocations: (state,action) => {
@@ -296,6 +258,14 @@ export const pinmarkSlice = createSlice({
                 ...state,
                 sharedWithUser: updatedSharedWithUserArray
             }
+        },
+        resetState: (state) => {
+            return {
+                ...state,
+                locations: [],
+                pinmarks: [],
+                tripLists: []
+            }
         }
     }
 })
@@ -320,6 +290,7 @@ export const {
     addTripLists,
     deleteTripLists,
     addSharedWithUser,
-    removeSharedWithUser
+    removeSharedWithUser,
+    resetState
 } = pinmarkSlice.actions;
 export default pinmarkSlice.reducer
