@@ -122,111 +122,124 @@ function Trips({handlePinmarkDetail}) {
         
         setConfirmationPinmarkModal(false);
     }
-
-    return (
-        <div style={containerDivStyle}>
-        {
-            tripsState.slice(0).reverse().slice(0,10).map((trip) => {
-                var city = '';
-                var state = '';
-                var country = '';
-                locationState.map((location) => {
-                    if (location.locationId === trip.locationId) {
-                        city = location.city;
-                        state = location.state;
-                        country = location.country;
+    if (tripsState.length > 0) {
+        return (
+            <div style={containerDivStyle}>
+            {
+                tripsState.slice(0).reverse().slice(0,10).map((trip) => {
+                    var city = '';
+                    var state = '';
+                    var country = '';
+                    locationState.map((location) => {
+                        if (location.locationId === trip.locationId) {
+                            city = location.city;
+                            state = location.state;
+                            country = location.country;
+                        }
+                    })
+                    console.log(trip);
+                    if (trip.color === undefined) {
+                        return (
+                            <MDBCard onClick={() => handleTripView(trip)} background='primary' style={cardDivStyle}>
+                                <MDBCardBody>
+                                    <MDBCardTitle>{trip.tripName}</MDBCardTitle>
+                                    <MDBCardText>{city}</MDBCardText>
+                                </MDBCardBody>
+                            </MDBCard>
+                        )
+                        
+                    } else {
+                        return (
+                            <MDBCard onClick={() => handleTripView(trip)} background={trip.color} style={cardDivStyle}>
+                                <MDBCardBody className='text-white'>
+                                    <MDBCardTitle>{trip.tripName}</MDBCardTitle>
+                                    <MDBCardText>{city}</MDBCardText>
+                                </MDBCardBody>
+                            </MDBCard>
+                        )
+                        
                     }
                 })
-                console.log(trip);
-                if (trip.color === undefined) {
-                    return (
-                        <MDBCard onClick={() => handleTripView(trip)} background='primary' style={cardDivStyle}>
-                            <MDBCardBody>
-                                <MDBCardTitle>{trip.tripName}</MDBCardTitle>
-                                <MDBCardText>{city}</MDBCardText>
-                            </MDBCardBody>
-                        </MDBCard>
-                    )
+            }  
+            <MDBModal show={showModal} setShow={setShowModal}>
+                <MDBModalDialog size='fullscreen' centered scrollable className='justify-content-center align-item-center'>
+                    <MDBModalContent>
+                        <TripViewModal tripObject={modalInfo} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handleDetail} handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}/>                    
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+            {/* Delete Trip Confirmation */}
+            <MDBModal staticBackdrop show={confirmationModal} setShow={setConfirmationModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Delete Trip?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to delete this trip?</p>
+                            <p className="text-muted">Only this trip will be deleted. Your pinmarks will remain in your Location page.</p>
+                        </MDBModalBody>
                     
-                } else {
-                    return (
-                        <MDBCard onClick={() => handleTripView(trip)} background={trip.color} style={cardDivStyle}>
-                            <MDBCardBody className='text-white'>
-                                <MDBCardTitle>{trip.tripName}</MDBCardTitle>
-                                <MDBCardText>{city}</MDBCardText>
-                            </MDBCardBody>
-                        </MDBCard>
-                    )
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setConfirmationModal(false)
+                                setShowModal(true)                            
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => handleDeleteTrip()} color='danger'>
+                                {!loading && (<>Delete</>)}
+                                {loading && (<MDBSpinner size='sm' role='status'/>)}
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+            {/* Delete Pinmark From Trip Confirmation */}
+            <MDBModal staticBackdrop show={confirmationPinmarkModal} setShow={setConfirmationPinmarkModal}>
+                <MDBModalDialog
+                    centered
+                    scrollable
+                    className="justify-content-center align-item-center"
+                    >
+                    <MDBModalContent>
+                        <MDBModalHeader>
+                            <MDBModalTitle>Remove Pinmark From Trip?</MDBModalTitle>
+                        </MDBModalHeader>
+                        <MDBModalBody>
+                            <p>Are you sure you want to remove this pinmark?</p>
+                            <p className="text-muted">This will remove the pinmark from this trip but it will still remain in your pinmark list.</p>
+                        </MDBModalBody>
                     
-                }
-            })
-        }  
-        <MDBModal show={showModal} setShow={setShowModal}>
-            <MDBModalDialog size='fullscreen' centered scrollable className='justify-content-center align-item-center'>
-                <MDBModalContent>
-                    <TripViewModal tripObject={modalInfo} handleCloseModal={handleCloseTripModal} handleDeleteTrip={handleDeleteTripModal} handlePinmarkDetail={handleDetail} handleDeletePinmarkFromTripModal={handleDeletePinmarkFromTripModal}/>                    
-                </MDBModalContent>
-            </MDBModalDialog>
-        </MDBModal>
-        {/* Delete Trip Confirmation */}
-        <MDBModal staticBackdrop show={confirmationModal} setShow={setConfirmationModal}>
-            <MDBModalDialog
-                centered
-                scrollable
-                className="justify-content-center align-item-center"
-                >
-                <MDBModalContent>
-                    <MDBModalHeader>
-                        <MDBModalTitle>Delete Trip?</MDBModalTitle>
-                    </MDBModalHeader>
-                    <MDBModalBody>
-                        <p>Are you sure you want to delete this trip?</p>
-                        <p className="text-muted">Only this trip will be deleted. Your pinmarks will remain in your Location page.</p>
-                    </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn onClick={() => {
+                                setConfirmationPinmarkModal(false)
+                                setShowModal(true)                            
+                                }} color='link'>Cancel</MDBBtn>
+                            <MDBBtn style={{width: 100}} onClick={() => handleDeletePinmarkFromTrip(confirmationPinmarkObj)} color='danger'>
+                                <>Delete</>                            
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </MDBModalContent>
+                </MDBModalDialog>
+            </MDBModal>
+            </div>                  
+        )
+    } else {
+        return (
+            <div style={{padding: 20}}>
+                <MDBCard background='light' className='text-dark'>
+                    <MDBCardBody>
+                        You haven't created any Trips yet.
+                    </MDBCardBody>                    
+                </MDBCard>
                 
-                    <MDBModalFooter>
-                        <MDBBtn onClick={() => {
-                            setConfirmationModal(false)
-                            setShowModal(true)                            
-                            }} color='link'>Cancel</MDBBtn>
-                        <MDBBtn style={{width: 100}} onClick={() => handleDeleteTrip()} color='danger'>
-                            {!loading && (<>Delete</>)}
-                            {loading && (<MDBSpinner size='sm' role='status'/>)}
-                        </MDBBtn>
-                    </MDBModalFooter>
-                </MDBModalContent>
-            </MDBModalDialog>
-        </MDBModal>
-        {/* Delete Pinmark From Trip Confirmation */}
-        <MDBModal staticBackdrop show={confirmationPinmarkModal} setShow={setConfirmationPinmarkModal}>
-            <MDBModalDialog
-                centered
-                scrollable
-                className="justify-content-center align-item-center"
-                >
-                <MDBModalContent>
-                    <MDBModalHeader>
-                        <MDBModalTitle>Remove Pinmark From Trip?</MDBModalTitle>
-                    </MDBModalHeader>
-                    <MDBModalBody>
-                        <p>Are you sure you want to remove this pinmark?</p>
-                        <p className="text-muted">This will remove the pinmark from this trip but it will still remain in your pinmark list.</p>
-                    </MDBModalBody>
-                
-                    <MDBModalFooter>
-                        <MDBBtn onClick={() => {
-                            setConfirmationPinmarkModal(false)
-                            setShowModal(true)                            
-                            }} color='link'>Cancel</MDBBtn>
-                        <MDBBtn style={{width: 100}} onClick={() => handleDeletePinmarkFromTrip(confirmationPinmarkObj)} color='danger'>
-                            <>Delete</>                            
-                        </MDBBtn>
-                    </MDBModalFooter>
-                </MDBModalContent>
-            </MDBModalDialog>
-        </MDBModal>
-        </div>                  
-    )
+            </div>                
+        )
+    }
+    
 }
 
 export default Trips;

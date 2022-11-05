@@ -36,41 +36,56 @@ function Locations() {
         overflow: 'hidden'
     }    
 
-    return (
-        <div style={containerDivStyle}>
-            {
-                locationState.map((location) => {
-                    // put placeholder image in case image doesn't exist
-                    if (location.photo_reference === undefined) {
-                        var photo_reference = (
-                            <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={Image}/>
+    if (locationState.length > 0 ) {
+        return (
+            <div style={containerDivStyle}>
+                {
+                    locationState.map((location) => {
+                        // put placeholder image in case image doesn't exist
+                        if (location.photo_reference === undefined) {
+                            var photo_reference = (
+                                <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={Image}/>
+                            )
+                        } else {
+                            var photo_reference = (
+                                <MDBCardImage style={{height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+                            )
+                        }
+                        return (
+                            <Link style={{color: 'white'}} to={`/PinmarkList/${location.locationId}`}>
+                                <MDBCard background='dark' className='text-white' style={locationDivStyle}>
+                                    {photo_reference}
+                                    {/* <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={location.photo_reference !== undefined && (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)}/> */}
+                                    <MDBCardOverlay>
+                                        <MDBCardTitle>
+                                            {location.city}
+                                        </MDBCardTitle>
+                                        <MDBCardText>
+                                            {location.state}, {location.country}                                    
+                                        </MDBCardText>
+                                    </MDBCardOverlay>
+                                </MDBCard>  
+                            </Link>
+                            
                         )
-                    } else {
-                        var photo_reference = (
-                            <MDBCardImage style={{height: '100%', objectFit: 'cover'}} overlay src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${location.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
-                        )
-                    }
-                    return (
-                        <Link style={{color: 'white'}} to={`/PinmarkList/${location.locationId}`}>
-                            <MDBCard background='dark' className='text-white' style={locationDivStyle}>
-                                {photo_reference}
-                                {/* <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={location.photo_reference !== undefined && (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)}/> */}
-                                <MDBCardOverlay>
-                                    <MDBCardTitle>
-                                        {location.city}
-                                    </MDBCardTitle>
-                                    <MDBCardText>
-                                        {location.state}, {location.country}                                    
-                                    </MDBCardText>
-                                </MDBCardOverlay>
-                            </MDBCard>  
-                        </Link>
-                        
-                    )
-                })
-            }            
-        </div>
-    )
+                    })
+                }            
+            </div>
+        )
+    } else {
+        return (
+            <div style={{padding: 20}}>
+                <MDBCard background='light' className='text-dark'>
+                    <MDBCardBody>
+                        Your Locations list will populate once you start adding Pinmarks. 
+                    </MDBCardBody>
+                    
+                </MDBCard>
+                
+            </div>
+        )
+    }
+   
 
 }
 
