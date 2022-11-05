@@ -11,6 +11,7 @@ function SharedTrips({handlePinmarkDetail}) {
     const [showModal, setShowModal] = React.useState(false);
     const [modalInfo, setModalInfo] = React.useState({});
     const [firebaseUsers, setFirebaseUsers] = React.useState([]);
+    const [filteredSharedTrips, setFilteredSharedTrips] = React.useState([]);
     const [confirmationModal, setConfirmationModal] = React.useState(false);
     const dispatch = useDispatch();
 
@@ -42,6 +43,17 @@ function SharedTrips({handlePinmarkDetail}) {
             setFirebaseUsers(result);
         })
     }, [0])
+
+    React.useEffect(() => {
+        console.log('refresh')
+        var filteredTrips = [];
+        sharedTripsState.map((trip) => {
+            if (trip.receivingUserId === userState.uid) {
+                filteredTrips.push(trip);
+            }
+        })
+        setFilteredSharedTrips(filteredTrips);
+    }, [sharedTripsState])
 
     const handleTripView = (tripObject) => {
         getTrip(tripObject).then((result) => {
@@ -95,92 +107,105 @@ function SharedTrips({handlePinmarkDetail}) {
         updatedSharedTrips(sharedTripsState);
     }, [confirmationModal])
 
-    return (
-        <div style={containerDivStyle}>
-            {
-                sharedTripsState.slice(0).reverse().map((trip) => {
-                    console.log(trip)
-                    if (trip.receivingUserId === userState.uid) {
-                        return (
-                            <MDBCard 
-                                style={cardDivStyle} 
-                                background='dark'
-                                onClick={() => handleTripView(trip)}
-                                >
-                                <MDBCardBody className='d-flex justify-content-center align-items-center flex-wrap'>
-                                    <MDBCardTitle>{trip.tripName}</MDBCardTitle>
-                                    <MDBCardSubTitle>{trip.location.city}</MDBCardSubTitle>
-                                    {
-                                        firebaseUsers.map((user) => {
-                                            if (user.uid === trip.sendingUserId) {
-                                                return (<p style={{fontSize: 10, width: '100%'}} className='text-muted'>Shared by {user?.userName}</p>)                                            
-                                            }
-                                        })
-                                    }                                   
-                                </MDBCardBody>                             
-                            </MDBCard>
-                        )
-                    }
-                })
-            }
-            <MDBModal show={showModal} setShow={setShowModal} className='text-dark'>
-                <MDBModalDialog 
-                    size='fullscreen' 
-                    centered
-                    scrollable
-                    className='justify-content-center align-item-center'
-                    >
-                    <MDBModalContent>
-                        <TripViewModal 
-                            tripObject={modalInfo}
-                            tripViewModal={showModal}
-                            handleCloseModal={handleCloseTripModal}      
-                            handleDeleteTrip={handleRemoveTripFromSharedModal}
-                            handlePinmarkDetail={handleDetail}         
-                            sharedView={true}    
-                            firebaseUsers={firebaseUsers}         
-                        />
-                    </MDBModalContent>
-                </MDBModalDialog>
-            </MDBModal>
-
-            <MDBModal staticBackdrop show={confirmationModal} setShow={setConfirmationModal} className='text-dark'>
-                <MDBModalDialog
-                    centered
-                    scrollable
-                    className='justify-content-center align-item-center'
-                    >
+    if (filteredSharedTrips.length > 0) {
+        return (
+            <div style={containerDivStyle}>
+                {
+                    filteredSharedTrips.slice(0).reverse().map((trip) => {
+                        console.log(trip)
+                        if (trip.receivingUserId === userState.uid) {
+                            return (
+                                <MDBCard 
+                                    style={cardDivStyle} 
+                                    background='dark'
+                                    onClick={() => handleTripView(trip)}
+                                    >
+                                    <MDBCardBody className='d-flex justify-content-center align-items-center flex-wrap'>
+                                        <MDBCardTitle>{trip.tripName}</MDBCardTitle>
+                                        <MDBCardSubTitle>{trip.location.city}</MDBCardSubTitle>
+                                        {
+                                            firebaseUsers.map((user) => {
+                                                if (user.uid === trip.sendingUserId) {
+                                                    return (<p style={{fontSize: 10, width: '100%'}} className='text-muted'>Shared by {user?.userName}</p>)                                            
+                                                }
+                                            })
+                                        }                                   
+                                    </MDBCardBody>                             
+                                </MDBCard>
+                            )
+                        }
+                    })
+                }
+                <MDBModal show={showModal} setShow={setShowModal} className='text-dark'>
+                    <MDBModalDialog 
+                        size='fullscreen' 
+                        centered
+                        scrollable
+                        className='justify-content-center align-item-center'
+                        >
                         <MDBModalContent>
-                            <MDBModalHeader>
-                                <MDBModalTitle>Remove Trip from 'Shared With You'?</MDBModalTitle>
-                            </MDBModalHeader>
-                            <MDBModalBody>
-                                <p>Are you sure you want to stop this trip from being shared with you?</p>
-                                <p className='text-muted' style={{fontSize: 15}}>This does not delete the trip. The person who shared this with you will still have this trip in their account.</p>
-                            </MDBModalBody>
-                            <MDBModalFooter>
-                                <MDBBtn
-                                    onClick={() => {
-                                        setConfirmationModal(false)
-                                        setShowModal(true)
-                                    }}
-                                    color='lilnk'
-                                    >
-                                    Cancel
-                                </MDBBtn>
-                                <MDBBtn
-                                    // style={{width: '100%'}}
-                                    onClick={() => handleRemoveTripFromShared()}
-                                    color='danger'
-                                    >
-                                    Remove
-                                </MDBBtn>
-                            </MDBModalFooter>
+                            <TripViewModal 
+                                tripObject={modalInfo}
+                                tripViewModal={showModal}
+                                handleCloseModal={handleCloseTripModal}      
+                                handleDeleteTrip={handleRemoveTripFromSharedModal}
+                                handlePinmarkDetail={handleDetail}         
+                                sharedView={true}    
+                                firebaseUsers={firebaseUsers}         
+                            />
                         </MDBModalContent>
-                </MDBModalDialog>
-            </MDBModal>
-        </div>
-    )
+                    </MDBModalDialog>
+                </MDBModal>
+    
+                <MDBModal staticBackdrop show={confirmationModal} setShow={setConfirmationModal} className='text-dark'>
+                    <MDBModalDialog
+                        centered
+                        scrollable
+                        className='justify-content-center align-item-center'
+                        >
+                            <MDBModalContent>
+                                <MDBModalHeader>
+                                    <MDBModalTitle>Remove Trip from 'Shared With You'?</MDBModalTitle>
+                                </MDBModalHeader>
+                                <MDBModalBody>
+                                    <p>Are you sure you want to stop this trip from being shared with you?</p>
+                                    <p className='text-muted' style={{fontSize: 15}}>This does not delete the trip. The person who shared this with you will still have this trip in their account.</p>
+                                </MDBModalBody>
+                                <MDBModalFooter>
+                                    <MDBBtn
+                                        onClick={() => {
+                                            setConfirmationModal(false)
+                                            setShowModal(true)
+                                        }}
+                                        color='lilnk'
+                                        >
+                                        Cancel
+                                    </MDBBtn>
+                                    <MDBBtn
+                                        // style={{width: '100%'}}
+                                        onClick={() => handleRemoveTripFromShared()}
+                                        color='danger'
+                                        >
+                                        Remove
+                                    </MDBBtn>
+                                </MDBModalFooter>
+                            </MDBModalContent>
+                    </MDBModalDialog>
+                </MDBModal>
+            </div>
+        )
+    } else {
+        return (
+            <div style={{padding: 20}}>
+                <MDBCard background='light' className='text-dark'>
+                    <MDBCardBody>
+                        No one has shared a trip with you yet.
+                    </MDBCardBody>                    
+                </MDBCard>
+            </div>
+        )
+    }
+    
 }
 
 export default SharedTrips;

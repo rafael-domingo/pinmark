@@ -23,12 +23,12 @@ import Pinmarks from '../components/Pinmarks';
 import Trips from '../components/Trips';
 import PinmarkModal from '../modals/PinmarkModal';
 import SearchModal from '../modals/SearchModal';
-import { checkUser, fetchUserInfo, handleDeleteUser, updatedSharedTrips, updateUser } from '../util/Firebase';
+import { checkUser, fetchSharedTrips, fetchUserInfo, handleDeleteUser, updatedSharedTrips, updateUser } from '../util/Firebase';
 import SharedTrips from '../components/SharedTrips';
 import AccountModal from '../modals/AccountModal';
 import { resetState } from '../redux/pinmarkSlice';
 import { resetUserState } from '../redux/userSlice';
-import { resetSharedState } from '../redux/sharedSlice';
+import { resetSharedState, setShared } from '../redux/sharedSlice';
 import { Navigate } from 'react-router-dom';
 
 function UserHome() {
@@ -69,6 +69,12 @@ function UserHome() {
     //     })
         
     // }, [sharedTripsState])
+
+    const refreshSharedList = () => {
+        fetchSharedTrips().then((result) => {
+            dispatch(setShared(result));
+        })
+    }
    
     const handleCheckLocationExists = (locationObject) => {
         Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
@@ -307,8 +313,16 @@ function UserHome() {
                 <h3 style={{padding: 20}}>Most Recent Trips</h3>
                 <Trips handlePinmarkDetail={handleShowDetails} />
             </div>
-            <div className='d-flex justify-content-start flex-wrap text-white'>
+            <div className='d-flex justify-content-start align-items-center flex-wrap text-white'>
                 <h3 style={{padding: 20}}>Trips Shared With You</h3>
+                <MDBBtn 
+                    onClick={() => refreshSharedList()}
+                    tag='a'
+                    color='none'
+                    style={{color: 'gray'}}                    
+                    >
+                    <MDBIcon icon='redo'/>
+                </MDBBtn>
                 <SharedTrips handlePinmarkDetail={handleShowDetails}/>
             </div>
             <div className='m-5 d-flex justify-content-center align-items-center'>

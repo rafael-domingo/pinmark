@@ -17,6 +17,7 @@ import {
 } from 'mdb-react-ui-kit';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { updatedSharedTrips } from '../util/Firebase';
 
 function SearchUserModal({tripObject, openModal, handleAddSharedUser, handleRemoveSharedUser, handleCloseModal, firebaseUsers}) {
 const [filteredUsers, setFilteredUsers] = React.useState([]);
@@ -59,6 +60,7 @@ React.useEffect(() => {
 //     })
 //     console.log(userArray);
     setAddUsersState(sharedWith);
+    
 }, [sharedTripsState, openModal])
 
     return (        
