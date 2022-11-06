@@ -1044,7 +1044,7 @@ function PinmarkList() {
                             </MDBCardBody>
                         {/* </MDBCard> */}
                     </MDBCol>                  
-                    <PinmarkCards pinmarkList={localPinmarkListState} category='all' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} handleCreateTrip={handleCreateTrip} tripList={tripList}/>                                        
+                    <PinmarkCards pinmarkList={localPinmarkListState} category='all' handleAddPinmark={handleAddPinmarkToTrip} handlePinmarkDetail={handlePinmarkDetail} setCreateTripModal={setCreateTripModal} tripList={tripList}/>                                        
                     </MDBRow>               
                 </MDBTabsPane>
                 <MDBTabsPane show={tabState === pinmarkCategories[0]}>

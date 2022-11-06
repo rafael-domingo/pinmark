@@ -19,7 +19,7 @@ function PinmarkCards({
     category, 
     handleAddPinmark, 
     handlePinmarkDetail, 
-    handleCreateTrip, 
+    setCreateTripModal, 
     tripList, 
     tripView = false, 
     handleAddPinmarkToTrip,
@@ -80,7 +80,7 @@ function PinmarkCards({
                                                     })
                                                 }
                                                 <MDBDropdownItem divider/>                                                  
-                                                <MDBDropdownItem onClick={() => handleCreateTrip()} link>Create New Trip</MDBDropdownItem>
+                                                <MDBDropdownItem onClick={() => setCreateTripModal(true)} link>Create New Trip</MDBDropdownItem>
                                             </MDBDropdownMenu>
                                             </MDBDropdown>
                                         )
