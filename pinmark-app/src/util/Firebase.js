@@ -3,6 +3,7 @@ import {
 } from 'firebase/app';
 import {
     GoogleAuthProvider, 
+    FacebookAuthProvider,
     getAuth, 
     signInWithPopup,
     signOut,
@@ -40,10 +41,10 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 // Sign in with  Google
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
     try {                
-        return signInWithPopup(auth, provider).then((res) => {
+        return signInWithPopup(auth, googleProvider).then((res) => {
             // TODO: Need to add functionality to check whether user already exists
             // add user to firestore 
             setDoc(doc(db, "users", res.user.uid), {
@@ -57,8 +58,31 @@ export const signInWithGoogle = async () => {
             return res.user;      
         })
     } catch(error) {
-        console.log(`Google Auth Error: ${error}`);
+        console.log(`Google Auth Error: ${error.code}`);
+        return error.code;
     }    
+}
+
+// Sign in with Facebook
+const facebookProvider = new FacebookAuthProvider();
+export const signInWithFacebook = async () => {
+    try {
+        return signInWithPopup(auth, facebookProvider).then((res) => {
+            setDoc(doc(db, "users", res.user.uid), {
+                userName: res.user.displayName,
+                email: res.user.email,
+                phone: res.user.phoneNumber,
+                profilePicture: res.user.photoURL,
+                uid: res.user.uid,
+                authType: 'facebook'
+            })   
+            return res.user;     
+        })
+    } catch(error) {       
+        console.log(`Facebook Auth Error: ${error.code}`)
+        return error.code;
+    }
+    
 }
 
 // fetch user by email

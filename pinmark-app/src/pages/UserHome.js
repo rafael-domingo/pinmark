@@ -302,27 +302,30 @@ function UserHome() {
                 </MDBContainer>
             </MDBNavbar>
             <div className='d-flex justify-content-start flex-wrap text-white'>
-                <h3 style={{padding: 20}}>Your Locations</h3>  
+                <h3 style={{padding: 20, width: '100%', textAlign: 'left'}}>Your Locations</h3>  
                 <Locations /> 
             </div>
             <div className='d-flex justify-content-start flex-wrap text-white'>
-                <h3 style={{padding: 20}}>Most Recent Pinmarks</h3>
+                <h3 style={{padding: 20, width: '100%', textAlign: 'left'}}>Most Recent Pinmarks</h3>
                 <Pinmarks />    
             </div>
             <div className='d-flex justify-content-start flex-wrap text-white'>
-                <h3 style={{padding: 20}}>Most Recent Trips</h3>
+                <h3 style={{padding: 20, width: '100%', textAlign: 'left'}}>Most Recent Trips</h3>
                 <Trips handlePinmarkDetail={handleShowDetails} />
             </div>
             <div className='d-flex justify-content-start align-items-center flex-wrap text-white'>
-                <h3 style={{padding: 20}}>Trips Shared With You</h3>
-                <MDBBtn 
+                <h3 style={{padding: 20, width: '100%', textAlign: 'left'}}>
+                    Trips Shared With You
+                    <MDBBtn 
                     onClick={() => refreshSharedList()}
                     tag='a'
                     color='none'
-                    style={{color: 'gray'}}                    
+                    style={{color: 'white', paddingLeft: 20}}                    
                     >
                     <MDBIcon icon='redo'/>
                 </MDBBtn>
+                </h3>
+              
                 <SharedTrips handlePinmarkDetail={handleShowDetails}/>
             </div>
             <div className='m-5 d-flex justify-content-center align-items-center'>

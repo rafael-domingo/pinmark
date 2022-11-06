@@ -1,6 +1,6 @@
 import React from 'react';
-import { MDBInput, MDBBtn, MDBIcon, MDBModal, MDBModalContent, MDBModalDialog, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBSpinner } from 'mdb-react-ui-kit';
-import { checkUser, signInWithGoogle, signUserOut, signInWithEmail, getUser, fetchSharedTrips } from '../util/Firebase';
+import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBIcon, MDBModal, MDBModalContent, MDBModalDialog, MDBModalHeader, MDBModalBody, MDBModalFooter, MDBSpinner } from 'mdb-react-ui-kit';
+import { checkUser, signInWithGoogle, signUserOut, signInWithEmail, getUser, fetchSharedTrips, signInWithFacebook } from '../util/Firebase';
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { setProfilePicture, setUserName, setEmail, setPhone, setUid, setAuthType, resetUserState } from '../redux/userSlice';
@@ -25,26 +25,48 @@ function SignIn() {
     const [googleAuth, setGoogleAuth] = React.useState(false);
 
     // Firebase supporting functions
-    const handleSignInWithGoogle = async () => {
+    const handleSignIn = async (authType) => {
         setSecondModal(true);
-        signInWithGoogle().then((user) => {    
-            console.log(user);
-            setLoading(true);
-            setMessage('Getting everything set up.')    
+        setMessage('');
+        if (authType === 'google') {
+            signInWithGoogle().then((user) => {    
+                console.log(user);
+                setLoading(true);
+                setMessage('Getting everything set up.')    
+    
+                dispatch(setUserName(user.displayName));
+                dispatch(setEmail(user.email));
+                dispatch(setPhone(user.phoneNumber));
+                dispatch(setProfilePicture(user.photoURL));
+                dispatch(setUid(user.uid));
+                dispatch(setAuthType('google'));
+                
+                getUserData(user.uid);
 
-            dispatch(setUserName(user.displayName));
-            dispatch(setEmail(user.email));
-            dispatch(setPhone(user.phoneNumber));
-            dispatch(setProfilePicture(user.photoURL));
-            dispatch(setUid(user.uid));
-            dispatch(setAuthType('google'));
+            }).catch(error => errorHandling(error.code));
+        } else if (authType === 'facebook') {
+            signInWithFacebook().then((user) => {    
+                console.log(user);
+                setLoading(true);
+                setMessage('Getting everything set up.')    
+    
+                dispatch(setUserName(user.displayName));
+                dispatch(setEmail(user.email));
+                dispatch(setPhone(user.phoneNumber));
+                dispatch(setProfilePicture(user.photoURL));
+                dispatch(setUid(user.uid));
+                dispatch(setAuthType('facebook'));
+                
+                getUserData(user.uid);
             
-            getUserData(user.uid);
-
-            // handleCheckUser('google'); // run check user function to assign user data to redux state       
-            // navigate to user home once sign in is successful
-             
-        }).catch(error => errorHandling(error));
+            }).catch(error => {
+                console.log(error.code);
+                errorHandling(error.code)
+            });
+        } else {
+            errorHandling('error getting authenticated');
+        }
+       
     }        
 
     // const handleSignUserOut = () => {
@@ -83,16 +105,16 @@ function SignIn() {
     }
 
     const handleConfirm = () => {
-        if (!googleAuth) {
-            setMessage('');
-            setSecondModal(false);
-            setRegister(true);
-            setConfirm(false);
-        } else {
-            handleSignInWithGoogle();
-            setLoading(false);
-            setConfirm(false);
-        }
+        // if (!googleAuth) {
+        //     setMessage('');
+        //     setSecondModal(false);
+        //     setRegister(true);
+        //     setConfirm(false);
+        // } else {
+        //     handleSignInWithGoogle();
+        //     setLoading(false);
+        //     setConfirm(false);
+        // }
     
     }
     const handleCheckUser = async (authType) => {
@@ -193,6 +215,9 @@ function SignIn() {
                 setConfirm(true);
                 setGoogleAuth(true);
                 break;
+            case 'auth/account-exists-with-different-credential':
+                setMessage('Looks like you logged in previously using another method. Try logging in again.')
+                break;
             default:
                 console.log('something went wrong');
                 setMessage('Terribly sorry, something went wrong on our end, please try again later.')
@@ -203,22 +228,64 @@ function SignIn() {
 
     return (
         <div 
-            className='bg-image min-vh-100 d-flex flex-wrap align-items-center justify-content-center'
+            className='min-vh-100 d-flex flex-wrap align-items-center justify-content-center'
             style={{
                 padding: 20,
                 background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'
-            }}
-            // style={{backgroundImage: "url('https://mdbootstrap.com/img/new/slides/041.webp')"}}
-            >          
-            <h1 style={{fontFamily: 'Pacifico', fontSize: 50, color: 'white'}}>Pinmark</h1>  
-            <Lottie animationData={maps}/>
-            
-            <h3 style={{fontSize: 30, color: 'white'}}>Save and share your favorite locations and trips</h3>
-            
-            <MDBBtn tag='a' color='none' className='m-1' style={{width: '80%', backgroundColor: '#dd4b39', color: 'white', padding: 10, borderRadius: 20, boxShadow: '0px 3px 5px 0px rgba(0, 0, 0, 0.3)'}}onClick={handleSignInWithGoogle}>
-                <MDBIcon className='me-2' fab icon ='google'/>
-                Sign In with Google
+            }}          
+            >                    
+            <MDBRow className='d-flex justify-content-center align-items-center'>
+                <MDBCol size={12}>
+                    <h1 style={{fontFamily: 'Pacifico', fontSize: 60, color: 'white', width: '100%'}}>Pinmark</h1>  
+                    <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+                        <Lottie animationData={maps} style={{width: '80%'}}/>
+                    </div>
+                    
+                </MDBCol>   
+                <MDBCol size={12}>
+                    <h3 style={{padding: 50, fontSize: 25, color: 'white', width: '100%'}}>Save and share your favorite locations and trips</h3>
+                </MDBCol>
+                <MDBCol lg={4} sm={6}>
+                <MDBBtn 
+                    tag='a'
+                    color='none' 
+                    className='m-1' 
+                    style={{
+                        width: '100%', 
+                        backgroundColor: '#dd4b39', 
+                        color: 'white', 
+                        padding: 10,
+                        margin: 10, 
+                        borderRadius: 20, 
+                        boxShadow: '0px 3px 5px 0px rgba(0, 0, 0, 0.3)'}}
+                    onClick={() => handleSignIn('google')}>
+                    <MDBIcon className='me-2' fab icon ='google'/>
+                    Sign In with Google
                 </MDBBtn> 
+                <MDBBtn 
+                    tag='a' 
+                    color='none' 
+                    className='m-1' 
+                    style={{
+                        width: '100%', 
+                        backgroundColor: '#3b5998', 
+                        color: 'white', 
+                        padding: 10, 
+                        margin: 10,
+                        borderRadius: 20, 
+                        boxShadow: '0px 3px 5px 0px rgba(0, 0, 0, 0.3)'
+                        }}
+                    onClick={() => handleSignIn('facebook')}>
+                    <MDBIcon className='me-2' fab icon ='facebook'/>
+                    Sign In with Facebook
+                </MDBBtn> 
+                </MDBCol>
+            </MDBRow>     
+           
+            
+           
+            
+            
             {/* <MDBModal staticBackdrop show={secondModal}>
                 <MDBModalDialog size='lg' centered>
                     <MDBModalContent>
@@ -250,7 +317,7 @@ function SignIn() {
             </MDBModal>    */}
 
             <MDBModal show={secondModal} staticBackdrop={register} setShow={setSecondModal}>
-                <MDBModalDialog size='lg' centered>
+                <MDBModalDialog size='sm' centered>
                     <MDBModalContent className='d-flex justify-content-center align-items-center'>
                         <MDBModalHeader>
                             <Lottie animationData={traveller} />
