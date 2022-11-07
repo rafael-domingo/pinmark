@@ -52,7 +52,7 @@ import TripViewModal from "../modals/TripViewModal";
 import PinmarkCards from "../components/PinmarkCards";
 import TripListModal from "../modals/TripListModal";
 import SearchUserModal from "../modals/SearchUserModal";
-import { addShared, removeShared } from "../redux/sharedSlice";
+import { addShared, removeLocations, removeShared } from "../redux/sharedSlice";
 
 // list of pinmarks based on either location selection or category selection
 function PinmarkList() {
@@ -217,6 +217,10 @@ function PinmarkList() {
         setTimeout(() => {
             navigate('/UserHome')            
             dispatch(deleteLocations(locationId));
+            dispatch(removeLocations({
+                locationId: locationId,
+                uid: userState.uid
+            }))
         }, 2000);   
     }
 

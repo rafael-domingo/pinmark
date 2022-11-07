@@ -35,6 +35,22 @@ export const sharedSlice = createSlice({
                 shared: sharedArray
             };
         },
+        removeLocations: (state, action) => {
+            var sharedArray = [];
+            state.shared.forEach((item) => {
+                if (item.location.locationId === action.payload.locationId) {
+                    if (item.sendingUserId !== action.payload.uid) {
+                        sharedArray.push(item);
+                    }                    
+                } else {
+                    sharedArray.push(item);
+                }
+            })
+            return {
+                ...state,
+                shared: sharedArray
+            }
+        },
         resetSharedState: (state) => {
             return {
                 ...state,
@@ -48,6 +64,7 @@ export const {
     setShared,
     addShared,
     removeShared,
+    removeLocations,
     resetSharedState
 } = sharedSlice.actions;
 export default sharedSlice.reducer
