@@ -140,7 +140,7 @@ function Trips({handlePinmarkDetail}) {
                     console.log(trip);
                     if (trip.color === undefined) {
                         return (
-                            <MDBCard onClick={() => handleTripView(trip)} background='primary' style={cardDivStyle}>
+                            <MDBCard key={trip.tripId} onClick={() => handleTripView(trip)} background='primary' style={cardDivStyle}>
                                 <MDBCardBody>
                                     <MDBCardTitle>{trip.tripName}</MDBCardTitle>
                                     <MDBCardText>{city}</MDBCardText>
@@ -150,7 +150,7 @@ function Trips({handlePinmarkDetail}) {
                         
                     } else {
                         return (
-                            <MDBCard onClick={() => handleTripView(trip)} background={trip.color} style={cardDivStyle}>
+                            <MDBCard key={trip.tripId} onClick={() => handleTripView(trip)} background={trip.color} style={cardDivStyle}>
                                 <MDBCardBody className='text-white'>
                                     <MDBCardTitle>{trip.tripName}</MDBCardTitle>
                                     <MDBCardText>{city}</MDBCardText>

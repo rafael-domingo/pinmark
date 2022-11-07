@@ -32,6 +32,7 @@ function TripListModal({tripList, setTripListModal, setCreateTripModal, handleSe
                     return (
                         <MDBRipple>
                         <MDBListGroupItem 
+                            key={trip.tripId}
                             className='d-flex justify-content-between align-items-center'
                             link 
                             childTag="button" 

@@ -52,7 +52,7 @@ function Locations() {
                             )
                         }
                         return (
-                            <Link style={{color: 'white'}} to={`/PinmarkList/${location.locationId}`}>
+                            <Link key={location.locationId} style={{color: 'white'}} to={`/PinmarkList/${location.locationId}`}>
                                 <MDBCard background='dark' className='text-white' style={locationDivStyle}>
                                     {photo_reference}
                                     {/* <MDBCardImage style={{width: '100%', height: '100%', objectFit: 'cover'}} overlay src={location.photo_reference !== undefined && (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`)}/> */}

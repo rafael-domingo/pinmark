@@ -41,7 +41,7 @@ function PinmarkCards({
                 const colorPicker = index % colorArray.length;
                 if ((pinmark.pinmarkCategory === category || category === 'all') || (!pinmarkCategories.includes(pinmark.pinmarkCategory) && category === 'other')) {
                     return (
-                        <MDBCol xl={4} md={4} s={2} xs={2} className='mb-4'>
+                        <MDBCol key={pinmark.pinmarkId} xl={4} md={4} s={2} xs={2} className='mb-4'>
                             <MDBCard className='h-100 text-white' background={colorArray[colorPicker]}>
                                 <MDBCardImage  style={{height: 250, objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${pinmark.photoURL}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`} position='top' alt='...'/>
                                 <MDBCardBody>

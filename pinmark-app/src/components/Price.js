@@ -13,7 +13,7 @@ function Price({price, background}) {
         const priceDescription = ['free', 'inexpensive', 'moderate', 'expensive', 'very expensive'];
         var priceJSX = [];
         for (let index = 0; index < price; index++) {
-            priceJSX.push(<MDBIcon icon='dollar-sign'/>)        
+            priceJSX.push(<MDBIcon key={index} icon='dollar-sign'/>)        
         }
         return (
             <MDBCard className='h-100' background={background}>

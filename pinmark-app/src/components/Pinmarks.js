@@ -124,7 +124,7 @@ function Pinmarks() {
                             )
                         }
                         return (
-                            <MDBCard onClick={() => handleShowDetails(pinmark)} background="dark" style={cardDivStyle}>
+                            <MDBCard key={pinmark.pinmarkId} onClick={() => handleShowDetails(pinmark)} background="dark" style={cardDivStyle}>
                                 {photo_reference}
                                 <MDBCardOverlay>
                                     <MDBCardTitle className="text-white">

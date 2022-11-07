@@ -62,8 +62,7 @@ function PinmarkList() {
     const userState = useSelector((state) => state.user);
     const locationState = useSelector((state) => state.pinmark.locations);
     const pinmarkState = useSelector((state) => state.pinmark);
-    const pinmarkListState = useSelector((state) => state.pinmark.pinmarks);
-    const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
+    const pinmarkListState = useSelector((state) => state.pinmark.pinmarks);    
     const [localPinmarkListState, setLocalPinmarkListState] = React.useState([]); // use for local search
     const tripListState = useSelector((state) => state.pinmark.tripLists);
     const [tabState, setTabState] = React.useState('all');
@@ -95,7 +94,6 @@ function PinmarkList() {
 
     const dispatch = useDispatch();
 
-    
     const handleTabClick = (value) => {
         if (value === tabState) {
             return;
@@ -241,12 +239,7 @@ function PinmarkList() {
         }, 2000);
     }
 
-    const handleAddSharedUser = (user) => {  
-        // console.log(user)      
-        // dispatch(addUserToTrip({
-        //     tripId: tripViewObject.trip.tripId,
-        //     userId: user.uid
-        // }))
+    const handleAddSharedUser = (user) => {   
         var locationObject = {};
         locationState.map((location) => {
             if (location.locationId === tripViewObject.trip.locationId) {
@@ -261,63 +254,13 @@ function PinmarkList() {
             tripId: tripViewObject.trip.tripId
         }
         dispatch(addShared(sharedObject));
-        // var newTrip = {};
-        // tripListState.map((trip) => {
-        //     if (tripViewObject.trip.tripId === trip.tripId) {
-        //         newTrip = trip;
-        //     }
-        // })    
-        // console.log(newTrip)
-        // var checkedUsers = [];
-        // firebaseUsers.map((user) => {
-        //     newTrip?.sharedWith?.map((uid) => {
-        //         if (uid === user.uid) {
-        //             checkedUsers.push(user);
-        //         }
-        //     })
-        // })        
-        // const newSharedUsers = sharedUsers;
-        // newSharedUsers.push(user.uid);
-        // setSharedUsers(newSharedUsers);
-        // setTripViewObject({
-        //     ...tripViewObject,
-        //     trip: newTrip
-        // })
-        
-        console.log(tripViewObject)
     }
 
-    const handleRemoveSharedUser = (user) => {
-        // dispatch(removeUserFromTrip({
-        //     tripId: tripViewObject.trip.tripId,
-        //     userId: user.uid
-        // }))   
+    const handleRemoveSharedUser = (user) => {   
         dispatch(removeShared({
             tripId: tripViewObject.trip.tripId,
             receivingUserId: user.uid
-
-        }));
-        // var newTrip = {};
-        // tripListState.map((trip) => {
-        //     if (tripViewObject.trip.tripId === trip.tripId) {
-        //         newTrip = trip;
-        //     }
-        // })    
-        // console.log(newTrip)
-        // var checkedUsers = [];
-        // firebaseUsers.map((user) => {
-        //     newTrip?.sharedWith?.map((uid) => {
-        //         if (uid === user.uid) {
-        //             checkedUsers.push(user);
-        //         }
-        //     })
-        // })        
-        // setSharedUsers(checkedUsers);
-        // setTripViewObject({
-        //     ...tripViewObject,
-        //     trip: newTrip
-        // })
-        // console.log(tripViewObject)
+        }));    
     }
 
     const handleCheckSharedUsers = () => {

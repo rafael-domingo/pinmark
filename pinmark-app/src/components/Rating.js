@@ -13,7 +13,7 @@ function Rating({rating, background}) {
     const numHalfStar = adjustedRating > numWholeStars ? true : false;
     var wholeStarsJSX = [];
     for (let index = 0; index < numWholeStars; index++) {
-        wholeStarsJSX.push(<MDBIcon icon='star'/>)        
+        wholeStarsJSX.push(<MDBIcon key={index} icon='star'/>)        
     }
     
     return (

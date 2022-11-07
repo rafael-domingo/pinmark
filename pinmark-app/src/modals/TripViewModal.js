@@ -89,21 +89,8 @@ function TripViewModal({
     
     
     return (
-        <>            
-            {/* <MDBModal show={pinmarkDetailModal} setShow={setPinmarkDetailModal}>
-                <MDBModalDialog 
-                    // size='fullscreen-md-down'
-                    centered
-                    scrollable
-                    className="justify-content-center align-item-center"
-                    >
-                    <MDBModalContent>
-                        <PinmarkModal detailInfo={pinmarkDetailObject} handleCloseModal={handleClosePinmarkModal} handleDeletePinmark={() => {}}/>                       
-                    </MDBModalContent>
-                </MDBModalDialog>
-            </MDBModal> */}
-            <MDBModalHeader className='d-flex flex-wrap justify-content-start align-items-center'>
-                {/* <MDBRow className='d-flex justify-content-between align-items-center'> */}
+        <>                        
+            <MDBModalHeader className='d-flex flex-wrap justify-content-start align-items-center'>               
                 <MDBRow className='w-100'>
                 <MDBCol className='d-flex justify-content-between align-items-center'>
                         <MDBModalTitle>{tripObject.trip?.tripName}</MDBModalTitle>               
@@ -122,7 +109,7 @@ function TripViewModal({
                                     {
                                         sharedUsers?.map((user) => {
                                             return (
-                                                <MDBDropdownItem link>
+                                                <MDBDropdownItem key={user.uid} link>
                                                     {user.userName}
                                                     {user.email}
                                                 </MDBDropdownItem>
@@ -156,23 +143,16 @@ function TripViewModal({
                             )
                         }   
                           <MDBBtn onClick={() => handleDeleteTrip(tripObject?.trip?.tripId)}  tag='a' color='none' className='m-1' style={{ color: 'gray', padding: 10}}><MDBIcon size='1x' icon='trash'/></MDBBtn>
-                    </MDBCol>
-                
-                </MDBRow>
-                                       
-                    
-                {/* </MDBRow> */}
+                    </MDBCol>                
+                </MDBRow>                                                                      
             </MDBModalHeader>
             <MDBModalBody ref={ref}>
                 <MDBRow>
                     <PinmarkCards 
                         pinmarkList={tripObject?.pinmarks} 
-                        category={'all'} 
-                        // handleAddPinmark={} 
+                        category={'all'}                         
                         handlePinmarkDetail={handleDetail} 
-                        handleAddPinmarkToTrip={handleDeletePinmarkFromTrip}                        
-                        // handleCreateTrip={() => {}} 
-                        // tripList={[]} 
+                        handleAddPinmarkToTrip={handleDeletePinmarkFromTrip}                                                
                         tripView={true}
                         sharedView={sharedView}
                         />                    
