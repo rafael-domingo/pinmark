@@ -26,7 +26,7 @@ function PinmarkCards({
     sharedView
 }) {    
     const pinmarkCategories = ['coffee', 'night-life', 'food', 'lodging', 'shopping', 'tourist-attraction'];
-    console.log(pinmarkList);
+    
     const colorArray = [        
         'secondary',
         'success',
