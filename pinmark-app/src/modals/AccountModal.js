@@ -19,6 +19,7 @@ import { resetState } from '../redux/pinmarkSlice';
 import { resetUserState } from '../redux/userSlice';
 import { resetSharedState } from '../redux/sharedSlice';
 import { Navigate } from 'react-router-dom';
+import { signUserOut } from '../util/Firebase';
 
 function AccountModal({handleCloseModal, handleDeleteAccountModal}) {
     
@@ -28,6 +29,7 @@ function AccountModal({handleCloseModal, handleDeleteAccountModal}) {
         dispatch(resetState());
         dispatch(resetUserState());
         dispatch(resetSharedState());
+        signUserOut();
         return <Navigate to='/' replace />
     }
 
