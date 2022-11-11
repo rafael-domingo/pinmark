@@ -51,6 +51,7 @@ React.useEffect(() => {
             sharedWith.push(trip.receivingUserId)
         }
     })    
+    setAddUsersState(sharedWith);
 }, [sharedTripsState, openModal])
 
     return (        
