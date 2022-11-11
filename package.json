@@ -1,12 +1,16 @@
 {
   "name": "pinmark",
   "version": "1.0.0",
+  "engines": {
+    "node": "18.x",
+    "npm": "8.x"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd pinmark-app && npm install && npm run build"
   },
   "repository": {
     "type": "git",
