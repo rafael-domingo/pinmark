@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Hero from "../components/Hero";
 import List from "../components/List";
 import { checkUser, fetchUserInfo, updatedSharedTrips, updateUser } from "../util/Firebase";
-import { Google } from "../util/Google";
+import { google } from "../util/Google";
 import { useNavigate } from "react-router-dom";
 import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto, addUserToTrip, removeUserFromTrip } from "../redux/pinmarkSlice";
 import { 
@@ -193,7 +193,7 @@ function PinmarkList() {
     }
 
     const handleShowDetails = (info) => {
-        Google.placeDetails(info.place_id)
+        google.placeDetails(info.place_id)
         .then(result => {
             console.log(result);
             const pinmarkObject = {
@@ -308,9 +308,9 @@ function PinmarkList() {
         console.log(locationId);
         locationState.map((location) => {
             if (location.locationId === locationId) {
-                Google.placeSearch(`${location.city} ${location.country} ${location?.state}`, null)
+                google.placeSearch(`${location.city} ${location.country} ${location?.state}`, null)
                 .then(result => {
-                    Google.placeDetails(result.results[0].place_id)
+                    google.placeDetails(result.results[0].place_id)
                     .then(result => {
                         let randIndex = Math.floor(Math.random() * result.result.photos.length);
                         let new_photo_reference = result.result.photos[randIndex].photo_reference;
@@ -340,7 +340,7 @@ function PinmarkList() {
     }
 
     const handleAddPinmark = (pinmark) => {
-        Google.placeDetails(pinmark.place_id, uuidv4())
+        google.placeDetails(pinmark.place_id, uuidv4())
         .then(data => {
             var city = '';
             var state = '';
@@ -443,7 +443,7 @@ function PinmarkList() {
     }
 
     const handleCheckLocationExists = (locationObject) => {
-        Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
+        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
             console.log(data);            
             const photo_reference = data.results[0].photos?.[0].photo_reference;
             const newLocationObject = {
@@ -463,7 +463,7 @@ function PinmarkList() {
     }
      
     const handlePinmarkDetail = (pinmark, showDelete = true) => {
-        Google.placeDetails(pinmark.pinmarkId)
+        google.placeDetails(pinmark.pinmarkId)
         .then(result => {
             const pinmarkDetailObject = {
                 pinmark: pinmark,

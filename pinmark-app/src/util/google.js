@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-export const Google = {
+export const google = {
     autoComplete(searchTerm, sessionToken) {       
         try {
             return fetch('/GoogleMaps/autocomplete', {

@@ -1,7 +1,7 @@
 // landing page for when user logs into their account -- 'Your locations' and 'Your categories'
 import React from 'react';
 import Locations from "../components/Locations";
-import { Google } from '../util/Google';
+import { google } from '../util/Google';
 import { v4 as uuidv4 } from 'uuid';
 import { 
     MDBBtn, 
@@ -69,7 +69,7 @@ function UserHome() {
     }
    
     const handleCheckLocationExists = (locationObject) => {
-        Google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
+        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
             console.log(data);            
             const photo_reference = data.results[0].photos?.[0].photo_reference;
             const newLocationObject = {
@@ -106,7 +106,7 @@ function UserHome() {
 
     const handleAddPinmark = (pinmark) => {
         // get address components to parse city, state, country, zip code
-        Google.placeDetails(pinmark.place_id, sessionToken).then(data => {
+        google.placeDetails(pinmark.place_id, sessionToken).then(data => {
             console.log(data)
             var city = '';
             var state = '';
@@ -245,7 +245,7 @@ function UserHome() {
 
     const handleShowDetails = (info) => {        
         console.log(info);
-        Google.placeDetails(info.place_id)
+        google.placeDetails(info.place_id)
         .then(result => {
             console.log(result);
             const pinmarkObject = {

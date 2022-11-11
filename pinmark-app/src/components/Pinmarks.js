@@ -27,7 +27,7 @@ import {
     MDBModalBody,
     MDBModalHeader
 } from 'mdb-react-ui-kit';
-import { Google } from "../util/Google";
+import { google } from "../util/Google";
 import PinmarkModal from "../modals/PinmarkModal";
 import { deleteLocations, deletePinmark } from "../redux/pinmarkSlice";
 
@@ -60,7 +60,7 @@ function Pinmarks() {
     }
 
     const handleShowDetails = (pinmark) => {
-        Google.placeDetails(pinmark.pinmarkId)
+        google.placeDetails(pinmark.pinmarkId)
         .then(result => {
             console.log(result)
             const infoObject = {

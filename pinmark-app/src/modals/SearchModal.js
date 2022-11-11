@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Google } from '../util/Google';
+import { google } from '../util/Google';
 import { updateUser } from '../util/Firebase';
 import { 
     MDBModalHeader,
@@ -45,7 +45,7 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
     const handleSearchInput = (e) => {
         setSearchInput(e.target.value);
         if (e.target.value.length > 3) {
-            Google.placeSearch(e.target.value, null)
+            google.placeSearch(e.target.value, null)
             .then(data => {
                 handleSearchResults(data);
             })
