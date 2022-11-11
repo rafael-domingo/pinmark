@@ -28,7 +28,8 @@ function Trips({handlePinmarkDetail}) {
         height: '300px',
         overflowX: 'scroll',
         overflowY: 'hidden',
-        height: 200
+        height: 200,
+        color: 'gray'
     }
 
     const cardDivStyle = {

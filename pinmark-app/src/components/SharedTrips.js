@@ -22,6 +22,7 @@ function SharedTrips({handlePinmarkDetail}) {
         overflowX: 'scroll',
         overflowY: 'hidden',
         height: 200,
+        color: 'gray'
         
     }
 

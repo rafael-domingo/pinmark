@@ -68,7 +68,7 @@ function PinmarkListPane({
                 }
             </MDBBtn>
         </MDBInputGroup>
-        <MDBRow style={{padding: 20}}>
+        <MDBRow style={{padding: 20, margin: 0}}>
         <MDBCol size={12} className='mb-4'>
             {/* <MDBCard style={{background: 'none'}} className="h-100"> */}
                 <MDBCardBody  className='d-flex justify-content-center align-items-center'>                               

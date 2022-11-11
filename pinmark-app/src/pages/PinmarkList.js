@@ -939,7 +939,7 @@ function PinmarkList() {
             </MDBNavbar>   
        
             
-            <MDBTabsContent style={{background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)', minHeight: '100vh'}}>
+            <MDBTabsContent style={{background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)', minHeight: '70vh'}}>
                 <MDBTabsPane ref={viewportRef} show={tabState === 'all'} style={{justifyContent: 'center'}}>                                    
                     <PinmarkListPane                        
                         handlePinmarkSearchInput={handlePinmarkSearchInput}
