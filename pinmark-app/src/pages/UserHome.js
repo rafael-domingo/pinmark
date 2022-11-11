@@ -284,12 +284,10 @@ function UserHome() {
 
         }}>
             <MDBNavbar className='sticky-top' light bgColor='light'>
-                <MDBContainer fluid>
-                    
-                    <MDBNavbarBrand className='w-100 d-flex justify-content-between align-items-center'> 
-                        <MDBIcon icon='map-marked'/>
-                        <h1 style={{fontFamily: 'Pacifico'}}>Pinmark</h1>  
-                        
+                <MDBContainer fluid>                    
+                    <MDBNavbarBrand className='w-100 d-flex justify-content-between align-items-center'>                        
+                        <MDBIcon onClick={() => setAccountModal(true)} icon='user-circle' className='m-1' size='2x'/>                                                                      
+                        <h1 style={{fontFamily: 'Pacifico', marginLeft: 10}}>Pinmark</h1>                                                                                              
                     </MDBNavbarBrand>
                 </MDBContainer>
             </MDBNavbar>
@@ -320,15 +318,8 @@ function UserHome() {
               
                 <SharedTrips handlePinmarkDetail={handleShowDetails}/>
             </div>
-            <div className='m-5 d-flex justify-content-center align-items-center'>
-                <MDBBtn 
-                    onClick={() => setAccountModal(true)}
-                    color='link'     
-                    className='text-white'               
-                    >
-                        <MDBIcon icon='user-circle' className='m-1'/>
-                        Account Settings
-                </MDBBtn>
+            <div className='d-flex justify-content-center align-items-center'>
+                
             </div>
             
             {/* Search Modal */}
