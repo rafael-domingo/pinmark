@@ -1,7 +1,7 @@
 // landing page for when user logs into their account -- 'Your locations' and 'Your categories'
 import React from 'react';
 import Locations from "../components/Locations";
-import { google } from '../util/Google';
+import { google } from '../util/google';
 import { v4 as uuidv4 } from 'uuid';
 import { 
     MDBBtn, 

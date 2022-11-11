@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { google } from '../util/Google';
+import { google } from '../util/google';
 import { updateUser } from '../util/Firebase';
 import { 
     MDBModalHeader,

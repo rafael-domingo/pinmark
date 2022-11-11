@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Hero from "../components/Hero";
 import List from "../components/List";
 import { checkUser, fetchUserInfo, updatedSharedTrips, updateUser } from "../util/Firebase";
-import { google } from "../util/Google";
+import { google } from "../util/google";
 import { useNavigate } from "react-router-dom";
 import { addPinmarkToTrip, addTripLists, removePinmarkFromTrip, deleteLocations, addPinmark, deletePinmark, addLocations, deleteTripLists, updateLocationPhoto, addUserToTrip, removeUserFromTrip } from "../redux/pinmarkSlice";
 import { 

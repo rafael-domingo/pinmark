@@ -27,7 +27,7 @@ import {
     MDBModalBody,
     MDBModalHeader
 } from 'mdb-react-ui-kit';
-import { google } from "../util/Google";
+import { google } from "../util/google";
 import PinmarkModal from "../modals/PinmarkModal";
 import { deleteLocations, deletePinmark } from "../redux/pinmarkSlice";
 

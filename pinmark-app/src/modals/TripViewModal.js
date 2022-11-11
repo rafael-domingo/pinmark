@@ -22,7 +22,7 @@ import {
     MDBDropdownMenu
 } from 'mdb-react-ui-kit';
 import PinmarkCards from '../components/PinmarkCards';
-import { Google } from '../util/Google';
+import { Google } from '../util/google';
 import PinmarkModal from './PinmarkModal';
 import { useSelector } from 'react-redux';
 import { updatedSharedTrips } from '../util/Firebase';
