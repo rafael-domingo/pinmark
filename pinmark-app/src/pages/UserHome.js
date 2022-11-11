@@ -69,8 +69,7 @@ function UserHome() {
     }
    
     const handleCheckLocationExists = (locationObject) => {
-        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
-            console.log(data);            
+        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {              
             const photo_reference = data.results[0].photos?.[0].photo_reference;
             const newLocationObject = {
                 city: locationObject.city,
@@ -92,8 +91,7 @@ function UserHome() {
             const updatedSharedTripsState = [];
             if (trip.sendingUserId !== userState.uid && trip.receivingUserId !== userState.uid) {
                 updatedSharedTripsState.push(trip);
-            }
-            console.log(updatedSharedTripsState)
+            }            
             updatedSharedTrips(updatedSharedTripsState)
 
         })
@@ -106,8 +104,7 @@ function UserHome() {
 
     const handleAddPinmark = (pinmark) => {
         // get address components to parse city, state, country, zip code
-        google.placeDetails(pinmark.place_id, sessionToken).then(data => {
-            console.log(data)
+        google.placeDetails(pinmark.place_id, sessionToken).then(data => {            
             var city = '';
             var state = '';
             var postalCode = '';
@@ -160,9 +157,7 @@ function UserHome() {
                     locationId: locationId
                 }                 
             }
-            setCurrentLocationObject(locationObject); // update local state with new location object
-            console.log(pinmark);
-            console.log(data);
+            setCurrentLocationObject(locationObject); // update local state with new location object                        
 
             // add pinmark category to pinmark
             const coffeeKeyWords = ['cafe'];
@@ -214,9 +209,7 @@ function UserHome() {
         
         // need to check if need to delete location in state if no more pinmarks in that city
         var locationIdCount = 0;        
-        pinmarkState.pinmarks.map((pin) => {       
-            console.log(pinmark.place_id)
-            console.log(pin.pinmarkId)     
+        pinmarkState.pinmarks.map((pin) => {                                 
             // need to figure out what the locationId is
             if(pinmark.place_id === pin.pinmarkId) {
                 locationIdReference = pin.locationId.locationId;
@@ -228,8 +221,6 @@ function UserHome() {
                 locationIdCount++;
             }
         })
-        console.log(locationIdReference);
-        console.log(locationIdCount);
         // if there's only one left, that means we need to remove the location -- the one pinmark remaining is the one we're about to remove through dispatch
         if (locationIdCount <=1 ) {
             dispatch(deleteLocations(locationIdReference));
@@ -243,11 +234,10 @@ function UserHome() {
      
     }
 
-    const handleShowDetails = (info) => {        
-        console.log(info);
+    const handleShowDetails = (info) => {                
         google.placeDetails(info.place_id)
         .then(result => {
-            console.log(result);
+            
             const pinmarkObject = {
                 photoURL: result.result.photos?.[0]?.photo_reference,
                 locationName: result.result.name,

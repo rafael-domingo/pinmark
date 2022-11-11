@@ -27,11 +27,9 @@ const tripListState = useSelector((state) => state.pinmark.tripLists);
 const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
 const userState = useSelector((state) => state.user);
 const handleInput = (e) => {
-    setValue(e.target.value); 
-    console.log(e.target.value);
+    setValue(e.target.value);     
     filterUsers();
 }
-console.log('search user loaded');
 
 const filterUsers = () => {    
     var searchUsers = [];
@@ -41,26 +39,18 @@ const filterUsers = () => {
         } else if (value === '') {
             searchUsers.push(user);
         }
-    })
-    console.log(searchUsers);
+    })    
     setFilteredUsers(searchUsers);
 }
 
-React.useEffect(() => {
-    console.log('check list of shared users')
+React.useEffect(() => {    
     var userArray = [];
     var sharedWith = [];
     sharedTripsState?.map((trip) => {
         if (trip?.tripId === tripObject?.trip?.tripId) {
             sharedWith.push(trip.receivingUserId)
         }
-    })
-//    sharedWith.map((user) => {
-//         userArray.push(user);
-//     })
-//     console.log(userArray);
-    setAddUsersState(sharedWith);
-    
+    })    
 }, [sharedTripsState, openModal])
 
     return (        
@@ -75,8 +65,7 @@ React.useEffect(() => {
             <MDBModalBody>
                 <MDBRow>
                     {
-                        filteredUsers.map((user) => {
-                            console.log(user?.profilePicture)
+                        filteredUsers.map((user) => {                            
                             return (
                                 <MDBCol size={12}>
                                     <MDBCard>

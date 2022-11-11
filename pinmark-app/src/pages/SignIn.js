@@ -29,8 +29,7 @@ function SignIn() {
         setSecondModal(true);
         setMessage('');
         if (authType === 'google') {
-            signInWithGoogle().then((user) => {    
-                console.log(user);
+            signInWithGoogle().then((user) => {                    
                 setLoading(true);
                 setMessage('Getting everything set up.')    
     
@@ -45,8 +44,7 @@ function SignIn() {
 
             }).catch(error => errorHandling(error.code));
         } else if (authType === 'facebook') {
-            signInWithFacebook().then((user) => {    
-                console.log(user);
+            signInWithFacebook().then((user) => {                    
                 setLoading(true);
                 setMessage('Getting everything set up.')    
     
@@ -59,8 +57,7 @@ function SignIn() {
                 
                 getUserData(user.uid);
             
-            }).catch(error => {
-                console.log(error.code);
+            }).catch(error => {                
                 errorHandling(error.code)
             });
         } else {
@@ -68,31 +65,6 @@ function SignIn() {
         }
        
     }        
-
-    // const handleSignUserOut = () => {
-    //     signUserOut().then(result => {
-    //         console.log(result);
-    //         dispatch(resetUserState());
-    //     }).catch(error => console.log(error))
-    // }
-
-    // const handleEmailRegister = () => {   
-    //     if (password === confirmPassword) {
-    //         if (register) {                   
-    //             setSecondModal(true);
-    //             signInWithEmail(true, email, password)
-    //             .then(response => {       
-    //                 typeof response === "string" ? errorHandling(response) : handleCheckUser('password')     
-    //             }).catch(error => console.log(error)) 
-    //         } else {
-    //             setMessage('');
-    //             setRegister(true);
-    //         }   
-    //     } else {
-    //         setSecondModal(true);
-    //         errorHandling('auth/password-mismatch');
-    //     }                   
-    // }
 
     const handleEmailSignIn = () => {
         setMessage('');
@@ -126,8 +98,7 @@ function SignIn() {
             if (result === 'not signed in') {
                 navigate("/UserHome");
                 return;
-            } else {
-                console.log(result);                         
+            } else {                
                 dispatch(setUserName(result.displayName));
                 dispatch(setEmail(result.email));
                 dispatch(setPhone(result.phoneNumber));
@@ -143,8 +114,7 @@ function SignIn() {
     }    
 
     const getUserData = async (userId) => {
-        getUser(userId).then((result) => {
-            console.log(result)
+        getUser(userId).then((result) => {            
             if (result === 'new user') {
                 navigate("/UserHome");
                 return;
@@ -152,8 +122,7 @@ function SignIn() {
                 dispatch(setLocations(result.pinmark.locations));
                 dispatch(setPinmarks(result.pinmark.pinmarks));
                 dispatch(setTripLists(result.pinmark.tripLists));
-                fetchSharedTrips().then((result) => {
-                    console.log(result);
+                fetchSharedTrips().then((result) => {                    
                     dispatch(setShared(result))
                     setTimeout(() => {
                         navigate("/UserHome");    
@@ -186,31 +155,25 @@ function SignIn() {
             case 'auth/password-mismatch':
                 setMessage(`Your confirmation password doesn't match, please try again.`);
                 break;
-            case 'auth/email-already-in-use':
-                console.log('email exists');
+            case 'auth/email-already-in-use':                
                 setMessage(`You tried to make a new account but it looks like you've been here before, enter your password below to sign in.`)
                 setPasswordInputModal(true);                
                 break;
-            case 'auth/invalid-email':
-                console.log('put in an email address');   
+            case 'auth/invalid-email':                
                 setMessage('Please enter an email address');
                 break;
-            case 'auth/wrong-password':
-                console.log('incorrect password');
+            case 'auth/wrong-password':                
                 setMessage(`Looks like the password you entered isn't correct, try again.`)
                 setPasswordInputModal(true);
                 break;
-            case 'auth/weak-password':
-                console.log('password is too weak');
+            case 'auth/weak-password':                
                 setMessage(`The password you entered is too weak, enter a stronger one.`)
                 break;            
-            case 'auth/user-not-found':
-                console.log('user not found, create an account?');
+            case 'auth/user-not-found':                
                 setMessage(`Looks like you're new here, do you want to create an account?`)
                 setConfirm(true);
                 break;
-            case 'auth/sign-in-with-google':
-                console.log('Looks like you signed in with google before, would you like to sign in using that method?');
+            case 'auth/sign-in-with-google':                
                 setMessage('Looks like you signed in with google before, would you like to sign in using that method?');
                 setConfirm(true);
                 setGoogleAuth(true);
@@ -218,8 +181,7 @@ function SignIn() {
             case 'auth/account-exists-with-different-credential':
                 setMessage('Looks like you logged in previously using another method. Try logging in again.')
                 break;
-            default:
-                console.log('something went wrong');
+            default:                
                 setMessage('Terribly sorry, something went wrong on our end, please try again later.')
                 break;
         }

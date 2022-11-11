@@ -123,28 +123,22 @@ function PinmarkList() {
         
     }
 
-    const createTripInput = (e) => {
-        console.log(e.target.value);
+    const createTripInput = (e) => {        
         setCreateTripName(e.target.value);
     }
 
-    const handleAddPinmarkToTrip = (pinmark, tripId, add) => {    
-        console.log('delete pinmark from trip')
-        
+    const handleAddPinmarkToTrip = (pinmark, tripId, add) => {                    
         var updateObject = {
             pinmarkId: pinmark.pinmarkId,
             tripId: tripId,
             sharedWith: []
-        }
-        console.log(updateObject);
-        if (add) {            
-            console.log(updateObject);
+        }        
+        if (add) {                        
             dispatch(addPinmarkToTrip(updateObject));
         } else {
             dispatch(removePinmarkFromTrip(updateObject))
         }        
-        if (tripViewModal) {
-            console.log('updatetripobject')
+        if (tripViewModal) {            
             tripListState.map((trip) => {
                 if (trip.tripId === tripId) {
                     handleSetTripView(trip)
@@ -194,8 +188,7 @@ function PinmarkList() {
 
     const handleShowDetails = (info) => {
         google.placeDetails(info.place_id)
-        .then(result => {
-            console.log(result);
+        .then(result => {            
             const pinmarkObject = {
                 photoURL: result.result.photos?.[0]?.photo_reference,
                 locationName: result.result.name,
@@ -263,8 +256,7 @@ function PinmarkList() {
         }));    
     }
 
-    const handleCheckSharedUsers = () => {
-        console.log(firebaseUsers);
+    const handleCheckSharedUsers = () => {        
         var checkedUsers = [];
         if (tripViewObject.trip?.sharedWith) {
             firebaseUsers.map((user) => {
@@ -274,8 +266,7 @@ function PinmarkList() {
                     }
                 })
             })
-        }
-        console.log(checkedUsers);
+        }        
         setSharedUsers(checkedUsers);
     }
 
@@ -303,9 +294,7 @@ function PinmarkList() {
         dispatch(deletePinmark(pinmark.place_id))
     }
 
-    const handleRefreshHeaderImage = (locationId) => {
-        console.log('clicked')
-        console.log(locationId);
+    const handleRefreshHeaderImage = (locationId) => {                
         locationState.map((location) => {
             if (location.locationId === locationId) {
                 google.placeSearch(`${location.city} ${location.country} ${location?.state}`, null)
@@ -395,9 +384,7 @@ function PinmarkList() {
                     locationId: locationId
                 }                 
             }
-            setCurrentLocationObject(locationObject); // update local state with new location object
-            console.log(pinmark);
-            console.log(data);
+            setCurrentLocationObject(locationObject); // update local state with new location object                        
 
             // add pinmark category to pinmark
             const coffeeKeyWords = ['cafe'];
@@ -443,8 +430,7 @@ function PinmarkList() {
     }
 
     const handleCheckLocationExists = (locationObject) => {
-        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {
-            console.log(data);            
+        google.placeSearch(`${locationObject.city} ${locationObject.state} ${locationObject.country}`, null).then((data) => {                 
             const photo_reference = data.results[0].photos?.[0].photo_reference;
             const newLocationObject = {
                 city: locationObject.city,
@@ -457,8 +443,7 @@ function PinmarkList() {
         }).catch((error) => console.log(error))
     }
 
-    const handlePinmarkSearchInput = (e) => {
-        console.log(e.target.value);
+    const handlePinmarkSearchInput = (e) => {        
         setPinmarkSearchInput(e.target.value)
     }
      
@@ -485,9 +470,7 @@ function PinmarkList() {
     }
 
 
-    React.useEffect(() => {        
-        console.log('update firebase')
-        console.log(pinmarkState);
+    React.useEffect(() => {                        
         updateUser(userState.uid, pinmarkState);
     }, [pinmarkListState])
 
@@ -501,9 +484,7 @@ function PinmarkList() {
         
     // }, [sharedTripsState])
 
-    React.useEffect(() => {
-        console.log(pinmarkListState);
-        console.log(`locationId: ${locationId}`);
+    React.useEffect(() => {          
         var pinmarkList = [];
         pinmarkListState.map((pinmark) => {
             if (pinmark.locationId.locationId === locationId) {                
@@ -551,11 +532,7 @@ function PinmarkList() {
         if (tripViewModal) {
             handleSetTripView(tripViewObject?.trip)
         }
-    }, [pinmarkListState, pinmarkSearchInput, pinmarkCardSort, tripListState])
-
-
-    console.log(pinmarkListState);
-    console.log(`locationId: ${locationId}`);
+    }, [pinmarkListState, pinmarkSearchInput, pinmarkCardSort, tripListState])    
     var pinmarkList = [];
     pinmarkListState.map((pinmark) => {
         if (pinmark.locationId.locationId === locationId) {
@@ -599,8 +576,7 @@ function PinmarkList() {
     })
 
     // stop background from scrolling when modal is open
-    React.useEffect(() => {
-        console.log(createTripModal)
+    React.useEffect(() => {        
         if (createTripModal || tripViewModal || showSearch || tripListModal || pinmarkDetailModal) {
             document.body.classList.add('overflow-hidden')
         } else {
@@ -635,7 +611,7 @@ function PinmarkList() {
             </MDBModal>
             
             {/* Trip View Modal */}
-            <MDBModal overflowScroll={false} staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
+            <MDBModal staticBackdrop show={tripViewModal} setShow={setTripViewModal}>
                 <MDBModalDialog size='fullscreen' scrollable>
                     <MDBModalContent>
                         <TripViewModal 
@@ -871,8 +847,8 @@ function PinmarkList() {
 
         
             <MDBNavbar sticky fixed="top" dark bgColor="primary" style={{padding: 0}} >            
-            <MDBContainer fluid overlay className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
-                <img position="top" overlay style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
+            <MDBContainer fluid className="bg-image" style={{padding: 0, height: '20vh', display: 'flex',}}>                               
+                <img position="top" style={{width: '100%', height: '100%', objectFit: 'cover'}} src={`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${locationObject.photo_reference}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`}/>
                     <div
                         className='mask'
                         style={{

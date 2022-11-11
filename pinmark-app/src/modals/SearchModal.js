@@ -27,8 +27,7 @@ function SearchModal({location = null, handleCloseModal, handlePinmarkDetail, ha
     const ref = React.useRef();
 
     // side effect to keep track of pinmark IDs to help with search results UI (add/remove pinmarks)
-    React.useEffect(() => {
-        console.log(pinmarkState);
+    React.useEffect(() => {        
         var pinmarkArray = [];
         pinmarkState.pinmarks.map((pinmark) => {
             pinmarkArray.push(pinmark.pinmarkId);

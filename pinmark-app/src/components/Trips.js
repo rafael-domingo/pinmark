@@ -48,16 +48,14 @@ function Trips({handlePinmarkDetail}) {
         // modify Trip View Modal if trip state changes
         if (showModal) {
             tripsState.map((trip) => {
-                if (trip.tripId === confirmationPinmarkObj.tripId) {
-                    console.log('match')
+                if (trip.tripId === confirmationPinmarkObj.tripId) {                    
                     handleTripView(trip);
                 }
             })            
         }
     }, [pinmarkState])
 
-    const handleTripView = (trip) => {
-        console.log(trip);
+    const handleTripView = (trip) => {        
         var pinmarkArray = [];        
         pinmarkState.map((pinmark) => {
             if (pinmark.tripIds.includes(trip.tripId)) {
@@ -67,8 +65,7 @@ function Trips({handlePinmarkDetail}) {
         var tripObject = {
             trip: trip,
             pinmarks: pinmarkArray 
-        };
-        console.log(tripObject);
+        };        
         setModalInfo(tripObject);
         if (!showModal) {
             setShowModal(true);
@@ -116,11 +113,8 @@ function Trips({handlePinmarkDetail}) {
             pinmarkId: obj.pinmark.pinmarkId,
             tripId: obj.tripId,
             sharedWith: []
-        }
-        console.log(updateObject)
-        dispatch(removePinmarkFromTrip(updateObject));        
-        console.log(showModal);
-        
+        }        
+        dispatch(removePinmarkFromTrip(updateObject));                        
         setConfirmationPinmarkModal(false);
     }
     if (tripsState.length > 0) {
@@ -137,8 +131,7 @@ function Trips({handlePinmarkDetail}) {
                             state = location.state;
                             country = location.country;
                         }
-                    })
-                    console.log(trip);
+                    })                    
                     if (trip.color === undefined) {
                         return (
                             <MDBCard key={trip.tripId} onClick={() => handleTripView(trip)} background='primary' style={cardDivStyle}>

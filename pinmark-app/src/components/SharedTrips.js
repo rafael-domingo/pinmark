@@ -45,8 +45,7 @@ function SharedTrips({handlePinmarkDetail}) {
         })
     }, [0])
 
-    React.useEffect(() => {
-        console.log('refresh')
+    React.useEffect(() => {        
         var filteredTrips = [];
         sharedTripsState.map((trip) => {
             if (trip.receivingUserId === userState.uid) {
@@ -58,8 +57,7 @@ function SharedTrips({handlePinmarkDetail}) {
 
     const handleTripView = (tripObject) => {
         getTrip(tripObject).then((result) => {
-            // sort through sendingUser pinmarks to create tripView
-            console.log(result);
+            // sort through sendingUser pinmarks to create tripView            
             var pinmarkArray = [];
             result.pinmark?.pinmarks?.map((pinmark) => {
                 if (pinmark.tripIds.includes(tripObject.tripId)) {
@@ -69,8 +67,7 @@ function SharedTrips({handlePinmarkDetail}) {
             var tripObj = {
                 trip: tripObject,
                 pinmarks: pinmarkArray
-            }
-            console.log(tripObj);
+            }            
             setModalInfo(tripObj);
             if (!showModal) {
                 setShowModal(true);
@@ -96,8 +93,7 @@ function SharedTrips({handlePinmarkDetail}) {
         handleCloseTripModal();
     }
    
-    const handleDetail = (pinmark) => {
-        console.log(pinmark);
+    const handleDetail = (pinmark) => {        
         const newObject = {
             place_id: pinmark.pinmarkId
         }
@@ -112,8 +108,7 @@ function SharedTrips({handlePinmarkDetail}) {
         return (
             <div style={containerDivStyle}>
                 {
-                    filteredSharedTrips.slice(0).reverse().map((trip) => {
-                        console.log(trip)
+                    filteredSharedTrips.slice(0).reverse().map((trip) => {                        
                         if (trip.receivingUserId === userState.uid) {
                             return (
                                 <MDBCard 

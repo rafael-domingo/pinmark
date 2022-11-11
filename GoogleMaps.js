@@ -5,9 +5,7 @@ const router = express.Router();
 const api_key = process.env.GOOGLE_MAPS_API_KEY;
 const client = new Client({});
 
-router.post('/autocomplete', async (req, res) => {
-    console.log('hello')
-    console.log(req.body)
+router.post('/autocomplete', async (req, res) => {   
     const searchTerm = req.body.searchTerm;
     const sessionToken = req.body.sessionToken;
     client.placeAutocomplete({

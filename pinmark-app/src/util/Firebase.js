@@ -108,15 +108,13 @@ export const signInWithEmail = async (registering, email, password) => {
         
     // check with sign-in methods have been performed -- useful for people who have signed in with google/facebook and try to sign in with email 
    var signInMethods = [];
-    return fetchSignInMethodsForEmail(auth, email).then(result => {
-    console.log(result)
+    return fetchSignInMethodsForEmail(auth, email).then(result => {    
     signInMethods = result;
     // placed firebase call inside fetchSignInMethodsForEmail to wait for that method to finish
     // // check if 'registering' or 'signing in'
     if (registering) {           
         return createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-            console.log('registering');
+        .then((userCredential) => {            
             // signed in
             const user = userCredential.user;
             setDoc(doc(db, "users", user.uid), {
@@ -126,13 +124,11 @@ export const signInWithEmail = async (registering, email, password) => {
                 profilePicture: user.photoURL,
                 uid: user.uid,
                 authType: 'email'
-            })     
-            console.log(user);
+            })                 
             return user;
         })
         .catch((error) => {
             console.log(error.code)
-            console.log(signInMethods)
             return error.code;
             
             
@@ -161,21 +157,13 @@ export const signInWithEmail = async (registering, email, password) => {
 
 // Check user is sign in 
 export const checkUser = async () => {    
-    return onAuthStateChanged(auth, (user) => {        
-        console.log(user);
+    return onAuthStateChanged(auth, (user) => {         
         if (user) {
             return user.uid;
         } else {
             return 'not signed in'
         }
     });
-    // if (user) {
-    //     console.log('user is signed in')
-    //     return user;        
-    // } else {
-    //     console.log('user is not signed in')
-    //     return 'not signed in';
-    // }
 }
 
 // Sign user out 
@@ -192,8 +180,7 @@ export const addUser = async(userId) => {
 
 export const getUser = async(userId) => {
     const docExists = await getDoc(doc(db, "pinmarks", userId));
-    if (docExists.exists()) {
-        console.log(docExists.data());
+    if (docExists.exists()) {        
         return docExists.data();
     } else {
         // if no userId found, then create a user in pinmarks firestore
@@ -245,8 +232,7 @@ export const handleDeleteUser = async() => {
 }
 
 // Updated shared trips
-export const updatedSharedTrips = async(sharedTripObject) => {
-    console.log(sharedTripObject);
+export const updatedSharedTrips = async(sharedTripObject) => {    
     const docExists = await getDoc(doc(db, "sharedTrips", 'shared'))
     if (docExists.exists()) {
         await updateDoc(doc(db, "sharedTrips", 'shared'), {
@@ -262,12 +248,10 @@ export const updatedSharedTrips = async(sharedTripObject) => {
 // get shared trips
 export const fetchSharedTrips = async() => {
     const sharedTrips = await getDoc(doc(db, "sharedTrips", 'shared'));
-    const sharedTripsArray = [];
-    console.log(sharedTrips.data().shared);
+    const sharedTripsArray = [];    
     sharedTrips?.data().shared?.forEach((trip) => {
         sharedTripsArray.push(trip);
-    })
-    console.log(sharedTripsArray);
+    })    
     return sharedTripsArray;
     }
 

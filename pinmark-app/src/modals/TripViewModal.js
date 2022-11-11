@@ -45,11 +45,9 @@ function TripViewModal({
     const tripListState = useSelector((state) => state.pinmark.tripLists);
     const sharedTripsState = useSelector((state) => state.sharedTrips.shared);
     const [sharedUsers, setSharedUsers] = React.useState([]);
-
-    console.log(tripObject)
+    
     // side effect to reset scroll to top when opening modal
-    React.useEffect(() => {
-        console.log(ref);
+    React.useEffect(() => {        
         ref.current.scrollTo(0,0);
         // handleCheckSharedUsers()
     }, [])   
@@ -82,8 +80,7 @@ function TripViewModal({
         handlePinmarkDetail(pinmark, false);
     }
 
-    const handleDeletePinmarkFromTrip = (pinmark) => {
-        console.log(tripObject.trip.tripId)
+    const handleDeletePinmarkFromTrip = (pinmark) => {        
         handleDeletePinmarkFromTripModal(pinmark, tripObject.trip.tripId, false);
     }
     

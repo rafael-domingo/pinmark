@@ -61,14 +61,12 @@ function Pinmarks() {
 
     const handleShowDetails = (pinmark) => {
         google.placeDetails(pinmark.pinmarkId)
-        .then(result => {
-            console.log(result)
+        .then(result => {            
             const infoObject = {
                 pinmark: pinmark,
                 details: result,
                 showDelete: true
-            }
-            console.log(infoObject)
+            }            
             setDetailInfo(infoObject);
             setShowModal(true);
         })
@@ -81,12 +79,10 @@ function Pinmarks() {
     }
 
     const handleDeletePinmarkModal = () => {
-        setConfirmationModal(true);
-        console.log(detailInfo)
+        setConfirmationModal(true);        
     }
 
-    const handleDeletePinmark = (pinmark) => {
-        console.log(pinmark);
+    const handleDeletePinmark = (pinmark) => {        
         var locationIdReference = '';
         var locationIdCount = 0;
         pinmarkState.map((pin) => {
@@ -98,8 +94,7 @@ function Pinmarks() {
             if(pin.locationId.locationId === locationIdReference) {
                 locationIdCount++;
             }
-        })
-        console.log(locationIdReference)
+        })        
         if (locationIdCount <= 1) {
             dispatch(deleteLocations(locationIdReference));
         }

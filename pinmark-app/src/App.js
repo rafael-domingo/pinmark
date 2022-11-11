@@ -45,8 +45,7 @@ function App() {
         dispatch(setLocations(result.pinmark.locations));
         dispatch(setPinmarks(result.pinmark.pinmarks));
         dispatch(setTripLists(result.pinmark.tripLists));
-        fetchSharedTrips().then((result) => {
-            console.log(result);
+        fetchSharedTrips().then((result) => {            
             dispatch(setShared(result))
             navigate("/UserHome");                       
         })

@@ -43,8 +43,7 @@ function Category({category, background}) {
         if (cat.category === category) {
             icon = cat.icon;
         }
-    })
-    console.log(icon);
+    })    
 
     return (
         <MDBCard className='h-100' background={background}>
