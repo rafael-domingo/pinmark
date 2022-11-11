@@ -30,7 +30,7 @@ import { resetState } from '../redux/pinmarkSlice';
 import { resetUserState } from '../redux/userSlice';
 import { resetSharedState, setShared } from '../redux/sharedSlice';
 import { Navigate } from 'react-router-dom';
-
+import Div100vh from 'react-div-100vh';
 function UserHome() {
     const pinmarkState = useSelector((state) => state.pinmark);   
     const userState = useSelector((state) => state.user);
@@ -278,11 +278,11 @@ function UserHome() {
         }
     }, [showSearch, secondModal])
     return (
-        
-        <div style={{overflow: 'scroll',height: '100vh',
+        <Div100vh style={{overflow: 'scroll',
         background: 'radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)'
 
         }}>
+         
             <MDBNavbar className='sticky-top' light bgColor='light'>
                 <MDBContainer fluid>                    
                     <MDBNavbarBrand className='w-100 d-flex justify-content-between align-items-center'>                        
@@ -380,8 +380,8 @@ function UserHome() {
             </MDBModalDialog>
         </MDBModal>
       
-        </div>
         
+        </Div100vh>
     )
 }
 
