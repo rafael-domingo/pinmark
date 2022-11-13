@@ -114,6 +114,7 @@ function SignIn() {
     }    
 
     const getUserData = async (userId) => {
+        console.log(userId);
         getUser(userId).then((result) => {            
             if (result === 'new user') {
                 navigate("/UserHome");
@@ -149,7 +150,8 @@ function SignIn() {
     }
 
     // error handling for API calls   
-    const errorHandling = (response) => {
+    const errorHandling = (response) => { 
+        console.log(response);
         setLoading(false);
         switch (response) {
             case 'auth/password-mismatch':
@@ -180,6 +182,9 @@ function SignIn() {
                 break;
             case 'auth/account-exists-with-different-credential':
                 setMessage('Looks like you logged in previously using another method. Try logging in again.')
+                break;
+            case 'auth/popup-blocked':
+                setMessage(`Looks like you need to enable pop-ups before we can proceed. Please try again.`);
                 break;
             default:                
                 setMessage('Terribly sorry, something went wrong on our end, please try again later.')

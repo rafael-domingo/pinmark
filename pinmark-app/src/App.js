@@ -19,7 +19,7 @@ function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();  
 
-  React.useEffect(() => {          
+  React.useEffect(() => {        
     onAuthStateChanged(auth, (user) => {
       if (user) {
         dispatch(setUserName(user.displayName));
