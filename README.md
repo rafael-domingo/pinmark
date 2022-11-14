@@ -18,7 +18,7 @@ Bug fixes and new features will ship as time allows.
 
 # Screenshots
 
-<img src="/pinmark-app/src/assets/SignIn.png"/>
+<img src="/pinmark-app/src/assets/SignIn.png" width="200" height="400"/>
 
 # Installation and Setup Instructions
 
