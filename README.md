@@ -1,6 +1,10 @@
-# pinmark
+# Pinmark App
+
+## What is it?
 
 This is a web app that allows you to save places you've been to and create trip itineraries that you can share with friends.
+
+## Tell me more...
 
 Each place you save is called a 'Pinmark' -- a play on the word 'pin' and 'bookmark'. The intent is to allow you to keep a running list of places you've been to so you can remember where you've been. It also gives you the chance to curate a list of recommendations based on the places you've saved (in the form of 'Trips') that you can send to your friends.
 
