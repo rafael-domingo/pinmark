@@ -18,10 +18,12 @@ Bug fixes and new features will ship as time allows.
 
 # Screenshots
 
+<p float="left">
 <img src="/pinmark-app/src/assets/SignIn.png" width="200" height="400"/>
 <img src="/pinmark-app/src/assets/UserHome.png" width="200" height="400"/>
 <img src="/pinmark-app/src/assets/PinmarkDetail.png" width="200" height="400"/>
 <img src="/pinmark-app/src/assets/Location.png" width="200" height="400"/>
+</p>
 
 # Installation and Setup Instructions
 
